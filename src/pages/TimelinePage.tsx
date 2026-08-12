@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { IssueModal } from '../components/IssueModal'
 import { useIssues } from '../context/IssuesContext'
+import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
 import { addDays, diffDays, formatShort, parseISO, startOfWeek } from '../lib/dates'
 import type { Issue } from '../types'
@@ -10,6 +11,8 @@ const WEEK_W = 64
 
 export function TimelinePage() {
   const { issues, tracks, loading } = useIssues()
+  const { selectedProjects } = useProjects()
+  const multi = selectedProjects.length > 1
   const [collapsed, setCollapsed] = useState<string[]>([])
   const [editing, setEditing] = useState<Issue | null>(null)
 
@@ -36,6 +39,21 @@ export function TimelinePage() {
     return spans
   }, [range])
 
+  const groups = useMemo(
+    () =>
+      selectedProjects
+        .map((project) => {
+          const list = issues.filter((i) => i.projectId === project.id)
+          const projectTracks: string[] = []
+          for (const i of list) {
+            if (!projectTracks.includes(i.track)) projectTracks.push(i.track)
+          }
+          return { project, list, projectTracks }
+        })
+        .filter((g) => g.list.length > 0),
+    [selectedProjects, issues],
+  )
+
   if (loading) return <p className="muted">로딩 중…</p>
   if (!range) return <p className="muted">작업이 없습니다.</p>
 
@@ -44,10 +62,8 @@ export function TimelinePage() {
   const todayOffset = diffDays(range.first, today) * (WEEK_W / 7)
   const showToday = todayOffset >= 0 && todayOffset <= range.weeks.length * WEEK_W
 
-  function toggle(track: string) {
-    setCollapsed((prev) =>
-      prev.includes(track) ? prev.filter((t) => t !== track) : [...prev, track],
-    )
+  function toggle(key: string) {
+    setCollapsed((prev) => (prev.includes(key) ? prev.filter((t) => t !== key) : [...prev, key]))
   }
 
   return (
@@ -80,45 +96,67 @@ export function TimelinePage() {
             ))}
           </div>
 
-          {tracks.map((track) => {
-            const list = issues.filter((i) => i.track === track)
-            const isCollapsed = collapsed.includes(track)
-            return (
-              <div key={track}>
-                <div className="chart-row track-header" style={{ width: totalW }} onClick={() => toggle(track)}>
+          {groups.map(({ project, list, projectTracks }) => (
+            <div key={project.id}>
+              {multi && (
+                <div className="chart-row project-header" style={{ width: totalW }}>
                   <div className="chart-label" style={{ width: LABEL_W }}>
-                    <span className="collapse-icon">{isCollapsed ? '▸' : '▾'}</span>
-                    <span className="track-chip" style={{ background: trackColor(track, tracks) }}>
-                      {track}
+                    <span className="track-chip" style={{ background: project.color }}>
+                      {project.name}
                     </span>
                     <span className="muted small-text">{list.length}</span>
                   </div>
                 </div>
-                {!isCollapsed &&
-                  list.map((i) => {
-                    const startWi = Math.max(0, Math.floor(diffDays(range.first, parseISO(i.startDate)) / 7))
-                    const endWi = Math.floor(diffDays(range.first, parseISO(i.dueDate)) / 7)
-                    const left = LABEL_W + startWi * WEEK_W
-                    const width = Math.max(1, endWi - startWi + 1) * WEEK_W - 6
-                    return (
-                      <div key={i.id} className="chart-row" style={{ width: totalW }}>
-                        <div className="chart-label issue-label" style={{ width: LABEL_W }} title={i.title}>
-                          <span className="issue-key">{i.key}</span> {i.title}
-                        </div>
-                        <div
-                          className={`timeline-bar ${i.status === 'done' ? 'bar-done' : ''}`}
-                          style={{ left, width, background: trackColor(i.track, tracks) }}
-                          title={`${i.key} ${i.title} (${formatShort(i.startDate)}~${formatShort(i.dueDate)})`}
-                          onClick={() => setEditing(i)}
-                        >
-                          {i.title}
-                        </div>
+              )}
+              {projectTracks.map((track) => {
+                const trackList = list.filter((i) => i.track === track)
+                const key = `${project.id}:${track}`
+                const isCollapsed = collapsed.includes(key)
+                return (
+                  <div key={key}>
+                    <div
+                      className="chart-row track-header"
+                      style={{ width: totalW }}
+                      onClick={() => toggle(key)}
+                    >
+                      <div className="chart-label" style={{ width: LABEL_W }}>
+                        <span className="collapse-icon">{isCollapsed ? '▸' : '▾'}</span>
+                        <span className="track-chip" style={{ background: trackColor(track, tracks) }}>
+                          {track}
+                        </span>
+                        <span className="muted small-text">{trackList.length}</span>
                       </div>
-                    )
-                  })}
-              </div>
-            )
-          })}
+                    </div>
+                    {!isCollapsed &&
+                      trackList.map((i) => {
+                        const startWi = Math.max(
+                          0,
+                          Math.floor(diffDays(range.first, parseISO(i.startDate)) / 7),
+                        )
+                        const endWi = Math.floor(diffDays(range.first, parseISO(i.dueDate)) / 7)
+                        const left = LABEL_W + startWi * WEEK_W
+                        const width = Math.max(1, endWi - startWi + 1) * WEEK_W - 6
+                        return (
+                          <div key={i.id} className="chart-row" style={{ width: totalW }}>
+                            <div className="chart-label issue-label" style={{ width: LABEL_W }} title={i.title}>
+                              <span className="issue-key">{i.key}</span> {i.title}
+                            </div>
+                            <div
+                              className={`timeline-bar ${i.status === 'done' ? 'bar-done' : ''}`}
+                              style={{ left, width, background: trackColor(i.track, tracks) }}
+                              title={`${i.key} ${i.title} (${formatShort(i.startDate)}~${formatShort(i.dueDate)})`}
+                              onClick={() => setEditing(i)}
+                            >
+                              {i.title}
+                            </div>
+                          </div>
+                        )
+                      })}
+                  </div>
+                )
+              })}
+            </div>
+          ))}
         </div>
       </div>
 

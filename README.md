@@ -2,11 +2,13 @@
 
 SW 프로젝트 일정(이슈) 트래커 — Firebase Auth/Firestore + GitHub Pages.
 
+여러 프로젝트를 등록하고 상단 프로젝트 칩을 클릭해 원하는 프로젝트들만 골라 함께 볼 수 있습니다(달력·간트·타임라인 등 모든 화면에 통합 표시). 프로젝트 관리는 **설정** 페이지에서 합니다.
+
 Planner와 **같은 Firebase Spark 프로젝트**를 쓸 수 있습니다. 컬렉션이 분리되어 있어 데이터가 섞이지 않습니다.
 
 | 앱 | 주요 컬렉션 |
 |----|-------------|
-| Tracker | `trackerIssues`, `users` |
+| Tracker | `trackerIssues`, `trackerProjects`, `users` |
 | Planner | `leaves`, `trips`, `plans`, `meetings`, `watchCategories`, `users` |
 
 ---
@@ -74,7 +76,7 @@ VITE_BASE=/Tracker/
 ```
 
 - 값이 채워지면 앱이 자동으로 **Firestore** 모드로 동작합니다.
-- 비우면 개발 시 `data/issues.json`, 그 외에는 localStorage 폴백입니다.
+- 비우면 개발 시 `data/issues.json`·`data/projects.json`, 그 외에는 localStorage 폴백입니다.
 - Planner도 **같은** `VITE_FIREBASE_*` 값을 쓰면 됩니다.
 
 로컬 실행:

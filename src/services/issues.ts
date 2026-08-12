@@ -7,6 +7,7 @@ function mapIssue(d: StoredDoc): Issue {
   return {
     id: d.id,
     key: (d.key as string) ?? '',
+    projectId: (d.projectId as string) ?? '',
     track: (d.track as string) ?? '',
     title: (d.title as string) ?? '',
     description: (d.description as string) ?? '',
@@ -25,12 +26,14 @@ export async function listIssues(): Promise<Issue[]> {
   return docs.map(mapIssue).sort((a, b) => a.startDate.localeCompare(b.startDate) || a.key.localeCompare(b.key))
 }
 
-export function nextKey(existing: Issue[]): string {
-  const max = existing.reduce((acc, i) => {
-    const n = Number(i.key.split('-')[1])
-    return Number.isFinite(n) && n > acc ? n : acc
-  }, 0)
-  return `T-${max + 1}`
+export function nextKey(existing: Issue[], projectId: string, prefix: string): string {
+  const max = existing
+    .filter((i) => i.projectId === projectId)
+    .reduce((acc, i) => {
+      const n = Number(i.key.slice(i.key.lastIndexOf('-') + 1))
+      return Number.isFinite(n) && n > acc ? n : acc
+    }, 0)
+  return `${prefix}-${max + 1}`
 }
 
 export async function createIssue(input: IssueInput, key: string): Promise<string> {
@@ -44,6 +47,13 @@ export async function updateIssue(id: string, patch: Partial<Issue>): Promise<vo
 
 export async function deleteIssue(id: string): Promise<void> {
   await removeOne(COL, id)
+}
+
+export async function deleteIssuesByProject(projectId: string): Promise<void> {
+  const docs = await listAll(COL)
+  for (const d of docs) {
+    if ((d.projectId as string) === projectId) await removeOne(COL, d.id)
+  }
 }
 
 /** Replace the whole issue set in one write (seeding / reset / import). */

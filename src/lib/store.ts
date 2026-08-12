@@ -11,7 +11,7 @@ import { getDb, isFirebaseConfigured } from './firebase'
 /**
  * Storage abstraction with three backends, picked automatically:
  * - 'firebase': Firebase env configured -> Firestore (multi-user)
- * - 'file':     dev server file API available -> Tracker/data/issues.json
+ * - 'file':     dev server file API available -> Tracker/data/<col>.json
  *               (editable directly from Cursor, git-trackable)
  * - 'local':    fallback -> browser localStorage (e.g. static production build)
  */
@@ -20,8 +20,11 @@ export type StorageMode = 'firebase' | 'file' | 'local'
 export type DocData = Record<string, unknown>
 export type StoredDoc = DocData & { id: string }
 
-const API_URL = `${import.meta.env.BASE_URL}api/issues`
 const LOCAL_PREFIX = 'tracker:'
+
+function apiUrl(col: string): string {
+  return `${import.meta.env.BASE_URL}api/data/${col}`
+}
 
 let modePromise: Promise<StorageMode> | null = null
 
@@ -30,7 +33,7 @@ export function getStorageMode(): Promise<StorageMode> {
     modePromise = (async () => {
       if (isFirebaseConfigured) return 'firebase'
       try {
-        const res = await fetch(API_URL)
+        const res = await fetch(apiUrl('trackerIssues'))
         const type = res.headers.get('content-type') ?? ''
         if (res.ok && type.includes('application/json')) return 'file'
       } catch {
@@ -48,14 +51,14 @@ function newId(): string {
 
 // --- file backend ---
 
-async function fileRead(): Promise<StoredDoc[]> {
-  const res = await fetch(API_URL)
+async function fileRead(col: string): Promise<StoredDoc[]> {
+  const res = await fetch(apiUrl(col))
   const data = (await res.json()) as StoredDoc[]
   return Array.isArray(data) ? data : []
 }
 
-async function fileWrite(docs: StoredDoc[]): Promise<void> {
-  await fetch(API_URL, {
+async function fileWrite(col: string, docs: StoredDoc[]): Promise<void> {
+  await fetch(apiUrl(col), {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(docs, null, 2),
@@ -81,7 +84,7 @@ function localWrite(col: string, docs: StoredDoc[]): void {
 
 export async function listAll(col: string): Promise<StoredDoc[]> {
   const mode = await getStorageMode()
-  if (mode === 'file') return fileRead()
+  if (mode === 'file') return fileRead(col)
   if (mode === 'local') return localRead(col)
   const snap = await getDocs(collection(getDb(), col))
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
@@ -90,10 +93,10 @@ export async function listAll(col: string): Promise<StoredDoc[]> {
 export async function addOne(col: string, data: DocData): Promise<string> {
   const mode = await getStorageMode()
   if (mode === 'file' || mode === 'local') {
-    const docs = mode === 'file' ? await fileRead() : localRead(col)
+    const docs = mode === 'file' ? await fileRead(col) : localRead(col)
     const id = newId()
     docs.push({ ...data, id })
-    if (mode === 'file') await fileWrite(docs)
+    if (mode === 'file') await fileWrite(col, docs)
     else localWrite(col, docs)
     return id
   }
@@ -104,11 +107,11 @@ export async function addOne(col: string, data: DocData): Promise<string> {
 export async function updateOne(col: string, id: string, patch: DocData): Promise<void> {
   const mode = await getStorageMode()
   if (mode === 'file' || mode === 'local') {
-    const docs = mode === 'file' ? await fileRead() : localRead(col)
+    const docs = mode === 'file' ? await fileRead(col) : localRead(col)
     const idx = docs.findIndex((d) => d.id === id)
     if (idx >= 0) {
       docs[idx] = { ...docs[idx], ...patch, id }
-      if (mode === 'file') await fileWrite(docs)
+      if (mode === 'file') await fileWrite(col, docs)
       else localWrite(col, docs)
     }
     return
@@ -119,8 +122,8 @@ export async function updateOne(col: string, id: string, patch: DocData): Promis
 export async function removeOne(col: string, id: string): Promise<void> {
   const mode = await getStorageMode()
   if (mode === 'file' || mode === 'local') {
-    const docs = (mode === 'file' ? await fileRead() : localRead(col)).filter((d) => d.id !== id)
-    if (mode === 'file') await fileWrite(docs)
+    const docs = (mode === 'file' ? await fileRead(col) : localRead(col)).filter((d) => d.id !== id)
+    if (mode === 'file') await fileWrite(col, docs)
     else localWrite(col, docs)
     return
   }
@@ -132,7 +135,7 @@ export async function setAll(col: string, datas: DocData[]): Promise<void> {
   const mode = await getStorageMode()
   const docs = datas.map((d) => ({ ...d, id: typeof d.id === 'string' && d.id ? (d.id as string) : newId() }))
   if (mode === 'file') {
-    await fileWrite(docs)
+    await fileWrite(col, docs)
     return
   }
   if (mode === 'local') {

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { IssueModal } from '../components/IssueModal'
 import { useIssues } from '../context/IssuesContext'
+import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
 import { formatWithDay, todayISO } from '../lib/dates'
 import {
@@ -13,6 +14,8 @@ import {
 
 export function ListPage() {
   const { issues, tracks, update, loading } = useIssues()
+  const { selectedIds, projectById } = useProjects()
+  const multi = selectedIds.length > 1
   const [search, setSearch] = useState('')
   const [trackFilter, setTrackFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
@@ -76,6 +79,7 @@ export function ListPage() {
             <tr>
               <th>키</th>
               <th>제목</th>
+              {multi && <th>프로젝트</th>}
               <th>트랙</th>
               <th>상태</th>
               <th>우선순위</th>
@@ -92,6 +96,16 @@ export function ListPage() {
                 <tr key={i.id} onClick={() => setEditing(i)}>
                   <td className="issue-key">{i.key}</td>
                   <td className="title-cell">{i.title}</td>
+                  {multi && (
+                    <td>
+                      <span
+                        className="track-chip"
+                        style={{ background: projectById(i.projectId)?.color ?? '#6b778c' }}
+                      >
+                        {projectById(i.projectId)?.name ?? '?'}
+                      </span>
+                    </td>
+                  )}
                   <td>
                     <span className="track-chip" style={{ background: trackColor(i.track, tracks) }}>
                       {i.track}

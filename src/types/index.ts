@@ -6,9 +6,20 @@ export interface Deliverable {
   done: boolean
 }
 
+export interface Project {
+  id: string
+  name: string
+  keyPrefix: string
+  color: string
+  createdAt: string
+}
+
+export type ProjectInput = Omit<Project, 'id' | 'createdAt'>
+
 export interface Issue {
   id: string
   key: string
+  projectId: string
   track: string
   title: string
   description: string

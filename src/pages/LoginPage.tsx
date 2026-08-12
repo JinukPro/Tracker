@@ -34,7 +34,7 @@ export function LoginPage() {
   return (
     <div className="center-page">
       <div className="card narrow">
-        <h1>T뽑기 Tracker</h1>
+        <h1>Tracker</h1>
         <p className="muted">Google 계정으로 로그인하세요.</p>
         {error && <p className="red">{error}</p>}
         <button type="button" className="btn primary" disabled={busy} onClick={() => void handleLogin()}>

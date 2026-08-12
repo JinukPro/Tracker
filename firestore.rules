@@ -41,6 +41,10 @@ service cloud.firestore {
       allow read, write: if signedIn();
     }
 
+    match /trackerProjects/{projectId} {
+      allow read, write: if signedIn();
+    }
+
     // Planner
     match /leaves/{leaveId} {
       allow read: if signedIn()

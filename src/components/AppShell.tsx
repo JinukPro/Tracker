@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useProjects } from '../context/ProjectsContext'
 import { type ReactNode } from 'react'
 
 const links = [
@@ -15,12 +16,13 @@ const links = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { profile, localMode, logout } = useAuth()
+  const { projects, selectedIds, toggleProject } = useProjects()
 
   return (
     <div className="app-shell">
       <header className="topbar">
         <div className="brand">
-          <span className="brand-mark">T</span> T뽑기 Tracker
+          <span className="brand-mark">T</span> Tracker
         </div>
         <div className="topbar-right">
           <span className="muted">{profile?.displayName ?? profile?.email}</span>
@@ -31,6 +33,27 @@ export function AppShell({ children }: { children: ReactNode }) {
           )}
         </div>
       </header>
+      {projects.length > 1 && (
+        <div className="project-bar">
+          <span className="project-bar-label">프로젝트</span>
+          {projects.map((p) => {
+            const active = selectedIds.includes(p.id)
+            return (
+              <button
+                key={p.id}
+                type="button"
+                className={`proj-chip ${active ? 'active' : ''}`}
+                style={active ? { background: p.color, borderColor: p.color } : undefined}
+                onClick={() => toggleProject(p.id)}
+                title={active ? '클릭하여 숨기기' : '클릭하여 표시'}
+              >
+                <span className="proj-dot" style={{ background: active ? '#fff' : p.color }} />
+                {p.name}
+              </button>
+            )
+          })}
+        </div>
+      )}
       <div className="body">
         <nav className="sidenav">
           {links.map((link) => (

@@ -7,59 +7,41 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { buildSeedIssues } from '../data/seed'
+import { initData } from '../services/bootstrap'
 import * as svc from '../services/issues'
 import type { Issue, IssueInput } from '../types'
+import { useProjects } from './ProjectsContext'
 
 type IssuesContextValue = {
+  /** Issues of the currently selected projects */
   issues: Issue[]
+  /** Every issue across all projects (settings/export/track suggestions) */
+  allIssues: Issue[]
   loading: boolean
   tracks: string[]
   refresh: () => Promise<void>
   create: (input: IssueInput) => Promise<void>
   update: (id: string, patch: Partial<Issue>) => Promise<void>
   remove: (id: string) => Promise<void>
-  resetToSeed: () => Promise<void>
-  importIssues: (items: Issue[]) => Promise<void>
 }
 
 const IssuesContext = createContext<IssuesContextValue | null>(null)
 
-function seedItems(): { key: string; input: IssueInput }[] {
-  return buildSeedIssues().map((input, i) => ({ key: `T-${i + 1}`, input }))
-}
-
-// Module-level lock so StrictMode's double-mounted effect runs init only once
-let initPromise: Promise<Issue[]> | null = null
-
-async function initOnce(): Promise<Issue[]> {
-  if (initPromise) return initPromise
-  initPromise = (async () => {
-    let list = await svc.listIssues()
-    // First run: populate with the real project schedule
-    if (list.length === 0) {
-      await svc.replaceAllIssues(seedItems())
-      list = await svc.listIssues()
-    }
-    return list
-  })()
-  return initPromise
-}
-
 export function IssuesProvider({ children }: { children: ReactNode }) {
-  const [issues, setIssues] = useState<Issue[]>([])
+  const { selectedIds, projectById } = useProjects()
+  const [allIssues, setAllIssues] = useState<Issue[]>([])
   const [loading, setLoading] = useState(true)
 
   const refresh = useCallback(async () => {
     const list = await svc.listIssues()
-    setIssues(list)
+    setAllIssues(list)
   }, [])
 
   useEffect(() => {
     let cancelled = false
-    void initOnce().then((list) => {
+    void initData().then(({ issues: list }) => {
       if (!cancelled) {
-        setIssues(list)
+        setAllIssues(list)
         setLoading(false)
       }
     })
@@ -68,58 +50,53 @@ export function IssuesProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  // Live-reload when data/issues.json is edited externally (e.g. from Cursor)
+  // Live-reload when data files are edited externally (e.g. from Cursor)
   useEffect(() => {
     const hot = import.meta.hot
     if (!hot) return
     const handler = () => void refresh()
-    hot.on('issues-file-changed', handler)
-    return () => hot.off('issues-file-changed', handler)
+    hot.on('data-file-changed', handler)
+    return () => hot.off('data-file-changed', handler)
   }, [refresh])
 
   const create = useCallback(
     async (input: IssueInput) => {
-      await svc.createIssue(input, svc.nextKey(issues))
+      const prefix = projectById(input.projectId)?.keyPrefix ?? 'T'
+      await svc.createIssue(input, svc.nextKey(allIssues, input.projectId, prefix))
       await refresh()
     },
-    [issues, refresh],
+    [allIssues, projectById, refresh],
   )
 
   const update = useCallback(
     async (id: string, patch: Partial<Issue>) => {
+      // Moving an issue to another project re-issues its key under the new prefix
+      const current = allIssues.find((i) => i.id === id)
+      let effective = patch
+      if (patch.projectId && current && patch.projectId !== current.projectId) {
+        const prefix = projectById(patch.projectId)?.keyPrefix ?? 'T'
+        effective = { ...patch, key: svc.nextKey(allIssues, patch.projectId, prefix) }
+      }
       // Optimistic update keeps drag & drop and checkbox toggles snappy
-      setIssues((prev) => prev.map((i) => (i.id === id ? { ...i, ...patch } : i)))
-      await svc.updateIssue(id, patch)
+      setAllIssues((prev) => prev.map((i) => (i.id === id ? { ...i, ...effective } : i)))
+      await svc.updateIssue(id, effective)
       await refresh()
     },
-    [refresh],
+    [allIssues, projectById, refresh],
   )
 
   const remove = useCallback(
     async (id: string) => {
-      setIssues((prev) => prev.filter((i) => i.id !== id))
+      setAllIssues((prev) => prev.filter((i) => i.id !== id))
       await svc.deleteIssue(id)
       await refresh()
     },
     [refresh],
   )
 
-  const resetToSeed = useCallback(async () => {
-    await svc.replaceAllIssues(seedItems())
-    await refresh()
-  }, [refresh])
-
-  const importIssues = useCallback(
-    async (items: Issue[]) => {
-      await svc.replaceAllIssues(
-        items.map((item) => {
-          const { id: _id, key, createdAt: _c, updatedAt: _u, ...input } = item
-          return { key, input: input as IssueInput }
-        }),
-      )
-      await refresh()
-    },
-    [refresh],
+  const issues = useMemo(
+    () => allIssues.filter((i) => selectedIds.includes(i.projectId)),
+    [allIssues, selectedIds],
   )
 
   const tracks = useMemo(() => {
@@ -131,8 +108,8 @@ export function IssuesProvider({ children }: { children: ReactNode }) {
   }, [issues])
 
   const value = useMemo(
-    () => ({ issues, loading, tracks, refresh, create, update, remove, resetToSeed, importIssues }),
-    [issues, loading, tracks, refresh, create, update, remove, resetToSeed, importIssues],
+    () => ({ issues, allIssues, loading, tracks, refresh, create, update, remove }),
+    [issues, allIssues, loading, tracks, refresh, create, update, remove],
   )
 
   return <IssuesContext.Provider value={value}>{children}</IssuesContext.Provider>

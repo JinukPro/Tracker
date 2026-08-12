@@ -1,7 +1,7 @@
 [
   {
     "track": "ECS-① 용접A·B",
-    "title": "요구사항 분석 · Cell 상태기계 설계",
+    "title": "요구사항 정의 · Cell 상태기계 설계",
     "description": "ECS가 담당할 기능 범위 확정(셀 내 PLC/로봇 실시간제어, 인터락, 알람 전담). 6개 셀에 공통 적용할 표준 상태기계(IDLE→STARTING→EXECUTE→COMPLETE/HELD/ABORTED)를 설계. EXECUTE 내부의 셀별 세부 실행단계는 각 셀의 아키텍처 설계·로직개발 주차에서 스텝 전이도로 별도 정의.",
     "status": "todo",
     "priority": "medium",
@@ -9,7 +9,7 @@
     "dueDate": "2026-08-22",
     "deliverables": [
       {
-        "name": "ECS 기능 요구사항 분석서",
+        "name": "ECS 기능 요구사항 정의서",
         "done": false
       },
       {
@@ -19,7 +19,7 @@
     ],
     "key": "T-1",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.604Z",
     "id": "mspqgfpz-qczayk5",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -94,7 +94,7 @@
     "status": "todo",
     "priority": "medium",
     "startDate": "2026-09-13",
-    "dueDate": "2026-09-26",
+    "dueDate": "2026-09-19",
     "deliverables": [
       {
         "name": "용접셀A EXECUTE 스텝 전이도",
@@ -107,7 +107,7 @@
     ],
     "key": "T-5",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T08:51:59.182Z",
+    "updatedAt": "2026-08-12T08:41:52.641Z",
     "id": "mspqgfpz-lfesvyv",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -321,9 +321,9 @@
         "done": false
       }
     ],
-    "key": "T-16",
+    "key": "T-15",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.637Z",
     "id": "mspqgfpz-us0s5pf",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -341,9 +341,9 @@
         "done": false
       }
     ],
-    "key": "T-17",
+    "key": "T-16",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.650Z",
     "id": "mspqgfpz-93v8id2",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -361,9 +361,9 @@
         "done": false
       }
     ],
-    "key": "T-18",
+    "key": "T-17",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.654Z",
     "id": "mspqgfpz-bbz1k94",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -381,9 +381,9 @@
         "done": false
       }
     ],
-    "key": "T-19",
+    "key": "T-18",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.663Z",
     "id": "mspqgfpz-gwmotk9",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -401,9 +401,9 @@
         "done": false
       }
     ],
-    "key": "T-20",
+    "key": "T-19",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.684Z",
     "id": "mspqgfpz-3ok9yxa",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -421,9 +421,9 @@
         "done": false
       }
     ],
-    "key": "T-21",
+    "key": "T-20",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.696Z",
     "id": "mspqgfpz-end8q1h",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -441,9 +441,9 @@
         "done": false
       }
     ],
-    "key": "T-22",
+    "key": "T-21",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.709Z",
     "id": "mspqgfpz-gda8089",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -461,9 +461,9 @@
         "done": false
       }
     ],
-    "key": "T-23",
+    "key": "T-22",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.755Z",
     "id": "mspqgfpz-xybkp5k",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -481,9 +481,9 @@
         "done": false
       }
     ],
-    "key": "T-24",
+    "key": "T-23",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.767Z",
     "id": "mspqgfpz-ge5uumr",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -501,29 +501,29 @@
         "done": false
       }
     ],
-    "key": "T-25",
+    "key": "T-24",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.783Z",
     "id": "mspqgfpz-y12all9",
     "projectId": "mspubvm9-nlzg1wp"
   },
   {
     "track": "ECS-③ 지관계측",
-    "title": "지관계측셀 요구사항 분석",
-    "description": "본 로직설계 착수 전, 팔레트 입고·기준 조립방향 등록 흐름에 대한 요구사항을 분석.",
+    "title": "지관계측셀 사전 검토 착수",
+    "description": "본 로직설계 착수 전, 팔레트 입고·기준 조립방향 등록 흐름에 대한 요구사항을 미리 검토.",
     "status": "todo",
     "priority": "medium",
     "startDate": "2026-10-11",
     "dueDate": "2026-10-17",
     "deliverables": [
       {
-        "name": "요구사항 분석서",
+        "name": "사전 검토 메모",
         "done": false
       }
     ],
-    "key": "T-26",
+    "key": "T-25",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.679Z",
     "id": "mspqgfpz-llx851y",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -534,16 +534,16 @@
     "status": "todo",
     "priority": "medium",
     "startDate": "2026-11-15",
-    "dueDate": "2026-11-28",
+    "dueDate": "2026-11-21",
     "deliverables": [
       {
         "name": "ECS 설계서(EXECUTE 스텝 전이도 포함)",
         "done": false
       }
     ],
-    "key": "T-27",
+    "key": "T-26",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.730Z",
     "id": "mspqgfpz-um2y5lc",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -554,16 +554,16 @@
     "status": "todo",
     "priority": "medium",
     "startDate": "2026-11-29",
-    "dueDate": "2026-12-12",
+    "dueDate": "2026-12-05",
     "deliverables": [
       {
         "name": "지관계측 로직 모듈",
         "done": false
       }
     ],
-    "key": "T-28",
+    "key": "T-27",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.746Z",
     "id": "mspqgfpz-la04r7m",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -574,16 +574,16 @@
     "status": "todo",
     "priority": "medium",
     "startDate": "2026-12-20",
-    "dueDate": "2027-01-09",
+    "dueDate": "2026-12-26",
     "deliverables": [
       {
         "name": "단위테스트 결과",
         "done": false
       }
     ],
-    "key": "T-29",
+    "key": "T-28",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.788Z",
     "id": "mspqgfpz-2eow3rw",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -601,9 +601,9 @@
         "done": false
       }
     ],
-    "key": "T-30",
+    "key": "T-29",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.832Z",
     "id": "mspqgfpz-4gfyvbp",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -621,9 +621,9 @@
         "done": false
       }
     ],
-    "key": "T-31",
+    "key": "T-30",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.858Z",
     "id": "mspqgfpz-b9ok5cd",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -641,9 +641,9 @@
         "done": false
       }
     ],
-    "key": "T-32",
+    "key": "T-31",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.905Z",
     "id": "mspqgfpz-768p9zc",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -661,50 +661,70 @@
         "done": false
       }
     ],
-    "key": "T-33",
+    "key": "T-32",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.929Z",
     "id": "mspqgfpz-4ya41q6",
     "projectId": "mspubvm9-nlzg1wp"
   },
   {
     "track": "ECS-③ 지관계측",
-    "title": "지관 계측 안정화 모니터링",
-    "description": "지관계측셀 SAT 이후 초기가동 기간 SW 이슈 모니터링 및 핫픽스 대응(72시간 연속생산·불량률 1% 미만 조건과 연계).",
+    "title": "전체 안정화 모니터링",
+    "description": "용접A·B / 모관계측 / 지관계측 3개 트랙 전체를 대상으로 한 최종 안정화 확인(72시간 연속생산·불량률 1% 미만 대응).",
     "status": "todo",
     "priority": "medium",
     "startDate": "2027-03-14",
     "dueDate": "2027-03-20",
     "deliverables": [
       {
-        "name": "안정화 모니터링 리포트",
+        "name": "안정화 모니터링 종합 리포트",
         "done": false
       }
     ],
-    "key": "T-34",
+    "key": "T-33",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.941Z",
     "id": "mspqgfpz-gjt5lvt",
     "projectId": "mspubvm9-nlzg1wp"
   },
   {
-    "track": "ECS-④ 창고·RGV·검사배출",
+    "track": "ECS-③ 지관계측",
     "title": "이관 문서·매뉴얼 정리",
     "description": "사용자매뉴얼, 관리자매뉴얼, 설치매뉴얼, 유지보수매뉴얼 등 산출물 정리.",
     "status": "todo",
     "priority": "medium",
-    "startDate": "2027-03-28",
-    "dueDate": "2027-04-03",
+    "startDate": "2027-03-21",
+    "dueDate": "2027-03-27",
     "deliverables": [
       {
         "name": "인수인계 문서 세트",
         "done": false
       }
     ],
-    "key": "T-51",
+    "key": "T-34",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.953Z",
     "id": "mspqgfpz-se23v7v",
+    "projectId": "mspubvm9-nlzg1wp"
+  },
+  {
+    "track": "ECS-③ 지관계측",
+    "title": "개발 완료 보고",
+    "description": "용접·모관계측·지관계측 ECS 개발 완료 보고서 작성·제출.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2027-03-28",
+    "dueDate": "2027-04-03",
+    "deliverables": [
+      {
+        "name": "개발 완료 보고서",
+        "done": false
+      }
+    ],
+    "key": "T-35",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T08:41:52.968Z",
+    "id": "mspqgfpz-n4z9gac",
     "projectId": "mspubvm9-nlzg1wp"
   },
   {
@@ -721,9 +741,9 @@
         "done": false
       }
     ],
-    "key": "T-35",
+    "key": "T-36",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.759Z",
     "id": "mspqgfpz-w59y6nd",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -741,9 +761,9 @@
         "done": false
       }
     ],
-    "key": "T-36",
+    "key": "T-37",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.772Z",
     "id": "mspqgfpz-3cyf825",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -761,9 +781,9 @@
         "done": false
       }
     ],
-    "key": "T-37",
+    "key": "T-38",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.792Z",
     "id": "mspqgfpz-xvo9a7y",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -785,9 +805,9 @@
         "done": false
       }
     ],
-    "key": "T-38",
+    "key": "T-39",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.803Z",
     "id": "mspqgfpz-wutjz3u",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -809,9 +829,9 @@
         "done": false
       }
     ],
-    "key": "T-39",
+    "key": "T-40",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.820Z",
     "id": "mspqgfpz-d5b8xd0",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -837,9 +857,9 @@
         "done": false
       }
     ],
-    "key": "T-40",
+    "key": "T-41",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.837Z",
     "id": "mspqgfpz-iz7eh8e",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -857,9 +877,9 @@
         "done": false
       }
     ],
-    "key": "T-41",
+    "key": "T-42",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.850Z",
     "id": "mspqgfpz-69q8ctg",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -877,9 +897,9 @@
         "done": false
       }
     ],
-    "key": "T-42",
+    "key": "T-43",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.862Z",
     "id": "mspqgfpz-75iqq0w",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -901,9 +921,9 @@
         "done": false
       }
     ],
-    "key": "T-43",
+    "key": "T-44",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.875Z",
     "id": "mspqgfpz-qfm8jb3",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -925,9 +945,9 @@
         "done": false
       }
     ],
-    "key": "T-44",
+    "key": "T-45",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.882Z",
     "id": "mspqgfpz-a2o22ew",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -945,9 +965,9 @@
         "done": false
       }
     ],
-    "key": "T-45",
+    "key": "T-46",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.891Z",
     "id": "mspqgfpz-9svozd9",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -965,9 +985,9 @@
         "done": false
       }
     ],
-    "key": "T-46",
+    "key": "T-47",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.909Z",
     "id": "mspqgfpz-190b009",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -985,9 +1005,9 @@
         "done": false
       }
     ],
-    "key": "T-47",
+    "key": "T-48",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.916Z",
     "id": "mspqgfpz-2d5qmdx",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1005,9 +1025,9 @@
         "done": false
       }
     ],
-    "key": "T-48",
+    "key": "T-49",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.933Z",
     "id": "mspqgfpz-6a04of2",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1025,16 +1045,16 @@
         "done": false
       }
     ],
-    "key": "T-49",
+    "key": "T-50",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.944Z",
     "id": "mspqgfpz-kcc7klm",
     "projectId": "mspubvm9-nlzg1wp"
   },
   {
     "track": "ECS-④ 창고·RGV·검사배출",
     "title": "ECS 전체 안정화 모니터링",
-    "description": "④ 트랙(모관창고/RGV/지관보관/검사배출) 및 ECS 전체 안정화 확인.",
+    "description": "④ 트랙(모관창고/RGV/지관보관/검사배출) 전체 안정화 확인.",
     "status": "todo",
     "priority": "medium",
     "startDate": "2027-03-21",
@@ -1045,10 +1065,30 @@
         "done": false
       }
     ],
-    "key": "T-50",
+    "key": "T-51",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.957Z",
     "id": "mspqgfpz-wvlk81i",
+    "projectId": "mspubvm9-nlzg1wp"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "ECS 개발 완료 보고",
+    "description": "④ 트랙 개발 완료 보고서 작성·제출.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2027-03-28",
+    "dueDate": "2027-04-03",
+    "deliverables": [
+      {
+        "name": "개발 완료 보고서",
+        "done": false
+      }
+    ],
+    "key": "T-52",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T08:41:52.972Z",
+    "id": "mspqgfpz-qzgi51p",
     "projectId": "mspubvm9-nlzg1wp"
   },
   {
@@ -1061,7 +1101,7 @@
     "dueDate": "2026-12-12",
     "deliverables": [
       {
-        "name": "ERP연동 요구사항 분석서",
+        "name": "ERP연동 요구사항 정의서",
         "done": false
       },
       {
@@ -1069,9 +1109,9 @@
         "done": false
       }
     ],
-    "key": "T-52",
+    "key": "T-53",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.763Z",
     "id": "mspqgfpz-v5uyy5a",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1089,9 +1129,9 @@
         "done": false
       }
     ],
-    "key": "T-53",
+    "key": "T-54",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.776Z",
     "id": "mspqgfpz-cl7gm9q",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1109,9 +1149,9 @@
         "done": false
       }
     ],
-    "key": "T-54",
+    "key": "T-55",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.798Z",
     "id": "mspqgfpz-nyps63t",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1133,9 +1173,9 @@
         "done": false
       }
     ],
-    "key": "T-55",
+    "key": "T-56",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.808Z",
     "id": "mspqgfpz-fpc7edr",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1157,9 +1197,9 @@
         "done": false
       }
     ],
-    "key": "T-56",
+    "key": "T-57",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.825Z",
     "id": "mspqgfpz-emcyth9",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1181,9 +1221,9 @@
         "done": false
       }
     ],
-    "key": "T-57",
+    "key": "T-58",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.841Z",
     "id": "mspqgfpz-irsuq7e",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1205,9 +1245,9 @@
         "done": false
       }
     ],
-    "key": "T-58",
+    "key": "T-59",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.854Z",
     "id": "mspqgfpz-gcvhvxe",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1225,9 +1265,9 @@
         "done": false
       }
     ],
-    "key": "T-59",
+    "key": "T-60",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.866Z",
     "id": "mspqgfpz-7edcn35",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1245,9 +1285,9 @@
         "done": false
       }
     ],
-    "key": "T-60",
+    "key": "T-61",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.879Z",
     "id": "mspqgfpz-lawrl75",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1269,9 +1309,9 @@
         "done": false
       }
     ],
-    "key": "T-61",
+    "key": "T-62",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.886Z",
     "id": "mspqgfpz-zzvpi4v",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1289,9 +1329,9 @@
         "done": false
       }
     ],
-    "key": "T-62",
+    "key": "T-63",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.896Z",
     "id": "mspqgfpz-vdci3ts",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1313,9 +1353,9 @@
         "done": false
       }
     ],
-    "key": "T-63",
+    "key": "T-64",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.913Z",
     "id": "mspqgfpz-pkf8fww",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1333,9 +1373,9 @@
         "done": false
       }
     ],
-    "key": "T-64",
+    "key": "T-65",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.921Z",
     "id": "mspqgfpz-bsj690d",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1357,9 +1397,9 @@
         "done": false
       }
     ],
-    "key": "T-65",
+    "key": "T-66",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.937Z",
     "id": "mspqgfpz-puvgp9x",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1377,9 +1417,9 @@
         "done": false
       }
     ],
-    "key": "T-66",
+    "key": "T-67",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.948Z",
     "id": "mspqgfpz-ivkva8b",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1401,9 +1441,9 @@
         "done": false
       }
     ],
-    "key": "T-67",
+    "key": "T-68",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.960Z",
     "id": "mspqgfpz-dcorpnk",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1425,9 +1465,9 @@
         "done": false
       }
     ],
-    "key": "T-68",
+    "key": "T-69",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.976Z",
     "id": "mspqgfpz-84r9ph1",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1441,13 +1481,13 @@
     "dueDate": "2026-08-22",
     "deliverables": [
       {
-        "name": "FMS/Display 요구사항 분석서",
+        "name": "FMS/Display 요구사항 정의서",
         "done": false
       }
     ],
-    "key": "T-69",
+    "key": "T-70",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.610Z",
     "id": "mspqgfpz-ycb68ei",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1465,9 +1505,9 @@
         "done": false
       }
     ],
-    "key": "T-70",
+    "key": "T-71",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.619Z",
     "id": "mspqgfpz-hbcf7sj",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1485,29 +1525,29 @@
         "done": false
       }
     ],
-    "key": "T-71",
+    "key": "T-72",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.628Z",
     "id": "mspqgfpz-wbefpbs",
     "projectId": "mspubvm9-nlzg1wp"
   },
   {
     "track": "FMS·통합감시",
-    "title": "FMS 서버 구축 착수",
-    "description": "MES·ECS와 분리된 별도 서버에 FMS 인프라 구축 착수(시스템 부하 분리 목적).",
+    "title": "FMS 서버 구축 착수·구축",
+    "description": "MES·ECS와 분리된 별도 서버에 FMS 인프라 구축(시스템 부하 분리 목적).",
     "status": "todo",
     "priority": "medium",
     "startDate": "2026-09-13",
-    "dueDate": "2026-09-19",
+    "dueDate": "2026-09-26",
     "deliverables": [
       {
-        "name": "FMS 서버 구축 계획·환경 초안",
+        "name": "FMS 서버 환경(구축 완료)",
         "done": false
       }
     ],
-    "key": "T-72",
+    "key": "T-73",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.645Z",
     "id": "mspqgfpz-65r73jo",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1527,7 +1567,7 @@
     ],
     "key": "T-74",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.675Z",
     "id": "mspqgfpz-hn88i10",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1547,7 +1587,7 @@
     ],
     "key": "T-75",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.688Z",
     "id": "mspqgfpz-z9jwtnt",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1567,7 +1607,7 @@
     ],
     "key": "T-76",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.713Z",
     "id": "mspqgfpz-jhwn7br",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1587,7 +1627,7 @@
     ],
     "key": "T-77",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.722Z",
     "id": "mspqgfpz-su0hnw4",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1607,7 +1647,7 @@
     ],
     "key": "T-78",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.738Z",
     "id": "mspqgfpz-5ajruyj",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1627,7 +1667,7 @@
     ],
     "key": "T-79",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.751Z",
     "id": "mspqgfpz-wd74i35",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1647,7 +1687,7 @@
     ],
     "key": "T-80",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.779Z",
     "id": "mspqgfpz-hckipmx",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1667,7 +1707,7 @@
     ],
     "key": "T-81",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.815Z",
     "id": "mspqgfpz-cb0hexg",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1687,7 +1727,7 @@
     ],
     "key": "T-82",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.829Z",
     "id": "mspqgfpz-s15nzqn",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1707,7 +1747,7 @@
     ],
     "key": "T-83",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.845Z",
     "id": "mspqgfpz-dtk43sl",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1727,7 +1767,7 @@
     ],
     "key": "T-84",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.870Z",
     "id": "mspqgfpz-1xdxqiq",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1747,7 +1787,7 @@
     ],
     "key": "T-85",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.900Z",
     "id": "mspqgfpz-kghy1gg",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1757,8 +1797,8 @@
     "description": "안정화 기간 중 이슈 모니터링·대응.",
     "status": "todo",
     "priority": "medium",
-    "startDate": "2027-03-07",
-    "dueDate": "2027-03-13",
+    "startDate": "2027-02-28",
+    "dueDate": "2027-03-06",
     "deliverables": [
       {
         "name": "안정화 로그",
@@ -1767,7 +1807,7 @@
     ],
     "key": "T-86",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.924Z",
     "id": "mspqgfpz-osjjlcs",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1787,7 +1827,7 @@
     ],
     "key": "T-87",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.964Z",
     "id": "mspqgfpz-089v0lk",
     "projectId": "mspubvm9-nlzg1wp"
   },
@@ -1807,48 +1847,8 @@
     ],
     "key": "T-88",
     "createdAt": "2026-08-12T06:53:26.806Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z",
+    "updatedAt": "2026-08-12T08:41:52.980Z",
     "id": "mspqgfpz-jh9b7do",
     "projectId": "mspubvm9-nlzg1wp"
-  },
-  {
-    "id": "mspy3ho4-go8hlss",
-    "key": "T-15",
-    "projectId": "mspubvm9-nlzg1wp",
-    "track": "ECS-② 모관계측",
-    "title": "모관계측셀 요구사항 분석",
-    "description": "아키텍처 설계 착수 전, 모관 계측 흐름(QR판독, 계측 트리거, 인입방향 판정)에 대한 요구사항을 분석.",
-    "status": "todo",
-    "priority": "medium",
-    "startDate": "2026-09-06",
-    "dueDate": "2026-09-12",
-    "deliverables": [
-      {
-        "name": "요구사항 분석서",
-        "done": false
-      }
-    ],
-    "createdAt": "2026-08-12T10:27:19.731Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z"
-  },
-  {
-    "id": "mspy3ho4-ht4nknt",
-    "key": "T-73",
-    "projectId": "mspubvm9-nlzg1wp",
-    "track": "FMS·통합감시",
-    "title": "FMS 서버 구축",
-    "description": "FMS 서버 인프라 구축 완료.",
-    "status": "todo",
-    "priority": "medium",
-    "startDate": "2026-09-20",
-    "dueDate": "2026-09-26",
-    "deliverables": [
-      {
-        "name": "FMS 서버 환경(구축 완료)",
-        "done": false
-      }
-    ],
-    "createdAt": "2026-08-12T10:27:19.731Z",
-    "updatedAt": "2026-08-12T10:27:19.731Z"
   }
 ]

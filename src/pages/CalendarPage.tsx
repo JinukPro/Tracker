@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { IssueModal } from '../components/IssueModal'
 import { useIssues } from '../context/IssuesContext'
+import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
 import { addDays, diffDays, formatShort, parseISO, startOfWeek, toISO, todayISO } from '../lib/dates'
 import type { Issue } from '../types'
@@ -55,6 +56,11 @@ function buildWeekBars(week: Date[], issues: Issue[]): { bars: WeekBar[]; laneCo
 
 export function CalendarPage() {
   const { issues, tracks, loading } = useIssues()
+  const { selectedIds, projectById } = useProjects()
+  const multi = selectedIds.length > 1
+  // With several projects on screen, project color is the clearer signal
+  const colorOf = (i: Issue) =>
+    multi ? (projectById(i.projectId)?.color ?? '#6b778c') : trackColor(i.track, tracks)
   const [cursor, setCursor] = useState(() => {
     const now = new Date()
     return new Date(now.getFullYear(), now.getMonth(), 1)
@@ -177,7 +183,7 @@ export function CalendarPage() {
                   <div
                     key={i.id}
                     className={`cal-chip ${i.status === 'done' ? 'chip-done' : ''}`}
-                    style={{ borderLeftColor: trackColor(i.track, tracks) }}
+                    style={{ borderLeftColor: colorOf(i) }}
                     title={`${i.key} ${i.title}`}
                     onClick={() => setEditing(i)}
                   >
@@ -231,7 +237,7 @@ export function CalendarPage() {
                 </div>
                 <div className="calw-bars" style={{ minHeight: visibleLanes * 24 + 4 }}>
                   {visibleBars.map((b) => {
-                    const color = trackColor(b.issue.track, tracks)
+                    const color = colorOf(b.issue)
                     return (
                       <div
                         key={b.issue.id}

@@ -1,14 +1,28 @@
 import { useMemo, useState } from 'react'
 import { IssueModal } from '../components/IssueModal'
 import { useIssues } from '../context/IssuesContext'
+import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
 import { addDays, formatShort, parseISO, startOfWeek, toISO, todayISO } from '../lib/dates'
 import { STATUS_LABELS, type Issue } from '../types'
 
 export function DashboardPage() {
   const { issues, tracks, loading } = useIssues()
+  const { selectedProjects } = useProjects()
+  const multi = selectedProjects.length > 1
   const [editing, setEditing] = useState<Issue | null>(null)
   const today = todayISO()
+
+  const projectStats = useMemo(
+    () =>
+      selectedProjects.map((p) => {
+        const list = issues.filter((i) => i.projectId === p.id)
+        const done = list.filter((i) => i.status === 'done').length
+        const overdue = list.filter((i) => i.status !== 'done' && i.dueDate < today).length
+        return { project: p, total: list.length, done, overdue }
+      }),
+    [selectedProjects, issues, today],
+  )
 
   const stats = useMemo(() => {
     const total = issues.length
@@ -69,6 +83,34 @@ export function DashboardPage() {
       </div>
 
       <div className="dash-grid">
+        {multi && (
+          <section className="card">
+            <h2>프로젝트별 진행률</h2>
+            {projectStats.map((s) => (
+              <div key={s.project.id} className="track-progress">
+                <div className="track-progress-head">
+                  <span className="track-chip" style={{ background: s.project.color }}>
+                    {s.project.name}
+                  </span>
+                  <span className="muted small-text">
+                    작업 {s.done}/{s.total}
+                    {s.overdue > 0 && <span className="red"> · 지연 {s.overdue}</span>}
+                  </span>
+                </div>
+                <div className="progress-bar">
+                  <div
+                    className="progress-fill"
+                    style={{
+                      width: `${s.total ? Math.round((s.done / s.total) * 100) : 0}%`,
+                      background: s.project.color,
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+
         <section className="card">
           <h2>트랙별 진행률</h2>
           {trackStats.map((s) => (

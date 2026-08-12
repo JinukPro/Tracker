@@ -1,12 +1,15 @@
 import { useMemo, useState, type DragEvent } from 'react'
 import { IssueModal } from '../components/IssueModal'
 import { useIssues } from '../context/IssuesContext'
+import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
 import { formatShort, todayISO } from '../lib/dates'
 import { STATUS_LABELS, STATUS_ORDER, type Issue, type IssueStatus } from '../types'
 
 export function BoardPage() {
   const { issues, tracks, update, loading } = useIssues()
+  const { selectedIds, projectById } = useProjects()
+  const multi = selectedIds.length > 1
   const [trackFilter, setTrackFilter] = useState('')
   const [editing, setEditing] = useState<Issue | null>(null)
   const [creating, setCreating] = useState<IssueStatus | null>(null)
@@ -84,6 +87,14 @@ export function BoardPage() {
                   >
                     <div className="board-card-title">{i.title}</div>
                     <div className="board-card-meta">
+                      {multi && (
+                        <span
+                          className="track-chip"
+                          style={{ background: projectById(i.projectId)?.color ?? '#6b778c' }}
+                        >
+                          {projectById(i.projectId)?.name ?? '?'}
+                        </span>
+                      )}
                       <span className="track-chip" style={{ background: trackColor(i.track, tracks) }}>
                         {i.track}
                       </span>

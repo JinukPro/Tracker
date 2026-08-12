@@ -1,12 +1,15 @@
 import { useMemo, useState } from 'react'
 import { IssueModal } from '../components/IssueModal'
 import { useIssues } from '../context/IssuesContext'
+import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
 import { formatShort } from '../lib/dates'
 import type { Issue } from '../types'
 
 export function DeliverablesPage() {
   const { issues, tracks, update, loading } = useIssues()
+  const { selectedIds, projectById } = useProjects()
+  const multi = selectedIds.length > 1
   const [trackFilter, setTrackFilter] = useState('')
   const [onlyPending, setOnlyPending] = useState(false)
   const [search, setSearch] = useState('')
@@ -107,6 +110,14 @@ export function DeliverablesPage() {
             <div key={i.id} className="deliverable-issue">
               <div className="deliverable-issue-head" onClick={() => setEditing(i)}>
                 <span className="issue-key">{i.key}</span>
+                {multi && (
+                  <span
+                    className="track-chip"
+                    style={{ background: projectById(i.projectId)?.color ?? '#6b778c' }}
+                  >
+                    {projectById(i.projectId)?.name ?? '?'}
+                  </span>
+                )}
                 <span className="issue-title">{i.title}</span>
                 <span className="muted small-text">
                   {formatShort(i.startDate)}~{formatShort(i.dueDate)}

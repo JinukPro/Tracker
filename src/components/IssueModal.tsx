@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useIssues } from '../context/IssuesContext'
+import { useProjects } from '../context/ProjectsContext'
 import { todayISO } from '../lib/dates'
 import {
   PRIORITY_LABELS,
@@ -19,9 +20,21 @@ type Props = {
 }
 
 export function IssueModal({ issue, defaults, onClose }: Props) {
-  const { tracks, create, update, remove } = useIssues()
+  const { tracks, allIssues, create, update, remove } = useIssues()
+  const { projects, selectedIds } = useProjects()
+  const [projectId, setProjectId] = useState(
+    issue?.projectId ?? defaults?.projectId ?? selectedIds[0] ?? projects[0]?.id ?? '',
+  )
   const [title, setTitle] = useState(issue?.title ?? '')
   const [track, setTrack] = useState(issue?.track ?? defaults?.track ?? tracks[0] ?? '')
+
+  const trackOptions = useMemo(() => {
+    const seen: string[] = []
+    for (const i of allIssues) {
+      if (i.projectId === projectId && !seen.includes(i.track)) seen.push(i.track)
+    }
+    return seen
+  }, [allIssues, projectId])
   const [status, setStatus] = useState<IssueStatus>(issue?.status ?? defaults?.status ?? 'todo')
   const [priority, setPriority] = useState<IssuePriority>(issue?.priority ?? 'medium')
   const [startDate, setStartDate] = useState(issue?.startDate ?? defaults?.startDate ?? todayISO())
@@ -47,9 +60,10 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
   }
 
   async function handleSave() {
-    if (!title.trim() || !track.trim()) return
+    if (!title.trim() || !track.trim() || !projectId) return
     setSaving(true)
     const input: IssueInput = {
+      projectId,
       title: title.trim(),
       track: track.trim(),
       status,
@@ -95,10 +109,21 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
           </label>
 
           <label className="field">
+            <span>프로젝트</span>
+            <select value={projectId} onChange={(e) => setProjectId(e.target.value)}>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="field">
             <span>트랙</span>
             <input list="track-options" value={track} onChange={(e) => setTrack(e.target.value)} />
             <datalist id="track-options">
-              {tracks.map((t) => (
+              {trackOptions.map((t) => (
                 <option key={t} value={t} />
               ))}
             </datalist>

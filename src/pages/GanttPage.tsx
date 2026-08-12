@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { IssueModal } from '../components/IssueModal'
 import { useIssues } from '../context/IssuesContext'
+import { useProjects } from '../context/ProjectsContext'
 import { STATUS_COLORS, trackColor } from '../lib/colors'
 import { addDays, diffDays, formatShort, parseISO } from '../lib/dates'
 import type { Issue } from '../types'
@@ -10,12 +11,29 @@ const DAY_W = 5
 
 export function GanttPage() {
   const { issues, tracks, loading } = useIssues()
+  const { selectedProjects } = useProjects()
+  const multi = selectedProjects.length > 1
   const [trackFilter, setTrackFilter] = useState('')
   const [editing, setEditing] = useState<Issue | null>(null)
 
   const filtered = useMemo(
     () => issues.filter((i) => !trackFilter || i.track === trackFilter),
     [issues, trackFilter],
+  )
+
+  const groups = useMemo(
+    () =>
+      selectedProjects
+        .map((project) => {
+          const list = filtered.filter((i) => i.projectId === project.id)
+          const projectTracks: string[] = []
+          for (const i of list) {
+            if (!projectTracks.includes(i.track)) projectTracks.push(i.track)
+          }
+          return { project, list, projectTracks }
+        })
+        .filter((g) => g.list.length > 0),
+    [selectedProjects, filtered],
   )
 
   const range = useMemo(() => {
@@ -93,45 +111,57 @@ export function GanttPage() {
             ))}
           </div>
 
-          {tracks
-            .filter((t) => !trackFilter || t === trackFilter)
-            .map((track) => {
-              const list = filtered.filter((i) => i.track === track)
-              return (
-                <div key={track}>
-                  <div className="chart-row track-header" style={{ width: totalW }}>
-                    <div className="chart-label" style={{ width: LABEL_W }}>
-                      <span className="track-chip" style={{ background: trackColor(track, tracks) }}>
-                        {track}
-                      </span>
-                    </div>
+          {groups.map(({ project, list, projectTracks }) => (
+            <div key={project.id}>
+              {multi && (
+                <div className="chart-row project-header" style={{ width: totalW }}>
+                  <div className="chart-label" style={{ width: LABEL_W }}>
+                    <span className="track-chip" style={{ background: project.color }}>
+                      {project.name}
+                    </span>
+                    <span className="muted small-text">{list.length}</span>
                   </div>
-                  {list.map((i) => {
-                    const left = LABEL_W + diffDays(range.first, parseISO(i.startDate)) * DAY_W
-                    const width = Math.max(DAY_W, (diffDays(parseISO(i.startDate), parseISO(i.dueDate)) + 1) * DAY_W)
-                    const dTotal = i.deliverables.length
-                    const dDone = i.deliverables.filter((d) => d.done).length
-                    const pct = dTotal > 0 ? Math.round((dDone / dTotal) * 100) : i.status === 'done' ? 100 : 0
-                    return (
-                      <div key={i.id} className="chart-row gantt-row" style={{ width: totalW }}>
-                        <div className="chart-label issue-label" style={{ width: LABEL_W }} title={i.title}>
-                          <span className="issue-key">{i.key}</span> {i.title}
-                        </div>
-                        <div
-                          className="gantt-bar"
-                          style={{ left, width, background: STATUS_COLORS[i.status] }}
-                          title={`${i.key} ${i.title}\n${formatShort(i.startDate)}~${formatShort(i.dueDate)} · 산출물 ${dDone}/${dTotal}`}
-                          onClick={() => setEditing(i)}
-                        >
-                          <div className="gantt-progress" style={{ width: `${pct}%` }} />
-                          {width > 60 && <span className="gantt-pct">{pct}%</span>}
-                        </div>
-                      </div>
-                    )
-                  })}
                 </div>
-              )
-            })}
+              )}
+              {projectTracks.map((track) => {
+                const trackList = list.filter((i) => i.track === track)
+                return (
+                  <div key={`${project.id}:${track}`}>
+                    <div className="chart-row track-header" style={{ width: totalW }}>
+                      <div className="chart-label" style={{ width: LABEL_W }}>
+                        <span className="track-chip" style={{ background: trackColor(track, tracks) }}>
+                          {track}
+                        </span>
+                      </div>
+                    </div>
+                    {trackList.map((i) => {
+                      const left = LABEL_W + diffDays(range.first, parseISO(i.startDate)) * DAY_W
+                      const width = Math.max(DAY_W, (diffDays(parseISO(i.startDate), parseISO(i.dueDate)) + 1) * DAY_W)
+                      const dTotal = i.deliverables.length
+                      const dDone = i.deliverables.filter((d) => d.done).length
+                      const pct = dTotal > 0 ? Math.round((dDone / dTotal) * 100) : i.status === 'done' ? 100 : 0
+                      return (
+                        <div key={i.id} className="chart-row gantt-row" style={{ width: totalW }}>
+                          <div className="chart-label issue-label" style={{ width: LABEL_W }} title={i.title}>
+                            <span className="issue-key">{i.key}</span> {i.title}
+                          </div>
+                          <div
+                            className="gantt-bar"
+                            style={{ left, width, background: STATUS_COLORS[i.status] }}
+                            title={`${i.key} ${i.title}\n${formatShort(i.startDate)}~${formatShort(i.dueDate)} · 산출물 ${dDone}/${dTotal}`}
+                            onClick={() => setEditing(i)}
+                          >
+                            <div className="gantt-progress" style={{ width: `${pct}%` }} />
+                            {width > 60 && <span className="gantt-pct">{pct}%</span>}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )
+              })}
+            </div>
+          ))}
         </div>
       </div>
 
