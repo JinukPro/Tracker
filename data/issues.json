@@ -1,0 +1,1766 @@
+[
+  {
+    "track": "ECS-① 용접A·B",
+    "title": "요구사항 정의 · Cell 상태기계 설계",
+    "description": "ECS가 담당할 기능 범위 확정(셀 내 PLC/로봇 실시간제어, 인터락, 알람 전담). 6개 셀에 공통 적용할 표준 상태기계(IDLE→STARTING→EXECUTE→COMPLETE/HELD/ABORTED)를 설계. EXECUTE 내부의 셀별 세부 실행단계는 각 셀의 아키텍처 설계·로직개발 주차에서 스텝 전이도로 별도 정의.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-08-16",
+    "dueDate": "2026-08-22",
+    "deliverables": [
+      {
+        "name": "ECS 기능 요구사항 정의서",
+        "done": false
+      },
+      {
+        "name": "셀 표준 상태전이표(설계문서)",
+        "done": false
+      }
+    ],
+    "key": "T-1",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:57:49.529Z",
+    "id": "mspqgfpz-qczayk5"
+  },
+  {
+    "track": "ECS-① 용접A·B",
+    "title": "ICD 확정(1차)",
+    "description": "ERP-MES-ECS-FMS-Display 계층 간 인터페이스 규격(명령·상태·데이터 3종 계약)을 1차로 확정. 가장 먼저 필요한 용접/계측 관련 신호부터 정리.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-08-23",
+    "dueDate": "2026-08-29",
+    "deliverables": [
+      {
+        "name": "ICD(Interface Control Document) 1차본",
+        "done": false
+      }
+    ],
+    "key": "T-2",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-vmdo107"
+  },
+  {
+    "track": "ECS-① 용접A·B",
+    "title": "OPC UA 통신표준 · Asset Interface Spec 작성",
+    "description": "장비-ECS 간 통신을 OPC UA로 표준화하는 노드 구조 설계. \"장비는 계약이다\" 원칙에 따라 모든 장비를 상태·명령 동일 인터페이스로 추상화하는 규격 정의(벤더/기종이 바뀌어도 상위 로직이 안 바뀌게).",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-08-30",
+    "dueDate": "2026-09-05",
+    "deliverables": [
+      {
+        "name": "OPC UA 노드 구조 정의서",
+        "done": false
+      },
+      {
+        "name": "Asset Interface Spec / Driver SDK 설계서",
+        "done": false
+      }
+    ],
+    "key": "T-3",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-d2l4bs8"
+  },
+  {
+    "track": "ECS-① 용접A·B",
+    "title": "공통 프레임워크 개발",
+    "description": "6개 ECS가 공통으로 쓸 소프트웨어 뼈대 구현 — 상태기계 엔진, 통신 드라이버, 로깅, 알람처리 등.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-09-06",
+    "dueDate": "2026-09-12",
+    "deliverables": [
+      {
+        "name": "ECS 공통 프레임워크 코드베이스",
+        "done": false
+      }
+    ],
+    "key": "T-4",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-g8kpnji"
+  },
+  {
+    "track": "ECS-① 용접A·B",
+    "title": "용접셀 로직개발(A)",
+    "description": "용접셀A 제어로직 구현. 모관 안착 확인 → Fit-up → Tack용접 → 본용접 시퀀스 제어, 가용 용접기 상태 판단 등. EXECUTE 내부 스텝 전이도(스텝 간 전이 조건, HELD 발생 시 재개 지점 포함)를 먼저 정의한 뒤 구현.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-09-13",
+    "dueDate": "2026-09-19",
+    "deliverables": [
+      {
+        "name": "용접셀A EXECUTE 스텝 전이도",
+        "done": false
+      },
+      {
+        "name": "용접셀A ECS 소프트웨어 1차 버전",
+        "done": false
+      }
+    ],
+    "key": "T-5",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-lfesvyv"
+  },
+  {
+    "track": "ECS-① 용접A·B",
+    "title": "용접A Cell연동·최적화 지원",
+    "description": "실제 용접셀A 하드웨어(로봇/PLC/센서)와 ECS SW를 실장비에 연결해 신호 매핑 확인, 사이클타임 최적화.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-09-27",
+    "dueDate": "2026-10-03",
+    "deliverables": [
+      {
+        "name": "Cell 연동시험 결과",
+        "done": false
+      },
+      {
+        "name": "이슈/수정 내역",
+        "done": false
+      }
+    ],
+    "key": "T-6",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-y7np0i9"
+  },
+  {
+    "track": "ECS-① 용접A·B",
+    "title": "용접셀 로직 이식(B)·단위테스트",
+    "description": "A호기에서 검증된 로직을 그대로 2호기(용접셀B)로 이식하고 개별 파라미터(오프셋, 장비ID 등) 조정.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-10-04",
+    "dueDate": "2026-10-10",
+    "deliverables": [
+      {
+        "name": "용접셀B ECS 소프트웨어",
+        "done": false
+      },
+      {
+        "name": "단위테스트 결과",
+        "done": false
+      }
+    ],
+    "key": "T-7",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-iqccxpy"
+  },
+  {
+    "track": "ECS-① 용접A·B",
+    "title": "용접B Cell연동·최적화 지원",
+    "description": "B호기 실장비 연동 및 최적화.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-10-18",
+    "dueDate": "2026-10-24",
+    "deliverables": [
+      {
+        "name": "연동시험 결과",
+        "done": false
+      }
+    ],
+    "key": "T-8",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-nmd2sio"
+  },
+  {
+    "track": "ECS-① 용접A·B",
+    "title": "용접A FAT 지원(SW)",
+    "description": "용접셀A 출하전시험(FAT) 입회 지원 — 시퀀스 시연, 사양서 요구 기능 충족 확인, 발견된 결함 즉시 수정.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2026-10-25",
+    "dueDate": "2026-10-31",
+    "deliverables": [
+      {
+        "name": "FAT SW 시험결과(체크리스트 서명)",
+        "done": false
+      },
+      {
+        "name": "결함 수정 로그",
+        "done": false
+      }
+    ],
+    "key": "T-9",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-1lf1icx"
+  },
+  {
+    "track": "ECS-① 용접A·B",
+    "title": "용접B FAT 지원(SW)",
+    "description": "용접셀B FAT SW 입회 지원.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2026-11-01",
+    "dueDate": "2026-11-07",
+    "deliverables": [
+      {
+        "name": "FAT SW 시험결과",
+        "done": false
+      }
+    ],
+    "key": "T-10",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-932tpym"
+  },
+  {
+    "track": "ECS-① 용접A·B",
+    "title": "용접A 현장 SW 배포",
+    "description": "공장 출하 후 현장(칠서공장)에 설치된 장비에 ECS SW 설치·재설정(IP/네트워크 등 현장 환경 반영).",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-11-08",
+    "dueDate": "2026-11-14",
+    "deliverables": [
+      {
+        "name": "현장 배포 완료 확인서",
+        "done": false
+      }
+    ],
+    "key": "T-11",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-gukd2vn"
+  },
+  {
+    "track": "ECS-① 용접A·B",
+    "title": "용접A SAT 지원",
+    "description": "현장 인수시험(SAT) SW 입회 지원 — 실제 생산조건에서 성능·기능 재확인.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2026-11-15",
+    "dueDate": "2026-11-21",
+    "deliverables": [
+      {
+        "name": "SAT SW 시험결과",
+        "done": false
+      }
+    ],
+    "key": "T-12",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-48az262"
+  },
+  {
+    "track": "ECS-① 용접A·B",
+    "title": "용접B 현장배포·SAT 지원",
+    "description": "용접B에 대해 현장 SW 배포 + SAT 지원을 함께 진행.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2026-11-22",
+    "dueDate": "2026-11-28",
+    "deliverables": [
+      {
+        "name": "배포 확인서",
+        "done": false
+      },
+      {
+        "name": "SAT SW 시험결과",
+        "done": false
+      }
+    ],
+    "key": "T-13",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-mkzm6dv"
+  },
+  {
+    "track": "ECS-① 용접A·B",
+    "title": "용접A·B 안정화 모니터링",
+    "description": "SAT 이후 초기가동 기간 SW 이슈 모니터링 및 핫픽스 대응(사양서 6.3.3: SAT 이후 72시간 연속생산·불량률 1% 미만 조건과 연계).",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-11-29",
+    "dueDate": "2026-12-05",
+    "deliverables": [
+      {
+        "name": "안정화 기간 이슈 로그·조치 내역",
+        "done": false
+      }
+    ],
+    "key": "T-14",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-n1s8cbi"
+  },
+  {
+    "track": "ECS-② 모관계측",
+    "title": "모관계측셀 아키텍처 설계",
+    "description": "레이저 변위·프로파일 센서 데이터 수신, QR판독, 계측 트리거 흐름 등 모관계측셀 ECS의 소프트웨어 구조 설계. EXECUTE 내부 스텝 전이도(QR판독→계측트리거→방향판정 스텝 간 전이 조건, HELD 발생 시 재개 지점) 포함.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-09-13",
+    "dueDate": "2026-09-19",
+    "deliverables": [
+      {
+        "name": "ECS 아키텍처 설계서(EXECUTE 스텝 전이도 포함)",
+        "done": false
+      }
+    ],
+    "key": "T-15",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-us0s5pf"
+  },
+  {
+    "track": "ECS-② 모관계측",
+    "title": "모관계측셀 로직개발(QR판독·계측트리거)",
+    "description": "모관 QR 스캔 인식 로직 및 계측장비 트리거 신호 제어 로직 구현.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-09-20",
+    "dueDate": "2026-09-26",
+    "deliverables": [
+      {
+        "name": "QR판독/트리거 제어 모듈",
+        "done": false
+      }
+    ],
+    "key": "T-16",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-93v8id2"
+  },
+  {
+    "track": "ECS-② 모관계측",
+    "title": "모관계측셀 로직개발(인입방향 판정)",
+    "description": "모관 인입방향(좌/우 비대칭) 판정 알고리즘을 계측값 기반으로 구현(체크리스트 \"모관 인입방향 판정 로직\" 항목).",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-09-27",
+    "dueDate": "2026-10-03",
+    "deliverables": [
+      {
+        "name": "방향판정 로직 모듈",
+        "done": false
+      }
+    ],
+    "key": "T-17",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-bbz1k94"
+  },
+  {
+    "track": "ECS-② 모관계측",
+    "title": "모관계측셀 단위테스트",
+    "description": "목업/시뮬레이션 데이터로 위 로직들을 실장비 연결 전 단독 검증.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-10-04",
+    "dueDate": "2026-10-10",
+    "deliverables": [
+      {
+        "name": "단위테스트 결과",
+        "done": false
+      }
+    ],
+    "key": "T-18",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-gwmotk9"
+  },
+  {
+    "track": "ECS-② 모관계측",
+    "title": "모관계측 Cell연동·최적화 지원",
+    "description": "실제 계측장비·리프팅기구 등과 ECS SW 연동 및 사이클타임 최적화.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-10-18",
+    "dueDate": "2026-10-24",
+    "deliverables": [
+      {
+        "name": "연동시험 결과",
+        "done": false
+      }
+    ],
+    "key": "T-19",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-3ok9yxa"
+  },
+  {
+    "track": "ECS-② 모관계측",
+    "title": "모관계측 FAT 준비(SW)",
+    "description": "FAT 직전 SW 최종 점검 및 체크리스트 항목 사전 리허설.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-10-25",
+    "dueDate": "2026-10-31",
+    "deliverables": [
+      {
+        "name": "FAT 준비 점검표",
+        "done": false
+      }
+    ],
+    "key": "T-20",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-end8q1h"
+  },
+  {
+    "track": "ECS-② 모관계측",
+    "title": "모관계측 FAT 지원(SW)",
+    "description": "모관계측셀 FAT 입회 지원.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2026-11-01",
+    "dueDate": "2026-11-07",
+    "deliverables": [
+      {
+        "name": "FAT SW 시험결과",
+        "done": false
+      }
+    ],
+    "key": "T-21",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-gda8089"
+  },
+  {
+    "track": "ECS-② 모관계측",
+    "title": "모관계측 현장 SW 배포",
+    "description": "현장 설치 후 SW 재설정.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-12-06",
+    "dueDate": "2026-12-12",
+    "deliverables": [
+      {
+        "name": "현장 배포 완료 확인서",
+        "done": false
+      }
+    ],
+    "key": "T-22",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-xybkp5k"
+  },
+  {
+    "track": "ECS-② 모관계측",
+    "title": "모관계측 SAT 지원",
+    "description": "SAT 입회 지원.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2026-12-13",
+    "dueDate": "2026-12-19",
+    "deliverables": [
+      {
+        "name": "SAT SW 시험결과",
+        "done": false
+      }
+    ],
+    "key": "T-23",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-ge5uumr"
+  },
+  {
+    "track": "ECS-② 모관계측",
+    "title": "모관계측 안정화 모니터링",
+    "description": "SAT 이후 이슈 모니터링·대응.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-12-20",
+    "dueDate": "2026-12-26",
+    "deliverables": [
+      {
+        "name": "안정화 로그",
+        "done": false
+      }
+    ],
+    "key": "T-24",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-y12all9"
+  },
+  {
+    "track": "ECS-③ 지관계측",
+    "title": "지관계측셀 사전 검토 착수",
+    "description": "본 로직설계 착수 전, 팔레트 입고·기준 조립방향 등록 흐름에 대한 요구사항을 미리 검토.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-10-11",
+    "dueDate": "2026-10-17",
+    "deliverables": [
+      {
+        "name": "사전 검토 메모",
+        "done": false
+      }
+    ],
+    "key": "T-25",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-llx851y"
+  },
+  {
+    "track": "ECS-③ 지관계측",
+    "title": "지관계측셀 로직설계",
+    "description": "팔레트 입고, 기준 조립방향 등록, 출고 흐름 등 지관계측셀 ECS의 소프트웨어 구조 설계. EXECUTE 내부 스텝 전이도(팔레트 QR스캔→사양 매핑→조립방향 바인딩 스텝 간 전이 조건, HELD 발생 시 재개 지점) 포함.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-11-15",
+    "dueDate": "2026-11-21",
+    "deliverables": [
+      {
+        "name": "ECS 설계서(EXECUTE 스텝 전이도 포함)",
+        "done": false
+      }
+    ],
+    "key": "T-26",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-um2y5lc"
+  },
+  {
+    "track": "ECS-③ 지관계측",
+    "title": "지관계측셀 로직개발",
+    "description": "팔레트 QR 스캔, 팔레트ID-지관사양 매핑, 기준 조립방향 바인딩 로직 구현.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-11-29",
+    "dueDate": "2026-12-05",
+    "deliverables": [
+      {
+        "name": "지관계측 로직 모듈",
+        "done": false
+      }
+    ],
+    "key": "T-27",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-la04r7m"
+  },
+  {
+    "track": "ECS-③ 지관계측",
+    "title": "지관계측셀 단위테스트",
+    "description": "위 로직들을 실장비 연결 전 단독 검증.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-12-20",
+    "dueDate": "2026-12-26",
+    "deliverables": [
+      {
+        "name": "단위테스트 결과",
+        "done": false
+      }
+    ],
+    "key": "T-28",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-2eow3rw"
+  },
+  {
+    "track": "ECS-③ 지관계측",
+    "title": "지관계측 Cell연동·최적화 지원",
+    "description": "실장비 연동 및 최적화.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-01-10",
+    "dueDate": "2027-01-16",
+    "deliverables": [
+      {
+        "name": "연동시험 결과",
+        "done": false
+      }
+    ],
+    "key": "T-29",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-4gfyvbp"
+  },
+  {
+    "track": "ECS-③ 지관계측",
+    "title": "지관계측 FAT 지원(SW)",
+    "description": "지관계측셀 FAT 입회 지원.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2027-01-24",
+    "dueDate": "2027-01-30",
+    "deliverables": [
+      {
+        "name": "FAT SW 시험결과",
+        "done": false
+      }
+    ],
+    "key": "T-30",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-b9ok5cd"
+  },
+  {
+    "track": "ECS-③ 지관계측",
+    "title": "지관계측 현장 SW 배포",
+    "description": "현장 설치 후 SW 재설정.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-02-21",
+    "dueDate": "2027-02-27",
+    "deliverables": [
+      {
+        "name": "현장 배포 완료 확인서",
+        "done": false
+      }
+    ],
+    "key": "T-31",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-768p9zc"
+  },
+  {
+    "track": "ECS-③ 지관계측",
+    "title": "지관계측 SAT 지원",
+    "description": "SAT 입회 지원.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2027-03-07",
+    "dueDate": "2027-03-13",
+    "deliverables": [
+      {
+        "name": "SAT SW 시험결과",
+        "done": false
+      }
+    ],
+    "key": "T-32",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-4ya41q6"
+  },
+  {
+    "track": "ECS-③ 지관계측",
+    "title": "전체 안정화 모니터링",
+    "description": "용접A·B / 모관계측 / 지관계측 3개 트랙 전체를 대상으로 한 최종 안정화 확인(72시간 연속생산·불량률 1% 미만 대응).",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-03-14",
+    "dueDate": "2027-03-20",
+    "deliverables": [
+      {
+        "name": "안정화 모니터링 종합 리포트",
+        "done": false
+      }
+    ],
+    "key": "T-33",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-gjt5lvt"
+  },
+  {
+    "track": "ECS-③ 지관계측",
+    "title": "이관 문서·매뉴얼 정리",
+    "description": "사용자매뉴얼, 관리자매뉴얼, 설치매뉴얼, 유지보수매뉴얼 등 산출물 정리.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-03-21",
+    "dueDate": "2027-03-27",
+    "deliverables": [
+      {
+        "name": "인수인계 문서 세트",
+        "done": false
+      }
+    ],
+    "key": "T-34",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-se23v7v"
+  },
+  {
+    "track": "ECS-③ 지관계측",
+    "title": "개발 완료 보고",
+    "description": "용접·모관계측·지관계측 ECS 개발 완료 보고서 작성·제출.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2027-03-28",
+    "dueDate": "2027-04-03",
+    "deliverables": [
+      {
+        "name": "개발 완료 보고서",
+        "done": false
+      }
+    ],
+    "key": "T-35",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-n4z9gac"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "요구사항 분석·ICD 확정(2차)",
+    "description": "창고/반송/배출 관련 요구사항 정리 및 ICD 2차 확정(1차에서 다루지 않은 재고관리·라우팅 신호 등).",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-12-06",
+    "dueDate": "2026-12-12",
+    "deliverables": [
+      {
+        "name": "ICD 2차 문서",
+        "done": false
+      }
+    ],
+    "key": "T-36",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-w59y6nd"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "모관창고셀 아키텍처 설계·RGV셀 설계 착수",
+    "description": "모관창고셀, RGV셀 소프트웨어 구조를 동시에 설계 착수. 각 셀의 EXECUTE 내부 스텝 전이도(모관창고: 적치좌표 산출→스태커 구동→QR검증 / RGV: 로딩→주행→조건부 회전, 각 스텝 간 전이 조건과 HELD 발생 시 재개 지점) 포함.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-12-13",
+    "dueDate": "2026-12-19",
+    "deliverables": [
+      {
+        "name": "모관창고·RGV 아키텍처 설계서(EXECUTE 스텝 전이도 포함)",
+        "done": false
+      }
+    ],
+    "key": "T-37",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-3cyf825"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "모관창고셀 로직개발(적치좌표·스태커)",
+    "description": "In-Rack 적치좌표 산출 로직, 스태커 구동 제어 로직 구현.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-12-20",
+    "dueDate": "2026-12-26",
+    "deliverables": [
+      {
+        "name": "창고 제어 로직 모듈",
+        "done": false
+      }
+    ],
+    "key": "T-38",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-xvo9a7y"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "모관창고셀 로직개발(2차 QR검증)·RGV셀 로직개발(로딩·주행)",
+    "description": "출고 시 2차 QR 검증(정합성 확인) 로직 구현 + RGV 로딩/주행 제어 로직 구현(병렬 진행).",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-12-27",
+    "dueDate": "2027-01-02",
+    "deliverables": [
+      {
+        "name": "2차 QR검증 모듈",
+        "done": false
+      },
+      {
+        "name": "RGV 로딩·주행 모듈",
+        "done": false
+      }
+    ],
+    "key": "T-39",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-wutjz3u"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "모관창고셀 단위테스트·RGV셀 로직개발(조건부 회전)",
+    "description": "창고 로직 단독 검증 + RGV 조건부 회전(0°/180°, 모관 적치방향에 따라 지관을 유지/회전) 판단로직 구현.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-01-03",
+    "dueDate": "2027-01-09",
+    "deliverables": [
+      {
+        "name": "단위테스트 결과",
+        "done": false
+      },
+      {
+        "name": "회전 판단 로직 모듈",
+        "done": false
+      }
+    ],
+    "key": "T-40",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-d5b8xd0"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "모관창고 Cell연동 준비·검사·배출셀 로직개발(OK/NG 라우팅)",
+    "description": "창고 실장비 연동 준비작업 + 검사·배출셀의 OK/NG 분기 라우팅 로직 구현(SHI 판정결과 수신 후 배출 경로 결정). 검사·배출셀의 EXECUTE 스텝 전이도(판정결과 수신→라우팅 결정→배출, HELD 발생 시 재개 지점)를 함께 정의.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-01-10",
+    "dueDate": "2027-01-16",
+    "deliverables": [
+      {
+        "name": "연동준비 체크리스트",
+        "done": false
+      },
+      {
+        "name": "검사·배출셀 EXECUTE 스텝 전이도",
+        "done": false
+      },
+      {
+        "name": "OK/NG 라우팅 로직 모듈",
+        "done": false
+      }
+    ],
+    "key": "T-41",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-iz7eh8e"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "모관창고 Cell연동·최적화 지원",
+    "description": "실장비 연동 및 최적화 지원.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-01-17",
+    "dueDate": "2027-01-23",
+    "deliverables": [
+      {
+        "name": "연동시험 결과",
+        "done": false
+      }
+    ],
+    "key": "T-42",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-69q8ctg"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "모관창고 모듈테스트 지원(SW)",
+    "description": "하드웨어 일정의 \"모듈 테스트-셋업\"(모관창고셀은 별도 FAT 행이 없어 이 단계가 사실상 FAT 역할) SW 지원.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-01-24",
+    "dueDate": "2027-01-30",
+    "deliverables": [
+      {
+        "name": "모듈테스트 결과",
+        "done": false
+      }
+    ],
+    "key": "T-43",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-75iqq0w"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "지관보관셀 로직개발 착수",
+    "description": "지관보관-공급셀 로직개발 착수. EXECUTE 스텝 전이도(입고→보관→공급 스텝 간 전이 조건, HELD 발생 시 재개 지점)를 먼저 정의.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-01-31",
+    "dueDate": "2027-02-06",
+    "deliverables": [
+      {
+        "name": "착수 계획서",
+        "done": false
+      },
+      {
+        "name": "지관보관셀 EXECUTE 스텝 전이도",
+        "done": false
+      }
+    ],
+    "key": "T-44",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-qfm8jb3"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "지관보관셀 로직개발·검사·배출셀 통합테스트",
+    "description": "지관보관 로직 개발 계속 + 검사·배출셀 통합테스트 진행.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-02-07",
+    "dueDate": "2027-02-13",
+    "deliverables": [
+      {
+        "name": "지관보관 로직 모듈",
+        "done": false
+      },
+      {
+        "name": "통합테스트 결과",
+        "done": false
+      }
+    ],
+    "key": "T-45",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-a2o22ew"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "지관보관 Cell연동 지원",
+    "description": "지관보관-공급셀 실장비 연동 지원.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-02-14",
+    "dueDate": "2027-02-20",
+    "deliverables": [
+      {
+        "name": "연동시험 결과",
+        "done": false
+      }
+    ],
+    "key": "T-46",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-9svozd9"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "모관창고 현장 SW 배포",
+    "description": "현장 설치 후 SW 재설정.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-02-21",
+    "dueDate": "2027-02-27",
+    "deliverables": [
+      {
+        "name": "현장 배포 완료 확인서",
+        "done": false
+      }
+    ],
+    "key": "T-47",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-190b009"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "모관창고 SAT 지원",
+    "description": "SAT 입회 지원.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2027-02-28",
+    "dueDate": "2027-03-06",
+    "deliverables": [
+      {
+        "name": "SAT SW 시험결과",
+        "done": false
+      }
+    ],
+    "key": "T-48",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T07:21:04.346Z",
+    "id": "mspqgfpz-2d5qmdx"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "지관보관 현장 SW 배포",
+    "description": "현장 설치 후 SW 재설정.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-03-07",
+    "dueDate": "2027-03-13",
+    "deliverables": [
+      {
+        "name": "현장 배포 완료 확인서",
+        "done": false
+      }
+    ],
+    "key": "T-49",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-6a04of2"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "지관보관 SAT 지원",
+    "description": "SAT 입회 지원.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2027-03-14",
+    "dueDate": "2027-03-20",
+    "deliverables": [
+      {
+        "name": "SAT SW 시험결과",
+        "done": false
+      }
+    ],
+    "key": "T-50",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-kcc7klm"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "ECS 전체 안정화 모니터링",
+    "description": "④ 트랙(모관창고/RGV/지관보관/검사배출) 전체 안정화 확인.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-03-21",
+    "dueDate": "2027-03-27",
+    "deliverables": [
+      {
+        "name": "안정화 모니터링 리포트",
+        "done": false
+      }
+    ],
+    "key": "T-51",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-wvlk81i"
+  },
+  {
+    "track": "ECS-④ 창고·RGV·검사배출",
+    "title": "ECS 개발 완료 보고",
+    "description": "④ 트랙 개발 완료 보고서 작성·제출.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2027-03-28",
+    "dueDate": "2027-04-03",
+    "deliverables": [
+      {
+        "name": "개발 완료 보고서",
+        "done": false
+      }
+    ],
+    "key": "T-52",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-qzgi51p"
+  },
+  {
+    "track": "MES",
+    "title": "요구사항 분석(ERP연동 범위)·DB 스키마 설계 착수",
+    "description": "SHI ERP로부터 수신할 데이터 항목(생산물량, CAD 파싱결과) 정의 + MES DB 스키마 초안 설계 착수.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-12-06",
+    "dueDate": "2026-12-12",
+    "deliverables": [
+      {
+        "name": "ERP연동 요구사항 정의서",
+        "done": false
+      },
+      {
+        "name": "DB 스키마 초안",
+        "done": false
+      }
+    ],
+    "key": "T-53",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-v5uyy5a"
+  },
+  {
+    "track": "MES",
+    "title": "DB 스키마 설계·SHI 검토",
+    "description": "스키마를 상세화하고 SHI 검토·피드백을 반영.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-12-13",
+    "dueDate": "2026-12-19",
+    "deliverables": [
+      {
+        "name": "DB 스키마 확정본",
+        "done": false
+      }
+    ],
+    "key": "T-54",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-cl7gm9q"
+  },
+  {
+    "track": "MES",
+    "title": "ERP 연동모듈 개발",
+    "description": "SHI ERP → MES 데이터 수신 모듈 구현.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-12-20",
+    "dueDate": "2026-12-26",
+    "deliverables": [
+      {
+        "name": "ERP 연동모듈",
+        "done": false
+      }
+    ],
+    "key": "T-55",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-nyps63t"
+  },
+  {
+    "track": "MES",
+    "title": "ERP 연동모듈 개발·작업지시/셀배정 로직개발",
+    "description": "연동모듈 계속 개발 + 작업지시 생성/작업셀 배정, 모관·지관 인출지시 및 정합성 판단 로직 구현.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-12-27",
+    "dueDate": "2027-01-02",
+    "deliverables": [
+      {
+        "name": "ERP 연동모듈",
+        "done": false
+      },
+      {
+        "name": "작업지시 로직",
+        "done": false
+      }
+    ],
+    "key": "T-56",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-fpc7edr"
+  },
+  {
+    "track": "MES",
+    "title": "품질데이터관리·재고관리 모듈개발",
+    "description": "모관/지관 고유ID 기준 측정치수·판정결과 로깅 모듈 + In-Rack 재고 실시간 갱신·적치방향 바인딩 모듈 개발.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-01-03",
+    "dueDate": "2027-01-09",
+    "deliverables": [
+      {
+        "name": "품질데이터관리 모듈",
+        "done": false
+      },
+      {
+        "name": "재고관리 모듈",
+        "done": false
+      }
+    ],
+    "key": "T-57",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-emcyth9"
+  },
+  {
+    "track": "MES",
+    "title": "룰엔진 구조 구현·공정 레시피(Hot-swap) 구현",
+    "description": "방향판정·라인배정 규칙을 하드코딩 대신 데이터로 분리하는 룰엔진 구현 + 공정 플로우를 JSON/YAML로 선언하고 무중단 교체(Hot-swap)하는 구조 구현(\"공정은 데이터다\" 원칙).",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-01-10",
+    "dueDate": "2027-01-16",
+    "deliverables": [
+      {
+        "name": "룰엔진",
+        "done": false
+      },
+      {
+        "name": "공정 레시피 스키마",
+        "done": false
+      }
+    ],
+    "key": "T-58",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-irsuq7e"
+  },
+  {
+    "track": "MES",
+    "title": "KPI 집계·API 개발",
+    "description": "계획/실적/달성률/택트타임 집계 로직 + 이력조회 API 개발.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-01-17",
+    "dueDate": "2027-01-23",
+    "deliverables": [
+      {
+        "name": "KPI 집계 모듈",
+        "done": false
+      },
+      {
+        "name": "API 문서",
+        "done": false
+      }
+    ],
+    "key": "T-59",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-gcvhvxe"
+  },
+  {
+    "track": "MES",
+    "title": "ECS(용접A·B/모관계측) 연동테스트",
+    "description": "이미 SAT까지 완료된 용접A·B, 모관계측 ECS와 MES 간 오더하달·상태보고 연동시험을 소급 진행.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-01-24",
+    "dueDate": "2027-01-30",
+    "deliverables": [
+      {
+        "name": "연동시험 결과",
+        "done": false
+      }
+    ],
+    "key": "T-60",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-7edcn35"
+  },
+  {
+    "track": "MES",
+    "title": "ECS(지관계측) 연동테스트·MES-ECS 오더하달 시험",
+    "description": "지관계측 ECS와의 연동시험 + 전체 오더하달/상태보고 흐름 시험.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-01-31",
+    "dueDate": "2027-02-06",
+    "deliverables": [
+      {
+        "name": "연동시험 결과",
+        "done": false
+      }
+    ],
+    "key": "T-61",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-lawrl75"
+  },
+  {
+    "track": "MES",
+    "title": "셀 간 순서조율 시험(용접·계측)·품질이력 개발",
+    "description": "모관입고→용접→검사 등 셀 간 순서의존성을 MES가 조율하는지 시험 + FMS 영상링크 매핑 등 품질이력 기능 개발.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-02-07",
+    "dueDate": "2027-02-13",
+    "deliverables": [
+      {
+        "name": "순서조율 시험결과",
+        "done": false
+      },
+      {
+        "name": "품질이력 모듈",
+        "done": false
+      }
+    ],
+    "key": "T-62",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-zzvpi4v"
+  },
+  {
+    "track": "MES",
+    "title": "ECS(모관창고) 연동테스트",
+    "description": "모관창고 ECS와 MES 연동시험.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-02-14",
+    "dueDate": "2027-02-20",
+    "deliverables": [
+      {
+        "name": "연동시험 결과",
+        "done": false
+      }
+    ],
+    "key": "T-63",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-vdci3ts"
+  },
+  {
+    "track": "MES",
+    "title": "ECS(RGV·검사배출) 연동테스트·NG 재작업 라우팅 개발",
+    "description": "RGV/검사배출 ECS 연동시험 + NG 퇴출품 재작업 라우팅 등록 기능 개발.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-02-21",
+    "dueDate": "2027-02-27",
+    "deliverables": [
+      {
+        "name": "연동시험 결과",
+        "done": false
+      },
+      {
+        "name": "재작업 라우팅 기능",
+        "done": false
+      }
+    ],
+    "key": "T-64",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-pkf8fww"
+  },
+  {
+    "track": "MES",
+    "title": "모관창고 FAT·SAT 지원",
+    "description": "MES 관점에서 모관창고 FAT/SAT 시 데이터 연동(작업지시-실적 반영 등) 확인 지원.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2027-02-28",
+    "dueDate": "2027-03-06",
+    "deliverables": [
+      {
+        "name": "FAT·SAT 지원결과",
+        "done": false
+      }
+    ],
+    "key": "T-65",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-bsj690d"
+  },
+  {
+    "track": "MES",
+    "title": "ECS(지관보관) 연동테스트·지관계측 SAT 지원",
+    "description": "지관보관 ECS 연동시험 + 지관계측 SAT MES 측면 지원.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-03-07",
+    "dueDate": "2027-03-13",
+    "deliverables": [
+      {
+        "name": "연동시험 결과",
+        "done": false
+      },
+      {
+        "name": "SAT 지원결과",
+        "done": false
+      }
+    ],
+    "key": "T-66",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-puvgp9x"
+  },
+  {
+    "track": "MES",
+    "title": "전체 셀 순서의존성 통합시험(E2E 1차)",
+    "description": "전체 공정 End-to-End 시나리오 1차 시험 — 대표 품종이 전 공정을 무개입으로 완주하는지 확인.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2027-03-14",
+    "dueDate": "2027-03-20",
+    "deliverables": [
+      {
+        "name": "E2E 1차 시험결과",
+        "done": false
+      }
+    ],
+    "key": "T-67",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-ivkva8b"
+  },
+  {
+    "track": "MES",
+    "title": "E2E 시나리오 시험(2차)·안정화 모니터링",
+    "description": "E2E 2차(보완) 시험 진행 + 전체 안정화 모니터링.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2027-03-21",
+    "dueDate": "2027-03-27",
+    "deliverables": [
+      {
+        "name": "E2E 2차 결과",
+        "done": false
+      },
+      {
+        "name": "안정화 로그",
+        "done": false
+      }
+    ],
+    "key": "T-68",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-dcorpnk"
+  },
+  {
+    "track": "MES",
+    "title": "전체 SAT 지원 마무리·문서화",
+    "description": "전체 라인 SAT 마무리 지원 + 운영자 교육, 매뉴얼, 인수인계 문서 제출(사양서 요구사항).",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2027-03-28",
+    "dueDate": "2027-04-03",
+    "deliverables": [
+      {
+        "name": "최종 SAT 결과",
+        "done": false
+      },
+      {
+        "name": "매뉴얼/인수인계 문서",
+        "done": false
+      }
+    ],
+    "key": "T-69",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-84r9ph1"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "요구사항 분석",
+    "description": "FMS 기능범위(이벤트연동 녹화, 알람-영상매핑) 및 종합상황시각화 표시항목 정의.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-08-16",
+    "dueDate": "2026-08-22",
+    "deliverables": [
+      {
+        "name": "FMS/Display 요구사항 정의서",
+        "done": false
+      }
+    ],
+    "key": "T-70",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-ycb68ei"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "상용 NVR API 조사",
+    "description": "시중 NVR(네트워크영상저장장치) 솔루션들의 API 스펙 조사.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-08-23",
+    "dueDate": "2026-08-29",
+    "deliverables": [
+      {
+        "name": "NVR API 조사·비교표",
+        "done": false
+      }
+    ],
+    "key": "T-71",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-hbcf7sj"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "NVR 기종 선정",
+    "description": "조사 결과를 바탕으로 실제 사용할 NVR 솔루션 확정.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-08-30",
+    "dueDate": "2026-09-05",
+    "deliverables": [
+      {
+        "name": "NVR 기종 선정 결과",
+        "done": false
+      }
+    ],
+    "key": "T-72",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-wbefpbs"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "FMS 서버 구축 착수·구축",
+    "description": "MES·ECS와 분리된 별도 서버에 FMS 인프라 구축(시스템 부하 분리 목적).",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-09-13",
+    "dueDate": "2026-09-26",
+    "deliverables": [
+      {
+        "name": "FMS 서버 환경(구축 완료)",
+        "done": false
+      }
+    ],
+    "key": "T-73",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-65r73jo"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "이벤트연동 녹화 개발",
+    "description": "장비 에러·안전 이벤트 발생 시 전후(기본 30초, 조정 가능) 영상을 자동 녹화하는 기능 구현.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-10-04",
+    "dueDate": "2026-10-17",
+    "deliverables": [
+      {
+        "name": "이벤트연동 녹화 모듈",
+        "done": false
+      }
+    ],
+    "key": "T-74",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-hn88i10"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "ECS→FMS 알람연동 개발(용접)",
+    "description": "가장 먼저 가동되는 용접셀 ECS의 알람을 FMS로 전송하는 연동 구현.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-10-18",
+    "dueDate": "2026-10-24",
+    "deliverables": [
+      {
+        "name": "알람연동 모듈(용접)",
+        "done": false
+      }
+    ],
+    "key": "T-75",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-z9jwtnt"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "FMS 영상링크 생성 개발",
+    "description": "녹화된 영상에 접근 가능한 링크를 생성하는 기능 구현.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-11-01",
+    "dueDate": "2026-11-07",
+    "deliverables": [
+      {
+        "name": "영상링크 생성 모듈",
+        "done": false
+      }
+    ],
+    "key": "T-76",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-jhwn7br"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "MES 품질이력 매핑 개발",
+    "description": "생성된 영상링크를 MES 품질이력에 매핑·저장하는 연동 구현.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-11-08",
+    "dueDate": "2026-11-14",
+    "deliverables": [
+      {
+        "name": "영상-품질이력 매핑 모듈",
+        "done": false
+      }
+    ],
+    "key": "T-77",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-su0hnw4"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "종합상황시각화 데이터포맷 협의",
+    "description": "기존 스풀공장 대형 모니터에 표시할 데이터(가동상태, KPI, 품질합격률) 포맷을 SHI와 협의.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-11-22",
+    "dueDate": "2026-11-28",
+    "deliverables": [
+      {
+        "name": "데이터포맷 협의 초안",
+        "done": false
+      }
+    ],
+    "key": "T-78",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-5ajruyj"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "종합상황시각화 데이터포맷 확정",
+    "description": "협의 결과를 반영해 데이터 전송 포맷을 최종 확정.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-11-29",
+    "dueDate": "2026-12-05",
+    "deliverables": [
+      {
+        "name": "데이터포맷 규격서",
+        "done": false
+      }
+    ],
+    "key": "T-79",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-wd74i35"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "Display 연동모듈 개발",
+    "description": "확정된 포맷으로 실시간 데이터를 기존 Display 시스템에 전송하는 모듈 구현.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-12-13",
+    "dueDate": "2026-12-19",
+    "deliverables": [
+      {
+        "name": "Display 연동모듈",
+        "done": false
+      }
+    ],
+    "key": "T-80",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-hckipmx"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "웹 기반 화면(HMI) 구성",
+    "description": "브라우저 기반 모니터링 화면 UI 구성(중앙컨트롤룸, 모관/지관 Warehouse, 용접설비 터치스크린용).",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-12-27",
+    "dueDate": "2027-01-02",
+    "deliverables": [
+      {
+        "name": "웹 HMI 화면",
+        "done": false
+      }
+    ],
+    "key": "T-81",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-cb0hexg"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "HMI Config 적용",
+    "description": "KPI 정의·알람 문구 등 표시 콘텐츠를 구성파일(config)로 관리하도록 적용(\"화면은 구성이다\" 원칙 — 코드 수정 없이 문구/기준 변경 가능).",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-01-03",
+    "dueDate": "2027-01-09",
+    "deliverables": [
+      {
+        "name": "HMI Config 파일 구조",
+        "done": false
+      }
+    ],
+    "key": "T-82",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-s15nzqn"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "사내 Display 연동시험",
+    "description": "기존 스풀공장 대형 모니터와 실제 연동시험 수행 — 신규 라인 데이터가 정확히 표출되는지 확인.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-01-10",
+    "dueDate": "2027-01-16",
+    "deliverables": [
+      {
+        "name": "연동시험 결과",
+        "done": false
+      }
+    ],
+    "key": "T-83",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-dtk43sl"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "FMS-ECS(지관계측) 알람연동",
+    "description": "지관계측셀 가동 시점에 맞춰 알람연동 범위를 확장.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-01-24",
+    "dueDate": "2027-01-30",
+    "deliverables": [
+      {
+        "name": "알람연동 모듈(지관계측)",
+        "done": false
+      }
+    ],
+    "key": "T-84",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-1xdxqiq"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "FMS·Display 통합시험",
+    "description": "FMS + 종합상황시각화 전체 통합시험.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-02-14",
+    "dueDate": "2027-02-20",
+    "deliverables": [
+      {
+        "name": "통합시험 결과",
+        "done": false
+      }
+    ],
+    "key": "T-85",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-kghy1gg"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "FMS·Display 안정화 지원",
+    "description": "안정화 기간 중 이슈 모니터링·대응.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-02-28",
+    "dueDate": "2027-03-06",
+    "deliverables": [
+      {
+        "name": "안정화 로그",
+        "done": false
+      }
+    ],
+    "key": "T-86",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-osjjlcs"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "FMS·Display SAT 지원 마무리",
+    "description": "최종 SAT(지관보관-공급셀) 시점에 맞춰 FMS·Display 관련 지원 마무리.",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2027-03-21",
+    "dueDate": "2027-03-27",
+    "deliverables": [
+      {
+        "name": "SAT 지원결과",
+        "done": false
+      }
+    ],
+    "key": "T-87",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-089v0lk"
+  },
+  {
+    "track": "FMS·통합감시",
+    "title": "최종 점검·문서화",
+    "description": "전체 FMS/Display 기능 최종 점검 및 문서화.",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2027-03-28",
+    "dueDate": "2027-04-03",
+    "deliverables": [
+      {
+        "name": "최종 점검 리포트",
+        "done": false
+      }
+    ],
+    "key": "T-88",
+    "createdAt": "2026-08-12T06:53:26.806Z",
+    "updatedAt": "2026-08-12T06:53:26.806Z",
+    "id": "mspqgfpz-jh9b7do"
+  }
+]
