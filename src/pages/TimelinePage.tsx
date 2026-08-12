@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { IssueModal } from '../components/IssueModal'
+import { Loading } from '../components/Loading'
 import { useIssues } from '../context/IssuesContext'
 import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
@@ -54,7 +55,7 @@ export function TimelinePage() {
     [selectedProjects, issues],
   )
 
-  if (loading) return <p className="muted">로딩 중…</p>
+  if (loading) return <Loading label="일정 데이터 불러오는 중" />
   if (!range) return <p className="muted">작업이 없습니다.</p>
 
   const totalW = LABEL_W + range.weeks.length * WEEK_W

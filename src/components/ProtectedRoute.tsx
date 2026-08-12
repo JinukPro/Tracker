@@ -1,16 +1,13 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { AppShell } from './AppShell'
+import { Loading } from './Loading'
 
 export function ProtectedRoute() {
   const { user, loading, localMode } = useAuth()
 
   if (loading) {
-    return (
-      <div className="center-page">
-        <p>로딩 중…</p>
-      </div>
-    )
+    return <Loading label="로그인 확인 중" center />
   }
 
   if (!localMode && !user) {

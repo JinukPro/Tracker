@@ -197,6 +197,18 @@ h2 {
   margin-bottom: 16px;
 }
 
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.card-head h2 {
+  margin: 0;
+}
+
 .card.narrow {
   max-width: 420px;
   text-align: center;

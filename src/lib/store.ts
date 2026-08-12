@@ -5,6 +5,7 @@ import {
   doc,
   getDocs,
   updateDoc,
+  writeBatch,
 } from 'firebase/firestore'
 import { getDb, isFirebaseConfigured } from './firebase'
 
@@ -142,12 +143,28 @@ export async function setAll(col: string, datas: DocData[]): Promise<void> {
     localWrite(col, docs)
     return
   }
-  const existing = await getDocs(collection(getDb(), col))
+  // Firestore: batched writes (500 ops each) instead of one round trip per doc
+  const db = getDb()
+  const existing = await getDocs(collection(db, col))
+  const commits: Promise<void>[] = []
+  let batch = writeBatch(db)
+  let ops = 0
+  const flush = () => {
+    if (ops > 0) {
+      commits.push(batch.commit())
+      batch = writeBatch(db)
+      ops = 0
+    }
+  }
   for (const d of existing.docs) {
-    await deleteDoc(d.ref)
+    batch.delete(d.ref)
+    if (++ops === 500) flush()
   }
   for (const d of docs) {
     const { id: _id, ...rest } = d
-    await addDoc(collection(getDb(), col), rest)
+    batch.set(doc(collection(db, col)), rest)
+    if (++ops === 500) flush()
   }
+  flush()
+  await Promise.all(commits)
 }

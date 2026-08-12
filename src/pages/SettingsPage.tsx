@@ -149,7 +149,7 @@ export function SettingsPage() {
   async function handleReset() {
     if (
       !window.confirm(
-        '모든 프로젝트와 작업을 지우고 T뽑기 프로젝트(SW_일정_설명.md 기준 시드)로 초기화할까요?',
+        '모든 프로젝트와 작업을 지우고 시드 데이터(빌드에 포함된 data/projects.json·issues.json)로 초기화할까요?',
       )
     )
       return

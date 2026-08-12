@@ -9,6 +9,7 @@ function mapProject(d: StoredDoc): Project {
     name: (d.name as string) ?? '',
     keyPrefix: (d.keyPrefix as string) ?? 'T',
     color: (d.color as string) ?? '#0052cc',
+    tracks: (d.tracks as string[]) ?? [],
     createdAt: (d.createdAt as string) ?? '',
   }
 }

@@ -1,9 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { IssueModal } from '../components/IssueModal'
+import { Loading } from '../components/Loading'
 import { useIssues } from '../context/IssuesContext'
 import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
 import { addDays, formatShort, parseISO, startOfWeek, toISO, todayISO } from '../lib/dates'
+import * as issuesSvc from '../services/issues'
 import { STATUS_LABELS, type Issue } from '../types'
 
 export function DashboardPage() {
@@ -11,6 +13,8 @@ export function DashboardPage() {
   const { selectedProjects } = useProjects()
   const multi = selectedProjects.length > 1
   const [editing, setEditing] = useState<Issue | null>(null)
+  const [creatingTrack, setCreatingTrack] = useState(false)
+  const [renamingTrack, setRenamingTrack] = useState<string | null>(null)
   const today = todayISO()
 
   const projectStats = useMemo(
@@ -55,7 +59,7 @@ export function DashboardPage() {
     [issues, tracks],
   )
 
-  if (loading) return <p className="muted">로딩 중…</p>
+  if (loading) return <Loading label="일정 데이터 불러오는 중" />
 
   return (
     <div>
@@ -112,13 +116,27 @@ export function DashboardPage() {
         )}
 
         <section className="card">
-          <h2>트랙별 진행률</h2>
+          <div className="card-head">
+            <h2>트랙별 진행률</h2>
+            <button type="button" className="btn ghost small" onClick={() => setCreatingTrack(true)}>
+              + 새 트랙
+            </button>
+          </div>
+          {trackStats.length === 0 && <p className="muted">트랙이 없습니다. 새 트랙을 추가하세요.</p>}
           {trackStats.map((s) => (
             <div key={s.track} className="track-progress">
               <div className="track-progress-head">
                 <span className="track-chip" style={{ background: trackColor(s.track, tracks) }}>
                   {s.track}
                 </span>
+                <button
+                  type="button"
+                  className="btn ghost small"
+                  title="트랙 이름 변경"
+                  onClick={() => setRenamingTrack(s.track)}
+                >
+                  ✎
+                </button>
                 <span className="muted small-text">
                   작업 {s.done}/{s.total} · 산출물 {s.dDone}/{s.dTotal}
                 </span>
@@ -172,6 +190,222 @@ export function DashboardPage() {
       </div>
 
       {editing && <IssueModal issue={editing} onClose={() => setEditing(null)} />}
+      {creatingTrack && <NewTrackDialog onClose={() => setCreatingTrack(false)} />}
+      {renamingTrack !== null && (
+        <RenameTrackDialog track={renamingTrack} onClose={() => setRenamingTrack(null)} />
+      )}
+    </div>
+  )
+}
+
+function useEscape(onClose: () => void) {
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+}
+
+/** Add a track to a project without creating an issue */
+function NewTrackDialog({ onClose }: { onClose: () => void }) {
+  const { projects, selectedIds, editProject } = useProjects()
+  const { allIssues } = useIssues()
+  const [projectId, setProjectId] = useState(selectedIds[0] ?? projects[0]?.id ?? '')
+  const [name, setName] = useState('')
+  const [error, setError] = useState('')
+  const [saving, setSaving] = useState(false)
+  useEscape(onClose)
+
+  async function handleAdd() {
+    const track = name.trim()
+    if (!track || !projectId) return
+    const project = projects.find((p) => p.id === projectId)
+    const existing = new Set([
+      ...(project?.tracks ?? []),
+      ...allIssues.filter((i) => i.projectId === projectId).map((i) => i.track),
+    ])
+    if (existing.has(track)) {
+      setError('이 프로젝트에 이미 있는 트랙입니다.')
+      return
+    }
+    setSaving(true)
+    try {
+      await editProject(projectId, { tracks: [...(project?.tracks ?? []), track] })
+      onClose()
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-head">
+          <h2>새 트랙</h2>
+          <button type="button" className="btn ghost" onClick={onClose}>
+            ✕
+          </button>
+        </div>
+
+        <div className="form-grid">
+          <label className="field">
+            <span>프로젝트</span>
+            <select value={projectId} onChange={(e) => setProjectId(e.target.value)}>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="field">
+            <span>트랙 이름</span>
+            <input
+              autoFocus
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value)
+                setError('')
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  void handleAdd()
+                }
+              }}
+              placeholder="예: ECS-③ 조립"
+            />
+          </label>
+
+          {error && <p className="red small-text span2">{error}</p>}
+        </div>
+
+        <div className="modal-foot">
+          <span />
+          <div className="modal-actions">
+            <button type="button" className="btn ghost" onClick={onClose}>
+              취소
+            </button>
+            <button
+              type="button"
+              className="btn primary"
+              disabled={saving || !name.trim() || !projectId}
+              onClick={() => void handleAdd()}
+            >
+              {saving ? '추가 중…' : '추가'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/** Rename a track across the selected projects (issues + declared track lists) */
+function RenameTrackDialog({ track, onClose }: { track: string; onClose: () => void }) {
+  const { selectedProjects, editProject } = useProjects()
+  const { allIssues, refresh } = useIssues()
+  const [name, setName] = useState(track)
+  const [error, setError] = useState('')
+  const [saving, setSaving] = useState(false)
+  useEscape(onClose)
+
+  async function handleSave() {
+    const next = name.trim()
+    if (!next) return
+    if (next === track) {
+      onClose()
+      return
+    }
+    // Projects (among the selected ones) that actually have this track
+    const affected = selectedProjects.filter(
+      (p) =>
+        (p.tracks ?? []).includes(track) ||
+        allIssues.some((i) => i.projectId === p.id && i.track === track),
+    )
+    for (const p of affected) {
+      const taken =
+        (p.tracks ?? []).includes(next) ||
+        allIssues.some((i) => i.projectId === p.id && i.track === next)
+      if (taken) {
+        setError(`"${p.name}" 프로젝트에 이미 "${next}" 트랙이 있습니다.`)
+        return
+      }
+    }
+    setSaving(true)
+    try {
+      for (const p of affected) {
+        if ((p.tracks ?? []).includes(track)) {
+          await editProject(p.id, {
+            tracks: (p.tracks ?? []).map((t) => (t === track ? next : t)),
+          })
+        }
+      }
+      const targets = allIssues.filter(
+        (i) => i.track === track && affected.some((p) => p.id === i.projectId),
+      )
+      for (const i of targets) {
+        await issuesSvc.updateIssue(i.id, { track: next })
+      }
+      await refresh()
+      onClose()
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-head">
+          <h2>트랙 이름 변경</h2>
+          <button type="button" className="btn ghost" onClick={onClose}>
+            ✕
+          </button>
+        </div>
+
+        <div className="form-grid">
+          <label className="field span2">
+            <span>트랙 이름</span>
+            <input
+              autoFocus
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value)
+                setError('')
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  void handleSave()
+                }
+              }}
+            />
+          </label>
+
+          {error && <p className="red small-text span2">{error}</p>}
+        </div>
+
+        <div className="modal-foot">
+          <span />
+          <div className="modal-actions">
+            <button type="button" className="btn ghost" onClick={onClose}>
+              취소
+            </button>
+            <button
+              type="button"
+              className="btn primary"
+              disabled={saving || !name.trim()}
+              onClick={() => void handleSave()}
+            >
+              {saving ? '저장 중…' : '저장'}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

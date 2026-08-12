@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { IssueModal } from '../components/IssueModal'
+import { Loading } from '../components/Loading'
 import { useIssues } from '../context/IssuesContext'
 import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
@@ -36,7 +37,7 @@ export function ListPage() {
     })
   }, [issues, search, trackFilter, statusFilter])
 
-  if (loading) return <p className="muted">로딩 중…</p>
+  if (loading) return <Loading label="일정 데이터 불러오는 중" />
 
   return (
     <div>

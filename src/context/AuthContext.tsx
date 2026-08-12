@@ -40,12 +40,11 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 async function ensureProfile(user: User): Promise<UserProfile | null> {
   const existing = await getUserProfile(user.uid)
   if (existing) return existing
-  await createUserProfile(
-    user.uid,
-    user.email ?? '',
-    user.displayName || user.email || '사용자',
-  )
-  return getUserProfile(user.uid)
+  const email = user.email ?? ''
+  const displayName = user.displayName || user.email || '사용자'
+  await createUserProfile(user.uid, email, displayName)
+  // Build the profile locally instead of re-fetching it
+  return { uid: user.uid, displayName, email, createdAt: new Date().toISOString() }
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {

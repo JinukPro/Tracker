@@ -20,21 +20,36 @@ type Props = {
 }
 
 export function IssueModal({ issue, defaults, onClose }: Props) {
-  const { tracks, allIssues, create, update, remove } = useIssues()
+  const { allIssues, create, update, remove } = useIssues()
   const { projects, selectedIds } = useProjects()
-  const [projectId, setProjectId] = useState(
-    issue?.projectId ?? defaults?.projectId ?? selectedIds[0] ?? projects[0]?.id ?? '',
-  )
-  const [title, setTitle] = useState(issue?.title ?? '')
-  const [track, setTrack] = useState(issue?.track ?? defaults?.track ?? tracks[0] ?? '')
 
-  const trackOptions = useMemo(() => {
+  // Tracks belonging to one project (from its issues + its declared list)
+  function projectTracks(pid: string): string[] {
     const seen: string[] = []
     for (const i of allIssues) {
-      if (i.projectId === projectId && !seen.includes(i.track)) seen.push(i.track)
+      if (i.projectId === pid && !seen.includes(i.track)) seen.push(i.track)
+    }
+    for (const t of projects.find((p) => p.id === pid)?.tracks ?? []) {
+      if (!seen.includes(t)) seen.push(t)
     }
     return seen
-  }, [allIssues, projectId])
+  }
+
+  const initialProjectId =
+    issue?.projectId ?? defaults?.projectId ?? selectedIds[0] ?? projects[0]?.id ?? ''
+  const [projectId, setProjectId] = useState(initialProjectId)
+  const [title, setTitle] = useState(issue?.title ?? '')
+  // Tracks are per-project: only accept an initial track that exists there
+  const [track, setTrack] = useState(() => {
+    if (issue) return issue.track
+    const t = defaults?.track ?? ''
+    return t && projectTracks(initialProjectId).includes(t) ? t : ''
+  })
+  // True while the user is typing a brand-new track name instead of picking one
+  const [customTrack, setCustomTrack] = useState(false)
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- projectTracks reads only allIssues/projects
+  const trackOptions = useMemo(() => projectTracks(projectId), [allIssues, projectId, projects])
   const [status, setStatus] = useState<IssueStatus>(issue?.status ?? defaults?.status ?? 'todo')
   const [priority, setPriority] = useState<IssuePriority>(issue?.priority ?? 'medium')
   const [startDate, setStartDate] = useState(issue?.startDate ?? defaults?.startDate ?? todayISO())
@@ -110,7 +125,15 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
 
           <label className="field">
             <span>프로젝트</span>
-            <select value={projectId} onChange={(e) => setProjectId(e.target.value)}>
+            <select
+              value={projectId}
+              onChange={(e) => {
+                const pid = e.target.value
+                setProjectId(pid)
+                // Drop a track that belongs to the previous project
+                if (!customTrack && !projectTracks(pid).includes(track)) setTrack('')
+              }}
+            >
               {projects.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
@@ -121,12 +144,40 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
 
           <label className="field">
             <span>트랙</span>
-            <input list="track-options" value={track} onChange={(e) => setTrack(e.target.value)} />
-            <datalist id="track-options">
-              {trackOptions.map((t) => (
-                <option key={t} value={t} />
-              ))}
-            </datalist>
+            {trackOptions.length > 0 && (
+              <select
+                value={customTrack ? '__new__' : track}
+                onChange={(e) => {
+                  if (e.target.value === '__new__') {
+                    setCustomTrack(true)
+                    setTrack('')
+                  } else {
+                    setCustomTrack(false)
+                    setTrack(e.target.value)
+                  }
+                }}
+              >
+                {!customTrack && track === '' && (
+                  <option value="" disabled>
+                    트랙 선택
+                  </option>
+                )}
+                {trackOptions.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
+                <option value="__new__">+ 새 트랙 직접 입력</option>
+              </select>
+            )}
+            {(customTrack || trackOptions.length === 0) && (
+              <input
+                autoFocus={customTrack}
+                value={track}
+                onChange={(e) => setTrack(e.target.value)}
+                placeholder="새 트랙 이름"
+              />
+            )}
           </label>
 
           <label className="field">

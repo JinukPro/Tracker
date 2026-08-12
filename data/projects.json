@@ -5,5 +5,12 @@
     "color": "#0052cc",
     "createdAt": "2026-08-12T08:41:52.591Z",
     "id": "mspubvm9-nlzg1wp"
+  },
+  {
+    "name": "영상제작",
+    "keyPrefix": "R",
+    "color": "#00875a",
+    "createdAt": "2026-08-12T12:31:56.066Z",
+    "id": "msq2jqg9-7c3aaqr"
   }
 ]

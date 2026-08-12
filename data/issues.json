@@ -1850,5 +1850,35 @@
     ],
     "createdAt": "2026-08-12T10:27:19.731Z",
     "updatedAt": "2026-08-12T10:27:19.731Z"
+  },
+  {
+    "projectId": "msq2jqg9-7c3aaqr",
+    "title": "애니메이션 일정 컨펌",
+    "track": "프로젝트 기획",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-08-13",
+    "dueDate": "2026-08-13",
+    "description": "",
+    "deliverables": [],
+    "key": "R-1",
+    "createdAt": "2026-08-12T12:40:40.668Z",
+    "updatedAt": "2026-08-12T12:49:20.929Z",
+    "id": "msq2uz8l-he0o8jp"
+  },
+  {
+    "projectId": "msq2jqg9-7c3aaqr",
+    "title": "DT-Plugins",
+    "track": "프로젝트 기획",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-08-13",
+    "dueDate": "2026-08-21",
+    "description": "",
+    "deliverables": [],
+    "key": "R-2",
+    "createdAt": "2026-08-12T12:41:28.173Z",
+    "updatedAt": "2026-08-12T12:49:20.956Z",
+    "id": "msq2vzw4-4zfxisx"
   }
 ]

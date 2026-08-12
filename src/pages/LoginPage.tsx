@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Navigate } from 'react-router-dom'
+import { Loading } from '../components/Loading'
 import { useAuth } from '../context/AuthContext'
 
 export function LoginPage() {
@@ -12,11 +13,7 @@ export function LoginPage() {
   }
 
   if (loading) {
-    return (
-      <div className="center-page">
-        <p>로딩 중…</p>
-      </div>
-    )
+    return <Loading label="로그인 확인 중" center />
   }
 
   async function handleLogin() {

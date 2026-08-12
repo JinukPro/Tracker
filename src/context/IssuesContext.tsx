@@ -10,6 +10,7 @@ import {
 import { initData } from '../services/bootstrap'
 import * as svc from '../services/issues'
 import type { Issue, IssueInput } from '../types'
+import { useAuth } from './AuthContext'
 import { useProjects } from './ProjectsContext'
 
 type IssuesContextValue = {
@@ -28,7 +29,8 @@ type IssuesContextValue = {
 const IssuesContext = createContext<IssuesContextValue | null>(null)
 
 export function IssuesProvider({ children }: { children: ReactNode }) {
-  const { selectedIds, projectById } = useProjects()
+  const { user, localMode } = useAuth()
+  const { selectedIds, selectedProjects, projectById } = useProjects()
   const [allIssues, setAllIssues] = useState<Issue[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -37,18 +39,28 @@ export function IssuesProvider({ children }: { children: ReactNode }) {
     setAllIssues(list)
   }, [])
 
+  // With Firebase, Firestore rules require auth, so wait for sign-in before
+  // reading — otherwise the first query fails with permission-denied.
+  const authReady = localMode || Boolean(user)
+
   useEffect(() => {
+    if (!authReady) return
     let cancelled = false
-    void initData().then(({ issues: list }) => {
-      if (!cancelled) {
-        setAllIssues(list)
-        setLoading(false)
-      }
-    })
+    initData()
+      .then(({ issues: list }) => {
+        if (!cancelled) {
+          setAllIssues(list)
+          setLoading(false)
+        }
+      })
+      .catch((err) => {
+        console.error('일정 초기화 실패:', err)
+        if (!cancelled) setLoading(false)
+      })
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [authReady])
 
   // Live-reload when data files are edited externally (e.g. from Cursor)
   useEffect(() => {
@@ -99,13 +111,19 @@ export function IssuesProvider({ children }: { children: ReactNode }) {
     [allIssues, selectedIds],
   )
 
+  // Tracks used by issues plus tracks declared on the selected projects
   const tracks = useMemo(() => {
     const seen: string[] = []
     for (const i of issues) {
       if (!seen.includes(i.track)) seen.push(i.track)
     }
+    for (const p of selectedProjects) {
+      for (const t of p.tracks ?? []) {
+        if (!seen.includes(t)) seen.push(t)
+      }
+    }
     return seen
-  }, [issues])
+  }, [issues, selectedProjects])
 
   const value = useMemo(
     () => ({ issues, allIssues, loading, tracks, refresh, create, update, remove }),

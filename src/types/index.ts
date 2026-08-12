@@ -11,6 +11,8 @@ export interface Project {
   name: string
   keyPrefix: string
   color: string
+  /** Tracks declared explicitly (issues may add more implicitly) */
+  tracks?: string[]
   createdAt: string
 }
 

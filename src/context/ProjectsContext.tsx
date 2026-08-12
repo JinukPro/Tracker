@@ -11,6 +11,7 @@ import { initData } from '../services/bootstrap'
 import * as issuesSvc from '../services/issues'
 import * as svc from '../services/projects'
 import type { Project, ProjectInput } from '../types'
+import { useAuth } from './AuthContext'
 
 const SELECT_KEY = 'tracker:selectedProjects'
 
@@ -40,24 +41,35 @@ function loadSelection(): string[] | null {
 }
 
 export function ProjectsProvider({ children }: { children: ReactNode }) {
+  const { user, localMode } = useAuth()
   const [projects, setProjects] = useState<Project[]>([])
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
 
+  // With Firebase, Firestore rules require auth, so wait for sign-in before
+  // reading — otherwise the first query fails with permission-denied.
+  const authReady = localMode || Boolean(user)
+
   useEffect(() => {
+    if (!authReady) return
     let cancelled = false
-    void initData().then(({ projects: list }) => {
-      if (cancelled) return
-      setProjects(list)
-      const stored = loadSelection()
-      const valid = stored?.filter((id) => list.some((p) => p.id === id)) ?? []
-      setSelectedIds(valid.length > 0 ? valid : list.map((p) => p.id))
-      setLoading(false)
-    })
+    initData()
+      .then(({ projects: list }) => {
+        if (cancelled) return
+        setProjects(list)
+        const stored = loadSelection()
+        const valid = stored?.filter((id) => list.some((p) => p.id === id)) ?? []
+        setSelectedIds(valid.length > 0 ? valid : list.map((p) => p.id))
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.error('프로젝트 초기화 실패:', err)
+        if (!cancelled) setLoading(false)
+      })
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [authReady])
 
   useEffect(() => {
     if (!loading) localStorage.setItem(SELECT_KEY, JSON.stringify(selectedIds))

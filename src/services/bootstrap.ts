@@ -1,4 +1,5 @@
-import { buildSeedIssues } from '../data/seed'
+import seedIssuesJson from '../../data/issues.json'
+import seedProjectsJson from '../../data/projects.json'
 import { PROJECT_COLORS } from '../lib/colors'
 import type { Issue, IssueInput, Project } from '../types'
 import * as issuesSvc from './issues'
@@ -8,51 +9,105 @@ const DEFAULT_PROJECT = { name: 'T뽑기', keyPrefix: 'T', color: PROJECT_COLORS
 
 export type ExportData = { projects: Project[]; issues: Issue[] }
 
-function seedItems(projectId: string): { key: string; input: IssueInput }[] {
-  return buildSeedIssues(projectId).map((input, i) => ({ key: `T-${i + 1}`, input }))
+/**
+ * Seed baked into the bundle at build time: whatever data/projects.json and
+ * data/issues.json contained when the site was built (i.e. pushed to GitHub).
+ */
+const SEED: ExportData = {
+  projects: seedProjectsJson as unknown as Project[],
+  issues: seedIssuesJson as unknown as Issue[],
+}
+
+// --- init progress (what is currently loading), for the Loading UI ---
+
+let initStage = ''
+const stageListeners = new Set<() => void>()
+
+function setStage(next: string): void {
+  initStage = next
+  for (const l of stageListeners) l()
+}
+
+export function getInitStage(): string {
+  return initStage
+}
+
+export function subscribeInitStage(listener: () => void): () => void {
+  stageListeners.add(listener)
+  return () => {
+    stageListeners.delete(listener)
+  }
 }
 
 // Module-level lock so StrictMode's double-mounted effects run init only once
 let initPromise: Promise<{ projects: Project[]; issues: Issue[] }> | null = null
 
 export function initData(): Promise<{ projects: Project[]; issues: Issue[] }> {
-  if (!initPromise) initPromise = doInit()
+  if (!initPromise) {
+    initPromise = doInit().catch((err) => {
+      // Drop the failed promise so a later call (e.g. after sign-in) retries
+      initPromise = null
+      throw err
+    })
+  }
   return initPromise
 }
 
 async function doInit(): Promise<{ projects: Project[]; issues: Issue[] }> {
-  let projects = await projectsSvc.listProjects()
-  if (projects.length === 0) {
-    await projectsSvc.createProject(DEFAULT_PROJECT)
-    projects = await projectsSvc.listProjects()
-  }
-  const defaultId = projects[0].id
+  try {
+    setStage('프로젝트 목록 불러오는 중')
+    let projects = await projectsSvc.listProjects()
+    setStage('일정 목록 불러오는 중')
+    let issues = await issuesSvc.listIssues()
 
-  let issues = await issuesSvc.listIssues()
-  if (issues.length === 0) {
-    // First run: populate with the real project schedule
-    await issuesSvc.replaceAllIssues(seedItems(defaultId))
-    issues = await issuesSvc.listIssues()
-  } else {
-    // Migrate pre-multi-project issues into the default project
-    const orphans = issues.filter((i) => !i.projectId)
-    if (orphans.length > 0) {
-      for (const i of orphans) {
-        await issuesSvc.updateIssue(i.id, { projectId: defaultId })
+    if (projects.length === 0 && issues.length === 0) {
+      // Empty store: never seed silently — tell the user and ask first
+      if (SEED.projects.length === 0) {
+        window.alert(
+          '저장된 데이터가 없고, 빌드에 포함된 시드 데이터(data/projects.json·issues.json)도 비어 있습니다.\n빈 상태로 시작합니다. 설정에서 프로젝트를 추가하세요.',
+        )
+      } else if (
+        window.confirm(
+          `저장된 데이터가 비어 있습니다.\n시드 데이터(프로젝트 ${SEED.projects.length}개, 작업 ${SEED.issues.length}건)로 초기화할까요?`,
+        )
+      ) {
+        setStage('시드 데이터 저장 중')
+        await importData(SEED)
+        projects = await projectsSvc.listProjects()
+        issues = await issuesSvc.listIssues()
       }
-      issues = await issuesSvc.listIssues()
+    } else if (projects.length === 0) {
+      // Legacy data: issues exist without any project — adopt them below
+      setStage('기본 프로젝트 생성 중')
+      await projectsSvc.createProject(DEFAULT_PROJECT)
+      projects = await projectsSvc.listProjects()
     }
+
+    // Migrate pre-multi-project issues into the default project
+    if (projects.length > 0) {
+      const defaultId = projects[0].id
+      const orphans = issues.filter((i) => !i.projectId)
+      if (orphans.length > 0) {
+        setStage('이전 데이터 정리 중')
+        for (const i of orphans) {
+          await issuesSvc.updateIssue(i.id, { projectId: defaultId })
+        }
+        issues = await issuesSvc.listIssues()
+      }
+    }
+    return { projects, issues }
+  } finally {
+    setStage('')
   }
-  return { projects, issues }
 }
 
-/** Wipe everything and restore the T뽑기 project with its seed schedule. */
+/** Wipe everything and restore the seed baked into the build (data/*.json). */
 export async function resetAllData(): Promise<void> {
-  const projects = await projectsSvc.listProjects()
-  for (const p of projects) await projectsSvc.deleteProject(p.id)
-  await projectsSvc.createProject(DEFAULT_PROJECT)
-  const [project] = await projectsSvc.listProjects()
-  await issuesSvc.replaceAllIssues(seedItems(project.id))
+  if (SEED.projects.length === 0) {
+    window.alert('빌드에 포함된 시드 데이터가 비어 있어 초기화할 수 없습니다.')
+    return
+  }
+  await importData(SEED)
 }
 
 /**
@@ -102,6 +157,7 @@ export async function importData(parsed: unknown): Promise<{ projects: number; i
       name: p.name,
       keyPrefix: p.keyPrefix || 'P',
       color: p.color || PROJECT_COLORS[0],
+      tracks: p.tracks ?? [],
     })
     idMap.set(p.id, newId)
   }
