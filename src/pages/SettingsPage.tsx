@@ -73,6 +73,13 @@ export function SettingsPage() {
         <p>
           현재 모드: <strong>{mode ? MODE_LABELS[mode] : '확인 중…'}</strong>
         </p>
+        {mode === 'firebase' && (
+          <p className="muted">
+            Cloud Firestore(<code>trackerIssues</code>)에 저장됩니다. 로그인한 팀원이 같은
+            보드를 공유합니다. Rules는 루트 <code>firestore.rules</code>를 Firebase Console에
+            배포해야 합니다.
+          </p>
+        )}
         {mode === 'file' && (
           <p className="muted">
             모든 변경사항이 <code>Tracker/data/issues.json</code>에 바로 저장됩니다. 이 파일을
@@ -81,8 +88,8 @@ export function SettingsPage() {
         )}
         {mode === 'local' && (
           <p className="muted">
-            개발 서버의 파일 API를 찾지 못해 브라우저 localStorage에 저장 중입니다. dev 서버로
-            실행하면 프로젝트 파일 모드로 전환됩니다.
+            Firebase 설정이 없어 브라우저 localStorage에 저장 중입니다. <code>.env</code>에
+            <code>VITE_FIREBASE_*</code>를 채우면 Firestore 모드로 전환됩니다.
           </p>
         )}
         <p className="muted">작업 수: {issues.length}건</p>
