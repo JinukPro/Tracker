@@ -1853,7 +1853,7 @@
   },
   {
     "projectId": "msqumome-6upa59z",
-    "title": "애니메이션 일정 컨펌",
+    "title": "애니메이션 일정",
     "track": "프로젝트 기획",
     "status": "todo",
     "priority": "medium",
@@ -1863,13 +1863,17 @@
     "deliverables": [],
     "key": "R-1",
     "createdAt": "2026-08-13T01:38:02.928Z",
-    "updatedAt": "2026-08-13T01:38:02.928Z",
-    "id": "msqumomo-k9r413d"
+    "updatedAt": "2026-08-13T04:39:41.533Z",
+    "id": "msqumomo-k9r413d",
+    "assigneeIds": [
+      "msr12zq1-fy1z0hd",
+      "msr0n8a2-xv1u679"
+    ]
   },
   {
     "projectId": "msqumome-6upa59z",
     "title": "DT-Plugins",
-    "track": "프로젝트 기획",
+    "track": "모듈개발",
     "status": "todo",
     "priority": "medium",
     "startDate": "2026-08-13",
@@ -1878,7 +1882,74 @@
     "deliverables": [],
     "key": "R-2",
     "createdAt": "2026-08-13T01:38:02.928Z",
-    "updatedAt": "2026-08-13T01:38:02.928Z",
-    "id": "msqumomo-5ia2469"
+    "updatedAt": "2026-08-13T04:39:18.817Z",
+    "id": "msqumomo-5ia2469",
+    "assigneeIds": [
+      "msr12zq1-fy1z0hd"
+    ]
+  },
+  {
+    "projectId": "msr0fhqq-v588472",
+    "title": "홈페이지 수정 메뉴얼화",
+    "track": "메뉴얼",
+    "status": "hold",
+    "priority": "medium",
+    "startDate": "2026-10-05",
+    "dueDate": "2026-10-05",
+    "description": "",
+    "deliverables": [
+      {
+        "name": "홈페이지 인수인계서",
+        "done": false
+      }
+    ],
+    "assigneeIds": [
+      "msr0n8a2-xv1u679"
+    ],
+    "key": "S-1",
+    "createdAt": "2026-08-13T04:22:43.223Z",
+    "updatedAt": "2026-08-13T04:26:29.328Z",
+    "id": "msr0igbj-wuufuap"
+  },
+  {
+    "projectId": "msr0fhqq-v588472",
+    "title": "RM 모델 단순화 및 DH",
+    "track": "소업무",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2026-08-11",
+    "dueDate": "2026-08-13",
+    "description": "",
+    "deliverables": [
+      {
+        "name": "JSON파일(DH), OBJ파일",
+        "done": false
+      }
+    ],
+    "assigneeIds": [
+      "msr0l3u0-ria87xn"
+    ],
+    "key": "S-2",
+    "createdAt": "2026-08-13T04:26:13.676Z",
+    "updatedAt": "2026-08-13T04:26:13.676Z",
+    "id": "msr0mypg-e8f9nj3"
+  },
+  {
+    "projectId": "msqumome-6upa59z",
+    "title": "DT 통신 명령 테스트",
+    "track": "모듈개발",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-08-13",
+    "dueDate": "2026-08-14",
+    "description": "",
+    "deliverables": [],
+    "assigneeIds": [
+      "msr12zq1-fy1z0hd"
+    ],
+    "key": "R-3",
+    "createdAt": "2026-08-13T04:38:43.388Z",
+    "updatedAt": "2026-08-13T04:38:43.388Z",
+    "id": "msr1316r-v2qkzbg"
   }
 ]

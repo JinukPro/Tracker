@@ -60,6 +60,8 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
   const [assigneeIds, setAssigneeIds] = useState<string[]>(issue?.assigneeIds ?? defaults?.assigneeIds ?? [])
   const [newDeliverable, setNewDeliverable] = useState('')
   const [saving, setSaving] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<{ title?: string; track?: string; projectId?: string }>({})
+  const [saveError, setSaveError] = useState('')
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -76,8 +78,39 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
     setNewDeliverable('')
   }
 
+  function onStartDateChange(next: string) {
+    setStartDate(next)
+    if (next && dueDate && dueDate < next) setDueDate(next)
+  }
+
+  function onDueDateChange(next: string) {
+    setDueDate(startDate && next < startDate ? startDate : next)
+  }
+
+  function clearFieldError(key: 'title' | 'track' | 'projectId') {
+    setFieldErrors((prev) => {
+      if (!prev[key]) return prev
+      const next = { ...prev }
+      delete next[key]
+      return next
+    })
+  }
+
+  function validate(): boolean {
+    const next: { title?: string; track?: string; projectId?: string } = {}
+    if (!title.trim()) next.title = '제목을 입력하세요.'
+    if (!projectId) next.projectId = '프로젝트를 선택하세요.'
+    if (!track.trim()) {
+      next.track =
+        customTrack || trackOptions.length === 0 ? '새 트랙 이름을 입력하세요.' : '트랙을 선택하세요.'
+    }
+    setFieldErrors(next)
+    setSaveError('')
+    return Object.keys(next).length === 0
+  }
+
   async function handleSave() {
-    if (!title.trim() || !track.trim() || !projectId) return
+    if (!validate()) return
     setSaving(true)
     const input: IssueInput = {
       projectId,
@@ -98,6 +131,8 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
         await create(input)
       }
       onClose()
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : String(err))
     } finally {
       setSaving(false)
     }
@@ -121,18 +156,27 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
         </div>
 
         <div className="form-grid">
-          <label className="field span2">
+          <label className={`field span2 ${fieldErrors.title ? 'invalid' : ''}`}>
             <span>제목</span>
-            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="작업 제목" />
+            <input
+              value={title}
+              onChange={(e) => {
+                setTitle(e.target.value)
+                clearFieldError('title')
+              }}
+              placeholder="작업 제목"
+            />
+            {fieldErrors.title && <p className="field-error">{fieldErrors.title}</p>}
           </label>
 
-          <label className="field">
+          <label className={`field ${fieldErrors.projectId ? 'invalid' : ''}`}>
             <span>프로젝트</span>
             <select
               value={projectId}
               onChange={(e) => {
                 const pid = e.target.value
                 setProjectId(pid)
+                clearFieldError('projectId')
                 // Drop a track that belongs to the previous project
                 if (!customTrack && !projectTracks(pid).includes(track)) setTrack('')
               }}
@@ -143,9 +187,10 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
                 </option>
               ))}
             </select>
+            {fieldErrors.projectId && <p className="field-error">{fieldErrors.projectId}</p>}
           </label>
 
-          <label className="field">
+          <label className={`field ${fieldErrors.track ? 'invalid' : ''}`}>
             <span>트랙</span>
             {trackOptions.length > 0 && (
               <select
@@ -157,6 +202,7 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
                   } else {
                     setCustomTrack(false)
                     setTrack(e.target.value)
+                    clearFieldError('track')
                   }
                 }}
               >
@@ -177,10 +223,14 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
               <input
                 autoFocus={customTrack}
                 value={track}
-                onChange={(e) => setTrack(e.target.value)}
+                onChange={(e) => {
+                  setTrack(e.target.value)
+                  clearFieldError('track')
+                }}
                 placeholder="새 트랙 이름"
               />
             )}
+            {fieldErrors.track && <p className="field-error">{fieldErrors.track}</p>}
           </label>
 
           <label className="field">
@@ -196,12 +246,12 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
 
           <label className="field">
             <span>시작일</span>
-            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+            <input type="date" value={startDate} onChange={(e) => onStartDateChange(e.target.value)} />
           </label>
 
           <label className="field">
             <span>마감일</span>
-            <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+            <input type="date" value={dueDate} min={startDate} onChange={(e) => onDueDateChange(e.target.value)} />
           </label>
 
           <label className="field">
@@ -285,6 +335,14 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
             <span />
           )}
           <div className="modal-actions">
+            {(fieldErrors.title || fieldErrors.track || fieldErrors.projectId || saveError) && (
+              <p className="field-error">
+                {saveError ||
+                  fieldErrors.track ||
+                  fieldErrors.title ||
+                  fieldErrors.projectId}
+              </p>
+            )}
             <button type="button" className="btn ghost" onClick={onClose}>
               취소
             </button>

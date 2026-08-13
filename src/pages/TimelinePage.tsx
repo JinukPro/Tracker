@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { GroupToggle } from '../components/GroupToggle'
 import { IssueModal } from '../components/IssueModal'
 import { Loading } from '../components/Loading'
 import { useIssues } from '../context/IssuesContext'
@@ -87,6 +88,9 @@ export function TimelinePage() {
       <div className="page-head">
         <h1>타임라인</h1>
         <span className="muted small-text">그룹 이름을 클릭하면 접거나 펼 수 있습니다</span>
+        <div className="page-head-tools">
+          <GroupToggle />
+        </div>
       </div>
 
       <div className="chart-scroll">

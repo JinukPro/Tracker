@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { GroupToggle } from '../components/GroupToggle'
 import { IssueModal } from '../components/IssueModal'
 import { Loading } from '../components/Loading'
 import { useIssues } from '../context/IssuesContext'
@@ -112,6 +113,9 @@ export function GanttPage() {
               <span className="legend-swatch" style={{ background: STATUS_COLORS.done }} /> 완료
             </span>
           </span>
+        </div>
+        <div className="page-head-tools">
+          <GroupToggle />
         </div>
       </div>
 
