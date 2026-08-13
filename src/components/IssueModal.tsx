@@ -267,7 +267,7 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
 
           <div className="field span2">
             <span>담당자</span>
-            <AssigneePicker value={assigneeIds} onChange={setAssigneeIds} />
+            <AssigneePicker projectId={projectId} value={assigneeIds} onChange={setAssigneeIds} />
           </div>
 
           <label className="field span2">

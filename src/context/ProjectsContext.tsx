@@ -27,6 +27,7 @@ type ProjectsContextValue = {
   refresh: () => Promise<void>
   addProject: (input: ProjectInput) => Promise<void>
   editProject: (id: string, patch: Partial<ProjectInput>) => Promise<void>
+  addMembersToProject: (projectId: string, memberIds: string[]) => Promise<void>
   removeProject: (id: string) => Promise<void>
 }
 
@@ -139,6 +140,14 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
     [refresh],
   )
 
+  const addMembersToProject = useCallback(
+    async (projectId: string, memberIds: string[]) => {
+      const changed = await svc.addMembersToProject(projectId, memberIds)
+      if (changed) await refresh()
+    },
+    [refresh],
+  )
+
   const removeProject = useCallback(
     async (id: string) => {
       await issuesSvc.deleteIssuesByProject(id)
@@ -165,6 +174,7 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
       refresh,
       addProject,
       editProject,
+      addMembersToProject,
       removeProject,
     }),
     [
@@ -178,6 +188,7 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
       refresh,
       addProject,
       editProject,
+      addMembersToProject,
       removeProject,
     ],
   )

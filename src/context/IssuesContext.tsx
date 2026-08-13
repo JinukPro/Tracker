@@ -32,7 +32,7 @@ const IssuesContext = createContext<IssuesContextValue | null>(null)
 
 export function IssuesProvider({ children }: { children: ReactNode }) {
   const { user, localMode } = useAuth()
-  const { selectedIds, selectedProjects, projectById } = useProjects()
+  const { selectedIds, selectedProjects, projectById, addMembersToProject } = useProjects()
   const { selectedIds: personIds, selectionReady } = usePeople()
   const [allIssues, setAllIssues] = useState<Issue[]>([])
   const [loading, setLoading] = useState(true)
@@ -78,9 +78,10 @@ export function IssuesProvider({ children }: { children: ReactNode }) {
     async (input: IssueInput) => {
       const prefix = projectById(input.projectId)?.keyPrefix ?? 'T'
       await svc.createIssue(input, svc.nextKey(allIssues, input.projectId, prefix))
+      await addMembersToProject(input.projectId, input.assigneeIds)
       await refresh()
     },
-    [allIssues, projectById, refresh],
+    [allIssues, projectById, addMembersToProject, refresh],
   )
 
   const update = useCallback(
@@ -95,9 +96,14 @@ export function IssuesProvider({ children }: { children: ReactNode }) {
       // Optimistic update keeps drag & drop and checkbox toggles snappy
       setAllIssues((prev) => prev.map((i) => (i.id === id ? { ...i, ...effective } : i)))
       await svc.updateIssue(id, effective)
+      if (effective.assigneeIds || effective.projectId) {
+        const projectId = effective.projectId ?? current?.projectId
+        const assigneeIds = effective.assigneeIds ?? current?.assigneeIds
+        if (projectId && assigneeIds?.length) await addMembersToProject(projectId, assigneeIds)
+      }
       await refresh()
     },
-    [allIssues, projectById, refresh],
+    [allIssues, projectById, addMembersToProject, refresh],
   )
 
   const remove = useCallback(

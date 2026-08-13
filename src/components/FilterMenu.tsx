@@ -1,19 +1,24 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useIssues } from '../context/IssuesContext'
 import { usePeople } from '../context/PeopleContext'
 import { useProjects } from '../context/ProjectsContext'
-import { initials } from '../lib/people'
+import { initials, peopleForProjects } from '../lib/people'
 import { UNASSIGNED_ID } from '../types'
 
 const OPEN_KEY = 'tracker:filterOpen'
 
 export function FilterMenu() {
-  const { projects, selectedIds, toggleProject } = useProjects()
+  const { projects, selectedIds, selectedProjects, toggleProject } = useProjects()
+  const { allIssues } = useIssues()
   const { people, selectedIds: personIds, togglePerson, personColor } = usePeople()
   const [open, setOpen] = useState(() => localStorage.getItem(OPEN_KEY) === '1')
   const rootRef = useRef<HTMLDivElement>(null)
 
-  const selectedProjects = projects.filter((p) => selectedIds.includes(p.id))
-  const selectedPeople = people.filter((p) => personIds.includes(p.id))
+  const roster = useMemo(
+    () => peopleForProjects(people, selectedProjects, allIssues),
+    [people, selectedProjects, allIssues],
+  )
+  const selectedPeople = roster.filter((p) => personIds.includes(p.id))
   const extraPeople = Math.max(0, selectedPeople.length - 4)
   const shownPeople = selectedPeople.slice(0, 4)
 
@@ -115,7 +120,7 @@ export function FilterMenu() {
                 <span className="proj-dot" style={{ background: '#6b778c' }} />
                 미배정
               </button>
-              {people.map((p) => {
+              {roster.map((p) => {
                 const active = personIds.includes(p.id)
                 return (
                   <button

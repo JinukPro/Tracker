@@ -20,57 +20,97 @@ function errText(err: unknown): string {
 
 function ProjectRow({
   project,
+  people,
+  personColor,
   issueCount,
   canDelete,
   busy,
   onSave,
   onDelete,
+  onToggleMember,
 }: {
   project: Project
+  people: Member[]
+  personColor: (id: string) => string
   issueCount: number
   canDelete: boolean
   busy: boolean
   onSave: (patch: { name: string; keyPrefix: string; color: string }) => void
   onDelete: () => void
+  onToggleMember: (memberId: string) => void
 }) {
   const [name, setName] = useState(project.name)
   const [keyPrefix, setKeyPrefix] = useState(project.keyPrefix)
   const [color, setColor] = useState(project.color)
   const dirty = name !== project.name || keyPrefix !== project.keyPrefix || color !== project.color
+  const memberIds = project.memberIds ?? []
 
   return (
-    <div className="project-row">
-      <input
-        type="color"
-        value={color}
-        onChange={(e) => setColor(e.target.value)}
-        title="프로젝트 색상"
-      />
-      <input
-        className="name-input"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="프로젝트 이름"
-      />
-      <input
-        className="prefix-input"
-        value={keyPrefix}
-        onChange={(e) => setKeyPrefix(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
-        placeholder="키"
-        title="이슈 키 접두사 (예: T → T-1)"
-      />
-      <span className="muted small-text">작업 {issueCount}건</span>
-      <button
-        type="button"
-        className="btn small"
-        disabled={busy || !dirty || !name.trim() || !keyPrefix.trim()}
-        onClick={() => onSave({ name: name.trim(), keyPrefix: keyPrefix.trim(), color })}
-      >
-        저장
-      </button>
-      <button type="button" className="btn danger small" disabled={busy || !canDelete} onClick={onDelete}>
-        삭제
-      </button>
+    <div className="project-block">
+      <div className="project-row">
+        <input
+          type="color"
+          value={color}
+          onChange={(e) => setColor(e.target.value)}
+          title="프로젝트 색상"
+        />
+        <input
+          className="name-input"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="프로젝트 이름"
+        />
+        <input
+          className="prefix-input"
+          value={keyPrefix}
+          onChange={(e) => setKeyPrefix(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
+          placeholder="키"
+          title="이슈 키 접두사 (예: T → T-1)"
+        />
+        <span className="muted small-text">작업 {issueCount}건</span>
+        <button
+          type="button"
+          className="btn small"
+          disabled={busy || !dirty || !name.trim() || !keyPrefix.trim()}
+          onClick={() => onSave({ name: name.trim(), keyPrefix: keyPrefix.trim(), color })}
+        >
+          저장
+        </button>
+        <button type="button" className="btn danger small" disabled={busy || !canDelete} onClick={onDelete}>
+          삭제
+        </button>
+      </div>
+      <div className="project-members">
+        <span className="filter-section-label">담당자</span>
+        <div className="filter-chips">
+          {people.map((p) => {
+            const active = memberIds.includes(p.id)
+            return (
+              <button
+                key={p.id}
+                type="button"
+                className={`proj-chip ${active ? 'active' : ''}`}
+                style={
+                  active
+                    ? { borderColor: personColor(p.id), boxShadow: `inset 0 0 0 1px ${personColor(p.id)}` }
+                    : undefined
+                }
+                disabled={busy}
+                onClick={() => onToggleMember(p.id)}
+                title={active ? '이 프로젝트에서 제외' : '이 프로젝트에 배정'}
+              >
+                <span className="person-avatar tiny" style={{ background: personColor(p.id) }}>
+                  {initials(p.displayName)}
+                </span>
+                {p.displayName}
+              </button>
+            )
+          })}
+          {people.length === 0 && (
+            <span className="muted small-text">전역 명단에서 담당자를 먼저 추가하세요</span>
+          )}
+        </div>
+      </div>
     </div>
   )
 }
@@ -293,6 +333,11 @@ export function SettingsPage() {
           await update(i.id, { assigneeIds: i.assigneeIds.filter((x) => x !== id) })
         }
       }
+      for (const p of projects) {
+        if ((p.memberIds ?? []).includes(id)) {
+          await editProject(p.id, { memberIds: (p.memberIds ?? []).filter((x) => x !== id) })
+        }
+      }
       await removeMember(id)
       await refreshIssues()
       setMessage(`담당자 "${name}"을(를) 삭제했습니다.`)
@@ -315,6 +360,8 @@ export function SettingsPage() {
           <ProjectRow
             key={`${p.id}:${p.name}:${p.keyPrefix}:${p.color}`}
             project={p}
+            people={people}
+            personColor={personColor}
             issueCount={allIssues.filter((i) => i.projectId === p.id).length}
             canDelete={projects.length > 1}
             busy={busy}
@@ -323,6 +370,11 @@ export function SettingsPage() {
               void editProject(p.id, patch).finally(() => setBusy(false))
             }}
             onDelete={() => void handleDeleteProject(p)}
+            onToggleMember={(memberId) => {
+              const ids = p.memberIds ?? []
+              const next = ids.includes(memberId) ? ids.filter((x) => x !== memberId) : [...ids, memberId]
+              void editProject(p.id, { memberIds: next })
+            }}
           />
         ))}
         <div className="project-row add">
@@ -349,8 +401,8 @@ export function SettingsPage() {
           </button>
         </div>
         <p className="muted small-text">
-          키는 이슈 번호 접두사로 사용됩니다 (예: 키가 <code>P</code>면 P-1, P-2…). 상단 프로젝트
-          칩을 클릭해 여러 프로젝트를 동시에 표시할 수 있습니다.
+          키는 이슈 번호 접두사로 사용됩니다 (예: 키가 <code>P</code>면 P-1, P-2…). 프로젝트마다
+          사용할 담당자를 아래에서 고르면, 작업 배정과 필터에 그 명단만 나타납니다.
         </p>
       </section>
 
@@ -394,8 +446,9 @@ export function SettingsPage() {
           </button>
         </div>
         <p className="muted small-text">
-          한 작업에 담당자를 여러 명 둘 수 있습니다. 로그인한 계정은 자동으로 목록에 나타나고, 여기서
-          추가한 이름은 로컬 명단입니다.
+          한 작업에 담당자를 여러 명 둘 수 있습니다. 로그인한 계정은 자동으로 전역 명단에 나타나고,
+          여기서 추가한 이름은 로컬 명단입니다. 각 프로젝트에서 쓸 사람은 위 프로젝트 담당자에서
+          고릅니다.
         </p>
       </section>
 

@@ -24,10 +24,15 @@ export interface Project {
   color: string
   /** Tracks declared explicitly (issues may add more implicitly) */
   tracks?: string[]
+  /** Member ids allowed on this project. Global roster stays in trackerMembers. */
+  memberIds: string[]
   createdAt: string
 }
 
-export type ProjectInput = Omit<Project, 'id' | 'createdAt'>
+export type ProjectInput = Omit<Project, 'id' | 'createdAt' | 'memberIds' | 'tracks'> & {
+  tracks?: string[]
+  memberIds?: string[]
+}
 
 export interface Issue {
   id: string

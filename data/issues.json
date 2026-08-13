@@ -1951,5 +1951,59 @@
     "createdAt": "2026-08-13T04:38:43.388Z",
     "updatedAt": "2026-08-13T04:38:43.388Z",
     "id": "msr1316r-v2qkzbg"
+  },
+  {
+    "projectId": "msqumom0-bsjbrr7",
+    "title": "OPC-UA(PMAC) 테스트",
+    "track": "기초 기술개발",
+    "status": "todo",
+    "priority": "high",
+    "startDate": "2026-08-24",
+    "dueDate": "2026-08-26",
+    "description": "",
+    "deliverables": [],
+    "assigneeIds": [
+      "msr12zq1-fy1z0hd"
+    ],
+    "key": "T-89",
+    "createdAt": "2026-08-13T04:48:37.881Z",
+    "updatedAt": "2026-08-13T04:49:54.157Z",
+    "id": "msr1frwi-khbl1mj"
+  },
+  {
+    "projectId": "msr0fhqq-v588472",
+    "title": "타회사 보안 방식 조사(llm)",
+    "track": "소업무",
+    "status": "todo",
+    "priority": "low",
+    "startDate": "2026-08-17",
+    "dueDate": "2026-08-21",
+    "description": "",
+    "deliverables": [],
+    "assigneeIds": [
+      "msr2yevq-5swlelv"
+    ],
+    "key": "S-3",
+    "createdAt": "2026-08-13T05:01:45.246Z",
+    "updatedAt": "2026-08-13T05:31:09.113Z",
+    "id": "msr1wnfq-g2p25q5"
+  },
+  {
+    "projectId": "msr0fhqq-v588472",
+    "title": "SW 요구사항 명세서 작성 양식",
+    "track": "소업무",
+    "status": "todo",
+    "priority": "medium",
+    "startDate": "2026-08-18",
+    "dueDate": "2026-08-18",
+    "description": "",
+    "deliverables": [],
+    "assigneeIds": [
+      "msr12zq1-fy1z0hd"
+    ],
+    "key": "S-4",
+    "createdAt": "2026-08-13T05:48:13.579Z",
+    "updatedAt": "2026-08-13T05:48:13.579Z",
+    "id": "msr3kexf-hqm9r3a"
   }
 ]

@@ -7,7 +7,7 @@ import * as issuesSvc from './issues'
 import * as membersSvc from './members'
 import * as projectsSvc from './projects'
 
-const DEFAULT_PROJECT = { name: 'T뽑기', keyPrefix: 'T', color: PROJECT_COLORS[0] }
+const DEFAULT_PROJECT = { name: 'T뽑기', keyPrefix: 'T', color: PROJECT_COLORS[0], memberIds: [] as string[] }
 
 export type ExportData = { projects: Project[]; issues: Issue[]; members?: Member[] }
 
@@ -97,6 +97,11 @@ async function doInit(): Promise<{ projects: Project[]; issues: Issue[] }> {
         issues = await issuesSvc.listIssues()
       }
     }
+
+    setStage('프로젝트 담당자 정리 중')
+    if (await projectsSvc.seedMissingMemberIds(issues)) {
+      projects = await projectsSvc.listProjects()
+    }
     return { projects, issues }
   } finally {
     setStage('')
@@ -159,21 +164,6 @@ export async function importData(parsed: unknown): Promise<{ projects: number; i
     throw new Error('invalid')
   }
 
-  const existing = await projectsSvc.listProjects()
-  for (const p of existing) await projectsSvc.deleteProject(p.id)
-
-  const idMap = new Map<string, string>()
-  for (const p of data.projects) {
-    const newId = await projectsSvc.createProject({
-      name: p.name,
-      keyPrefix: p.keyPrefix || 'P',
-      color: p.color || PROJECT_COLORS[0],
-      tracks: p.tracks ?? [],
-    })
-    idMap.set(p.id, newId)
-  }
-  const fallback = idMap.values().next().value ?? ''
-
   const memberIdMap = new Map<string, string>()
   if (Array.isArray(data.members)) {
     await membersSvc.replaceAllMembers([])
@@ -182,6 +172,28 @@ export async function importData(parsed: unknown): Promise<{ projects: number; i
       memberIdMap.set(m.id, newId)
     }
   }
+  const remapMember = (id: string) => memberIdMap.get(id) ?? id
+
+  const existing = await projectsSvc.listProjects()
+  for (const p of existing) await projectsSvc.deleteProject(p.id)
+
+  const idMap = new Map<string, string>()
+  for (const p of data.projects) {
+    const fallbackMembers = data.issues
+      .filter((i) => i.projectId === p.id)
+      .flatMap((i) => i.assigneeIds ?? [])
+    const newId = await projectsSvc.createProject({
+      name: p.name,
+      keyPrefix: p.keyPrefix || 'P',
+      color: p.color || PROJECT_COLORS[0],
+      tracks: p.tracks ?? [],
+      memberIds: normalizeAssignees(
+        Array.isArray(p.memberIds) ? p.memberIds : fallbackMembers,
+      ).map(remapMember),
+    })
+    idMap.set(p.id, newId)
+  }
+  const fallback = idMap.values().next().value ?? ''
 
   await issuesSvc.replaceAllIssues(
     data.issues.map((item) => {
@@ -189,7 +201,7 @@ export async function importData(parsed: unknown): Promise<{ projects: number; i
       const input: IssueInput = {
         ...rest,
         projectId: idMap.get(item.projectId) ?? fallback,
-        assigneeIds: normalizeAssignees(item.assigneeIds).map((id) => memberIdMap.get(id) ?? id),
+        assigneeIds: normalizeAssignees(item.assigneeIds).map(remapMember),
       }
       return { key, input }
     }),

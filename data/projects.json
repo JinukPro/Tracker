@@ -4,6 +4,9 @@
     "keyPrefix": "T",
     "color": "#0052cc",
     "tracks": [],
+    "memberIds": [
+      "msr12zq1-fy1z0hd"
+    ],
     "createdAt": "2026-08-13T01:38:02.901Z",
     "id": "msqumom0-bsjbrr7"
   },
@@ -12,6 +15,11 @@
     "keyPrefix": "R",
     "color": "#00875a",
     "tracks": [],
+    "memberIds": [
+      "msr12zq1-fy1z0hd",
+      "msr0n8a2-xv1u679",
+      "msr0l3u0-ria87xn"
+    ],
     "createdAt": "2026-08-13T01:38:02.913Z",
     "id": "msqumome-6upa59z"
   },
@@ -19,6 +27,12 @@
     "name": "소업무",
     "keyPrefix": "S",
     "color": "#de350b",
+    "memberIds": [
+      "msr0n8a2-xv1u679",
+      "msr0l3u0-ria87xn",
+      "msr2yevq-5swlelv",
+      "msr12zq1-fy1z0hd"
+    ],
     "createdAt": "2026-08-13T04:20:25.100Z",
     "id": "msr0fhqq-v588472"
   }

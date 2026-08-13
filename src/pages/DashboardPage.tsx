@@ -6,6 +6,7 @@ import { usePeople } from '../context/PeopleContext'
 import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
 import { addDays, formatShort, parseISO, startOfWeek, toISO, todayISO } from '../lib/dates'
+import { peopleForProjects } from '../lib/people'
 import * as issuesSvc from '../services/issues'
 import { UNASSIGNED_ID, STATUS_LABELS, type Issue } from '../types'
 
@@ -62,7 +63,8 @@ export function DashboardPage() {
   )
 
   const personStats = useMemo(() => {
-    const rows = people.map((p) => {
+    const roster = peopleForProjects(people, selectedProjects, issues)
+    const rows = roster.map((p) => {
       const list = issues.filter((i) => i.assigneeIds.includes(p.id))
       const done = list.filter((i) => i.status === 'done').length
       const overdue = list.filter((i) => i.status !== 'done' && i.dueDate < today).length
@@ -80,7 +82,7 @@ export function DashboardPage() {
       })
     }
     return rows.filter((s) => s.total > 0)
-  }, [issues, people, personColor, today])
+  }, [issues, people, selectedProjects, personColor, today])
 
   if (loading) return <Loading label="일정 데이터 불러오는 중" />
 

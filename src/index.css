@@ -239,6 +239,12 @@ h2 {
   gap: 8px;
 }
 
+.assignee-picker-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
 .assignee-chip-list {
   display: flex;
   flex-wrap: wrap;
@@ -1572,6 +1578,25 @@ textarea:focus {
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid #f0f1f3;
+}
+
+.project-block {
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f1f3;
+}
+
+.project-block:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.project-members {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 48px;
 }
 
 .project-row input[type='color'] {

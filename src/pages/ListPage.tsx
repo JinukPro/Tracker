@@ -12,6 +12,7 @@ import {
   PRIORITY_LABELS,
   STATUS_LABELS,
   STATUS_ORDER,
+  type Issue,
   type IssueStatus,
 } from '../types'
 
