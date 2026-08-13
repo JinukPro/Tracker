@@ -1,13 +1,53 @@
 import { defineConfig, type Plugin, type ViteDevServer } from 'vite'
 import react from '@vitejs/plugin-react'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs'
+import { basename, dirname, resolve } from 'node:path'
 import type { IncomingMessage, ServerResponse } from 'node:http'
 
 // Collection name -> backing JSON file (dev file mode)
 const DATA_FILES: Record<string, string> = {
   trackerIssues: resolve(import.meta.dirname, 'data/issues.json'),
   trackerProjects: resolve(import.meta.dirname, 'data/projects.json'),
+}
+
+const BACKUP_DIR = resolve(import.meta.dirname, 'data/backups')
+const BACKUP_KEEP = 30
+
+/**
+ * Snapshot data/*.json into data/backups/<run timestamp>/ on every dev-server
+ * start, so a bad write or accidental reset can always be recovered manually.
+ * Only the newest BACKUP_KEEP snapshots are kept.
+ */
+function backupDataFiles(): void {
+  try {
+    const files = Object.values(DATA_FILES).filter((f) => existsSync(f))
+    if (files.length === 0) return
+    const d = new Date()
+    const pad = (n: number) => String(n).padStart(2, '0')
+    // Local time, so folder names match the clock the user sees
+    const stamp = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}-${pad(d.getSeconds())}`
+    const dir = resolve(BACKUP_DIR, stamp)
+    mkdirSync(dir, { recursive: true })
+    for (const f of files) copyFileSync(f, resolve(dir, basename(f)))
+
+    const old = readdirSync(BACKUP_DIR, { withFileTypes: true })
+      .filter((e) => e.isDirectory())
+      .map((e) => e.name)
+      .sort()
+      .slice(0, -BACKUP_KEEP)
+    for (const name of old) rmSync(resolve(BACKUP_DIR, name), { recursive: true, force: true })
+    console.log(`[tracker] data backed up to data/backups/${stamp}`)
+  } catch (err) {
+    console.warn('[tracker] data backup failed:', err)
+  }
 }
 
 // Watcher events may report the path with different slashes/case on Windows
@@ -27,6 +67,7 @@ function dataFileApi(): Plugin {
   return {
     name: 'data-file-api',
     configureServer(server: ViteDevServer) {
+      backupDataFiles()
       for (const file of Object.values(DATA_FILES)) server.watcher.add(file)
       const onFsEvent = (_event: string, path: string) => {
         if (isDataFile(path)) {

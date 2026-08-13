@@ -18,6 +18,8 @@ const SELECT_KEY = 'tracker:selectedProjects'
 type ProjectsContextValue = {
   projects: Project[]
   loading: boolean
+  /** Non-empty when initial data loading failed (e.g. Firestore permission-denied) */
+  initError: string
   selectedIds: string[]
   selectedProjects: Project[]
   toggleProject: (id: string) => void
@@ -45,6 +47,7 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
   const [projects, setProjects] = useState<Project[]>([])
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
+  const [initError, setInitError] = useState('')
 
   // With Firebase, Firestore rules require auth, so wait for sign-in before
   // reading — otherwise the first query fails with permission-denied.
@@ -58,13 +61,23 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
         if (cancelled) return
         setProjects(list)
         const stored = loadSelection()
-        const valid = stored?.filter((id) => list.some((p) => p.id === id)) ?? []
-        setSelectedIds(valid.length > 0 ? valid : list.map((p) => p.id))
+        const valid = (stored ?? []).filter((id) => list.some((p) => p.id === id))
+        // Select everything when there is no saved selection, when the project
+        // bar is hidden (single project), or when the saved ids no longer exist.
+        // A saved empty selection (user deselected all) is kept as-is.
+        const invalidated = stored !== null && stored.length > 0 && valid.length === 0
+        setSelectedIds(
+          stored === null || list.length <= 1 || invalidated ? list.map((p) => p.id) : valid,
+        )
+        setInitError('')
         setLoading(false)
       })
       .catch((err) => {
         console.error('프로젝트 초기화 실패:', err)
-        if (!cancelled) setLoading(false)
+        if (!cancelled) {
+          setInitError(err instanceof Error ? err.message : String(err))
+          setLoading(false)
+        }
       })
     return () => {
       cancelled = true
@@ -80,7 +93,12 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
     setProjects(list)
     setSelectedIds((prev) => {
       const valid = prev.filter((id) => list.some((p) => p.id === id))
-      return valid.length > 0 ? valid : list.map((p) => p.id)
+      // Reset to all only when the selection was invalidated (e.g. import
+      // recreated projects with new ids) or the project bar is hidden.
+      if (list.length <= 1 || (prev.length > 0 && valid.length === 0)) {
+        return list.map((p) => p.id)
+      }
+      return valid
     })
   }, [])
 
@@ -94,13 +112,9 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
   }, [refresh])
 
   const toggleProject = useCallback((id: string) => {
-    setSelectedIds((prev) => {
-      if (prev.includes(id)) {
-        // Keep at least one project selected
-        return prev.length > 1 ? prev.filter((x) => x !== id) : prev
-      }
-      return [...prev, id]
-    })
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    )
   }, [])
 
   const projectById = useCallback(
@@ -143,6 +157,7 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
     () => ({
       projects,
       loading,
+      initError,
       selectedIds,
       selectedProjects,
       toggleProject,
@@ -155,6 +170,7 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
     [
       projects,
       loading,
+      initError,
       selectedIds,
       selectedProjects,
       toggleProject,

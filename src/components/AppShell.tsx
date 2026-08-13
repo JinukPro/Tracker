@@ -16,7 +16,7 @@ const links = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { profile, localMode, logout } = useAuth()
-  const { projects, selectedIds, toggleProject } = useProjects()
+  const { projects, selectedIds, toggleProject, initError } = useProjects()
 
   return (
     <div className="app-shell">
@@ -33,6 +33,18 @@ export function AppShell({ children }: { children: ReactNode }) {
           )}
         </div>
       </header>
+      {initError && (
+        <div className="error-banner">
+          <span>
+            데이터를 불러오지 못했습니다: {initError}
+            {/permission|denied/i.test(initError) &&
+              ' — firestore.rules가 Firebase Console에 배포되어 있는지 확인하세요.'}
+          </span>
+          <button type="button" className="btn small" onClick={() => window.location.reload()}>
+            다시 시도
+          </button>
+        </div>
+      )}
       {projects.length > 1 && (
         <div className="project-bar">
           <span className="project-bar-label">프로젝트</span>
@@ -43,11 +55,15 @@ export function AppShell({ children }: { children: ReactNode }) {
                 key={p.id}
                 type="button"
                 className={`proj-chip ${active ? 'active' : ''}`}
-                style={active ? { background: p.color, borderColor: p.color } : undefined}
+                style={
+                  active
+                    ? { borderColor: p.color, boxShadow: `inset 0 0 0 1px ${p.color}` }
+                    : undefined
+                }
                 onClick={() => toggleProject(p.id)}
                 title={active ? '클릭하여 숨기기' : '클릭하여 표시'}
               >
-                <span className="proj-dot" style={{ background: active ? '#fff' : p.color }} />
+                <span className="proj-dot" style={{ background: p.color }} />
                 {p.name}
               </button>
             )

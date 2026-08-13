@@ -101,6 +101,13 @@ async function doInit(): Promise<{ projects: Project[]; issues: Issue[] }> {
   }
 }
 
+/** Wipe everything: delete all projects and issues, leaving an empty store. */
+export async function clearAllData(): Promise<void> {
+  const existing = await projectsSvc.listProjects()
+  for (const p of existing) await projectsSvc.deleteProject(p.id)
+  await issuesSvc.replaceAllIssues([])
+}
+
 /** Wipe everything and restore the seed baked into the build (data/*.json). */
 export async function resetAllData(): Promise<void> {
   if (SEED.projects.length === 0) {

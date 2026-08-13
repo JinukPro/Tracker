@@ -115,13 +115,12 @@ h2 {
   background: #f4f5f7;
 }
 
-.proj-chip.active {
-  color: #fff;
+.proj-chip:not(.active) .proj-dot {
+  opacity: 0.35;
 }
 
-.proj-chip.active:hover {
-  filter: brightness(1.08);
-  background: inherit;
+.proj-chip.active {
+  color: var(--text);
 }
 
 .proj-dot {
@@ -475,6 +474,21 @@ textarea:focus {
   align-items: center;
   gap: 10px;
   margin-bottom: 5px;
+}
+
+.track-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  padding: 3px 6px;
+  color: #6b778c;
+  opacity: 0.4;
+}
+
+.track-progress:hover .track-edit-btn,
+.track-edit-btn:focus-visible {
+  opacity: 1;
 }
 
 .issue-list {
@@ -1269,4 +1283,21 @@ textarea:focus {
 .settings-message {
   color: var(--green);
   font-weight: 600;
+}
+
+.settings-message.error {
+  color: var(--red);
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  background: color-mix(in srgb, var(--red) 12%, var(--surface));
+  color: var(--red);
+  border-bottom: 1px solid var(--red);
+  font-size: 13px;
+  flex-shrink: 0;
 }

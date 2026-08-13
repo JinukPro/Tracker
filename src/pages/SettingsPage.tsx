@@ -3,13 +3,17 @@ import { useIssues } from '../context/IssuesContext'
 import { useProjects } from '../context/ProjectsContext'
 import { nextProjectColor } from '../lib/colors'
 import { getStorageMode, type StorageMode } from '../lib/store'
-import { importData, resetAllData } from '../services/bootstrap'
+import { clearAllData, importData, resetAllData } from '../services/bootstrap'
 import type { Project } from '../types'
 
 const MODE_LABELS: Record<StorageMode, string> = {
   firebase: 'Firebase Firestore',
   file: '프로젝트 파일 (Tracker/data/*.json)',
   local: '브라우저 localStorage',
+}
+
+function errText(err: unknown): string {
+  return err instanceof Error ? err.message : String(err)
 }
 
 function ProjectRow({
@@ -94,6 +98,8 @@ export function SettingsPage() {
       setNewName('')
       setNewPrefix('')
       setMessage(`프로젝트 "${name}"을(를) 추가했습니다.`)
+    } catch (err) {
+      setMessage(`프로젝트 추가 실패: ${errText(err)}`)
     } finally {
       setBusy(false)
     }
@@ -108,6 +114,8 @@ export function SettingsPage() {
       await removeProject(project.id)
       await refreshIssues()
       setMessage(`프로젝트 "${project.name}"을(를) 삭제했습니다.`)
+    } catch (err) {
+      setMessage(`프로젝트 삭제 실패: ${errText(err)}`)
     } finally {
       setBusy(false)
     }
@@ -138,11 +146,30 @@ export function SettingsPage() {
       await refreshProjects()
       await refreshIssues()
       setMessage(`프로젝트 ${result.projects}개, 작업 ${result.issues}건을 가져왔습니다.`)
-    } catch {
-      setMessage('가져오기에 실패했습니다. JSON 형식을 확인하세요.')
+    } catch (err) {
+      setMessage(`가져오기 실패: ${errText(err)}`)
     } finally {
       setBusy(false)
       if (fileRef.current) fileRef.current.value = ''
+    }
+  }
+
+  async function handleClearAll() {
+    if (
+      !window.confirm(
+        `모든 프로젝트 ${projects.length}개와 작업 ${allIssues.length}건을 완전히 삭제할까요?\n이 작업은 되돌릴 수 없습니다. 필요하면 먼저 JSON 내보내기로 백업하세요.`,
+      )
+    )
+      return
+    setBusy(true)
+    setMessage('')
+    try {
+      await clearAllData()
+      await refreshProjects()
+      await refreshIssues()
+      setMessage('모든 데이터를 삭제했습니다.')
+    } finally {
+      setBusy(false)
     }
   }
 
@@ -160,6 +187,8 @@ export function SettingsPage() {
       await refreshProjects()
       await refreshIssues()
       setMessage('시드 데이터로 초기화했습니다.')
+    } catch (err) {
+      setMessage(`초기화 실패: ${errText(err)}`)
     } finally {
       setBusy(false)
     }
@@ -274,15 +303,26 @@ export function SettingsPage() {
 
       <section className="card">
         <h2>초기화</h2>
-        <button type="button" className="btn danger" disabled={busy} onClick={() => void handleReset()}>
-          시드 데이터로 초기화
-        </button>
+        <div className="settings-actions">
+          <button type="button" className="btn danger" disabled={busy} onClick={() => void handleClearAll()}>
+            모든 데이터 삭제
+          </button>
+          <button type="button" className="btn danger" disabled={busy} onClick={() => void handleReset()}>
+            시드 데이터로 초기화
+          </button>
+        </div>
         <p className="muted small-text">
-          모든 프로젝트·작업을 삭제하고 T뽑기 프로젝트(6개 트랙 88개 작업)로 되돌립니다.
+          <strong>모든 데이터 삭제</strong>는 프로젝트·작업을 전부 지우고 빈 상태로 만듭니다.{' '}
+          <strong>시드 데이터로 초기화</strong>는 전부 지운 뒤 빌드에 포함된 시드 데이터로
+          되돌립니다.
         </p>
       </section>
 
-      {message && <p className="settings-message">{message}</p>}
+      {message && (
+        <p className={message.includes('실패') ? 'settings-message error' : 'settings-message'}>
+          {message}
+        </p>
+      )}
     </div>
   )
 }

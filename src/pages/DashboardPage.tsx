@@ -129,17 +129,19 @@ export function DashboardPage() {
                 <span className="track-chip" style={{ background: trackColor(s.track, tracks) }}>
                   {s.track}
                 </span>
-                <button
-                  type="button"
-                  className="btn ghost small"
-                  title="트랙 이름 변경"
-                  onClick={() => setRenamingTrack(s.track)}
-                >
-                  ✎
-                </button>
                 <span className="muted small-text">
                   작업 {s.done}/{s.total} · 산출물 {s.dDone}/{s.dTotal}
                 </span>
+                <button
+                  type="button"
+                  className="btn ghost small track-edit-btn"
+                  title="트랙 이름 변경"
+                  onClick={() => setRenamingTrack(s.track)}
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                  </svg>
+                </button>
               </div>
               <div className="progress-bar">
                 <div

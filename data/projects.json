@@ -3,14 +3,16 @@
     "name": "T뽑기",
     "keyPrefix": "T",
     "color": "#0052cc",
-    "createdAt": "2026-08-12T08:41:52.591Z",
-    "id": "mspubvm9-nlzg1wp"
+    "tracks": [],
+    "createdAt": "2026-08-13T01:03:49.262Z",
+    "id": "msqteo0v-54efype"
   },
   {
     "name": "영상제작",
     "keyPrefix": "R",
     "color": "#00875a",
-    "createdAt": "2026-08-12T12:31:56.066Z",
-    "id": "msq2jqg9-7c3aaqr"
+    "tracks": [],
+    "createdAt": "2026-08-13T01:03:49.289Z",
+    "id": "msqteo1b-zubnofz"
   }
 ]
