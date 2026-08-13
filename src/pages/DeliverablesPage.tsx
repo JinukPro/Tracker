@@ -1,15 +1,18 @@
 import { useMemo, useState } from 'react'
 import { IssueModal } from '../components/IssueModal'
 import { Loading } from '../components/Loading'
+import { AssigneeChips } from '../components/AssigneeChips'
 import { useIssues } from '../context/IssuesContext'
+import { usePeople } from '../context/PeopleContext'
 import { useProjects } from '../context/ProjectsContext'
-import { trackColor } from '../lib/colors'
+import { buildGroups } from '../lib/grouping'
 import { formatShort } from '../lib/dates'
 import type { Issue } from '../types'
 
 export function DeliverablesPage() {
   const { issues, tracks, update, loading } = useIssues()
-  const { selectedIds, projectById } = useProjects()
+  const { selectedIds, selectedProjects, projectById } = useProjects()
+  const { people, groupBy } = usePeople()
   const multi = selectedIds.length > 1
   const [trackFilter, setTrackFilter] = useState('')
   const [onlyPending, setOnlyPending] = useState(false)
@@ -24,25 +27,24 @@ export function DeliverablesPage() {
 
   const groups = useMemo(() => {
     const q = search.trim().toLowerCase()
-    return tracks
-      .filter((t) => !trackFilter || t === trackFilter)
-      .map((track) => {
-        const list = issues
-          .filter((i) => i.track === track && i.deliverables.length > 0)
-          .filter((i) => {
-            if (onlyPending && i.deliverables.every((d) => d.done)) return false
-            if (q) {
-              const hay = `${i.title} ${i.deliverables.map((d) => d.name).join(' ')}`.toLowerCase()
-              if (!hay.includes(q)) return false
-            }
-            return true
-          })
-        const total = list.reduce((a, i) => a + i.deliverables.length, 0)
-        const done = list.reduce((a, i) => a + i.deliverables.filter((d) => d.done).length, 0)
-        return { track, list, total, done }
-      })
-      .filter((g) => g.list.length > 0)
-  }, [issues, tracks, trackFilter, onlyPending, search])
+    const matches = (i: Issue) => {
+      if (i.deliverables.length === 0) return false
+      if (trackFilter && i.track !== trackFilter) return false
+      if (onlyPending && i.deliverables.every((d) => d.done)) return false
+      if (q) {
+        const hay = `${i.title} ${i.deliverables.map((d) => d.name).join(' ')}`.toLowerCase()
+        if (!hay.includes(q)) return false
+      }
+      return true
+    }
+    const filtered = issues.filter(matches)
+    const axis = groupBy === 'person' ? 'person' : 'track'
+    return buildGroups(filtered, axis, { selectedProjects, people, tracks }).map((g) => {
+      const total = g.issues.reduce((a, i) => a + i.deliverables.length, 0)
+      const done = g.issues.reduce((a, i) => a + i.deliverables.filter((d) => d.done).length, 0)
+      return { key: g.key, label: g.label, color: g.color, list: g.issues, total, done }
+    })
+  }, [issues, tracks, trackFilter, onlyPending, search, groupBy, selectedProjects, people])
 
   function toggleDeliverable(issue: Issue, idx: number, done: boolean) {
     const next = issue.deliverables.map((d, i) => (i === idx ? { ...d, done } : d))
@@ -88,10 +90,10 @@ export function DeliverablesPage() {
       </div>
 
       {groups.map((g) => (
-        <section key={g.track} className="card deliverable-group">
+        <section key={g.key} className="card deliverable-group">
           <div className="deliverable-group-head">
-            <span className="track-chip" style={{ background: trackColor(g.track, tracks) }}>
-              {g.track}
+            <span className="track-chip" style={{ background: g.color }}>
+              {g.label}
             </span>
             <span className="muted small-text">
               {g.done}/{g.total}
@@ -101,7 +103,7 @@ export function DeliverablesPage() {
                 className="progress-fill"
                 style={{
                   width: `${g.total ? Math.round((g.done / g.total) * 100) : 0}%`,
-                  background: trackColor(g.track, tracks),
+                    background: g.color,
                 }}
               />
             </div>
@@ -120,6 +122,7 @@ export function DeliverablesPage() {
                   </span>
                 )}
                 <span className="issue-title">{i.title}</span>
+                <AssigneeChips ids={i.assigneeIds} />
                 <span className="muted small-text">
                   {formatShort(i.startDate)}~{formatShort(i.dueDate)}
                 </span>

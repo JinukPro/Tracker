@@ -2,9 +2,10 @@ import { useMemo, useState } from 'react'
 import { IssueModal } from '../components/IssueModal'
 import { Loading } from '../components/Loading'
 import { useIssues } from '../context/IssuesContext'
+import { usePeople } from '../context/PeopleContext'
 import { useProjects } from '../context/ProjectsContext'
-import { trackColor } from '../lib/colors'
 import { addDays, diffDays, formatShort, parseISO, startOfWeek } from '../lib/dates'
+import { buildGroups } from '../lib/grouping'
 import type { Issue } from '../types'
 
 const LABEL_W = 250
@@ -13,6 +14,7 @@ const WEEK_W = 64
 export function TimelinePage() {
   const { issues, tracks, loading } = useIssues()
   const { selectedProjects } = useProjects()
+  const { people, groupBy } = usePeople()
   const multi = selectedProjects.length > 1
   const [collapsed, setCollapsed] = useState<string[]>([])
   const [editing, setEditing] = useState<Issue | null>(null)
@@ -41,18 +43,8 @@ export function TimelinePage() {
   }, [range])
 
   const groups = useMemo(
-    () =>
-      selectedProjects
-        .map((project) => {
-          const list = issues.filter((i) => i.projectId === project.id)
-          const projectTracks: string[] = []
-          for (const i of list) {
-            if (!projectTracks.includes(i.track)) projectTracks.push(i.track)
-          }
-          return { project, list, projectTracks }
-        })
-        .filter((g) => g.list.length > 0),
-    [selectedProjects, issues],
+    () => buildGroups(issues, groupBy, { selectedProjects, people, tracks }),
+    [issues, groupBy, selectedProjects, people, tracks],
   )
 
   if (loading) return <Loading label="일정 데이터 불러오는 중" />
@@ -62,16 +54,39 @@ export function TimelinePage() {
   const today = new Date()
   const todayOffset = diffDays(range.first, today) * (WEEK_W / 7)
   const showToday = todayOffset >= 0 && todayOffset <= range.weeks.length * WEEK_W
+  const showParent = groupBy !== 'project' || multi
 
   function toggle(key: string) {
     setCollapsed((prev) => (prev.includes(key) ? prev.filter((t) => t !== key) : [...prev, key]))
+  }
+
+  function renderBar(i: Issue, rowKey: string, barColor: string) {
+    const startWi = Math.max(0, Math.floor(diffDays(range!.first, parseISO(i.startDate)) / 7))
+    const endWi = Math.floor(diffDays(range!.first, parseISO(i.dueDate)) / 7)
+    const left = LABEL_W + startWi * WEEK_W
+    const width = Math.max(1, endWi - startWi + 1) * WEEK_W - 6
+    return (
+      <div key={rowKey} className="chart-row" style={{ width: totalW }}>
+        <div className="chart-label issue-label" style={{ width: LABEL_W }} title={i.title}>
+          <span className="issue-key">{i.key}</span> {i.title}
+        </div>
+        <div
+          className={`timeline-bar ${i.status === 'done' ? 'bar-done' : ''}`}
+          style={{ left, width, background: barColor }}
+          title={`${i.key} ${i.title} (${formatShort(i.startDate)}~${formatShort(i.dueDate)})`}
+          onClick={() => setEditing(i)}
+        >
+          {i.title}
+        </div>
+      </div>
+    )
   }
 
   return (
     <div>
       <div className="page-head">
         <h1>타임라인</h1>
-        <span className="muted small-text">트랙 이름을 클릭하면 접거나 펼 수 있습니다</span>
+        <span className="muted small-text">그룹 이름을 클릭하면 접거나 펼 수 있습니다</span>
       </div>
 
       <div className="chart-scroll">
@@ -97,67 +112,55 @@ export function TimelinePage() {
             ))}
           </div>
 
-          {groups.map(({ project, list, projectTracks }) => (
-            <div key={project.id}>
-              {multi && (
-                <div className="chart-row project-header" style={{ width: totalW }}>
-                  <div className="chart-label" style={{ width: LABEL_W }}>
-                    <span className="track-chip" style={{ background: project.color }}>
-                      {project.name}
-                    </span>
-                    <span className="muted small-text">{list.length}</span>
-                  </div>
-                </div>
-              )}
-              {projectTracks.map((track) => {
-                const trackList = list.filter((i) => i.track === track)
-                const key = `${project.id}:${track}`
-                const isCollapsed = collapsed.includes(key)
-                return (
-                  <div key={key}>
-                    <div
-                      className="chart-row track-header"
-                      style={{ width: totalW }}
-                      onClick={() => toggle(key)}
-                    >
-                      <div className="chart-label" style={{ width: LABEL_W }}>
-                        <span className="collapse-icon">{isCollapsed ? '▸' : '▾'}</span>
-                        <span className="track-chip" style={{ background: trackColor(track, tracks) }}>
-                          {track}
-                        </span>
-                        <span className="muted small-text">{trackList.length}</span>
-                      </div>
+          {groups.map((g) => {
+            const parentCollapsed = collapsed.includes(g.key)
+            return (
+              <div key={g.key}>
+                {showParent && (
+                  <div
+                    className="chart-row project-header"
+                    style={{ width: totalW }}
+                    onClick={() => toggle(g.key)}
+                  >
+                    <div className="chart-label" style={{ width: LABEL_W }}>
+                      <span className="collapse-icon">{parentCollapsed ? '▸' : '▾'}</span>
+                      <span className="track-chip" style={{ background: g.color }}>
+                        {g.label}
+                      </span>
+                      <span className="muted small-text">{g.issues.length}</span>
                     </div>
-                    {!isCollapsed &&
-                      trackList.map((i) => {
-                        const startWi = Math.max(
-                          0,
-                          Math.floor(diffDays(range.first, parseISO(i.startDate)) / 7),
-                        )
-                        const endWi = Math.floor(diffDays(range.first, parseISO(i.dueDate)) / 7)
-                        const left = LABEL_W + startWi * WEEK_W
-                        const width = Math.max(1, endWi - startWi + 1) * WEEK_W - 6
+                  </div>
+                )}
+                {!parentCollapsed &&
+                  (g.children.length > 0
+                    ? g.children.map((child) => {
+                        const isCollapsed = collapsed.includes(child.key)
                         return (
-                          <div key={i.id} className="chart-row" style={{ width: totalW }}>
-                            <div className="chart-label issue-label" style={{ width: LABEL_W }} title={i.title}>
-                              <span className="issue-key">{i.key}</span> {i.title}
-                            </div>
+                          <div key={child.key}>
                             <div
-                              className={`timeline-bar ${i.status === 'done' ? 'bar-done' : ''}`}
-                              style={{ left, width, background: trackColor(i.track, tracks) }}
-                              title={`${i.key} ${i.title} (${formatShort(i.startDate)}~${formatShort(i.dueDate)})`}
-                              onClick={() => setEditing(i)}
+                              className="chart-row track-header"
+                              style={{ width: totalW }}
+                              onClick={() => toggle(child.key)}
                             >
-                              {i.title}
+                              <div className="chart-label" style={{ width: LABEL_W }}>
+                                <span className="collapse-icon">{isCollapsed ? '▸' : '▾'}</span>
+                                <span className="track-chip" style={{ background: child.color }}>
+                                  {child.label}
+                                </span>
+                                <span className="muted small-text">{child.issues.length}</span>
+                              </div>
                             </div>
+                            {!isCollapsed &&
+                              child.issues.map((i) =>
+                                renderBar(i, `${child.key}:${i.id}`, child.color),
+                              )}
                           </div>
                         )
-                      })}
-                  </div>
-                )
-              })}
-            </div>
-          ))}
+                      })
+                    : g.issues.map((i) => renderBar(i, `${g.key}:${i.id}`, g.color)))}
+              </div>
+            )
+          })}
         </div>
       </div>
 

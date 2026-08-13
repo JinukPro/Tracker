@@ -1,6 +1,6 @@
 import type { IssueStatus } from '../types'
 
-const TRACK_PALETTE = [
+export const TRACK_PALETTE = [
   '#0052cc',
   '#00875a',
   '#ff8b00',

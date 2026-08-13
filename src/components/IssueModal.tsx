@@ -12,6 +12,7 @@ import {
   type IssuePriority,
   type IssueStatus,
 } from '../types'
+import { AssigneePicker } from './AssigneePicker'
 
 type Props = {
   issue?: Issue
@@ -56,6 +57,7 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
   const [dueDate, setDueDate] = useState(issue?.dueDate ?? defaults?.dueDate ?? todayISO())
   const [description, setDescription] = useState(issue?.description ?? '')
   const [deliverables, setDeliverables] = useState<Deliverable[]>(issue?.deliverables ?? [])
+  const [assigneeIds, setAssigneeIds] = useState<string[]>(issue?.assigneeIds ?? defaults?.assigneeIds ?? [])
   const [newDeliverable, setNewDeliverable] = useState('')
   const [saving, setSaving] = useState(false)
 
@@ -87,6 +89,7 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
       dueDate: dueDate < startDate ? startDate : dueDate,
       description,
       deliverables,
+      assigneeIds,
     }
     try {
       if (issue) {
@@ -211,6 +214,11 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
               ))}
             </select>
           </label>
+
+          <div className="field span2">
+            <span>담당자</span>
+            <AssigneePicker value={assigneeIds} onChange={setAssigneeIds} />
+          </div>
 
           <label className="field span2">
             <span>설명</span>

@@ -2,15 +2,17 @@ import { useEffect, useMemo, useState } from 'react'
 import { IssueModal } from '../components/IssueModal'
 import { Loading } from '../components/Loading'
 import { useIssues } from '../context/IssuesContext'
+import { usePeople } from '../context/PeopleContext'
 import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
 import { addDays, formatShort, parseISO, startOfWeek, toISO, todayISO } from '../lib/dates'
 import * as issuesSvc from '../services/issues'
-import { STATUS_LABELS, type Issue } from '../types'
+import { UNASSIGNED_ID, STATUS_LABELS, type Issue } from '../types'
 
 export function DashboardPage() {
   const { issues, tracks, loading } = useIssues()
   const { selectedProjects } = useProjects()
+  const { people, groupBy, personColor } = usePeople()
   const multi = selectedProjects.length > 1
   const [editing, setEditing] = useState<Issue | null>(null)
   const [creatingTrack, setCreatingTrack] = useState(false)
@@ -59,6 +61,27 @@ export function DashboardPage() {
     [issues, tracks],
   )
 
+  const personStats = useMemo(() => {
+    const rows = people.map((p) => {
+      const list = issues.filter((i) => i.assigneeIds.includes(p.id))
+      const done = list.filter((i) => i.status === 'done').length
+      const overdue = list.filter((i) => i.status !== 'done' && i.dueDate < today).length
+      return { id: p.id, label: p.displayName, color: personColor(p.id), total: list.length, done, overdue }
+    })
+    const unassigned = issues.filter((i) => i.assigneeIds.length === 0)
+    if (unassigned.length > 0) {
+      rows.push({
+        id: UNASSIGNED_ID,
+        label: '미배정',
+        color: '#6b778c',
+        total: unassigned.length,
+        done: unassigned.filter((i) => i.status === 'done').length,
+        overdue: unassigned.filter((i) => i.status !== 'done' && i.dueDate < today).length,
+      })
+    }
+    return rows.filter((s) => s.total > 0)
+  }, [issues, people, personColor, today])
+
   if (loading) return <Loading label="일정 데이터 불러오는 중" />
 
   return (
@@ -87,7 +110,7 @@ export function DashboardPage() {
       </div>
 
       <div className="dash-grid">
-        {multi && (
+        {multi && groupBy !== 'person' && (
           <section className="card">
             <h2>프로젝트별 진행률</h2>
             {projectStats.map((s) => (
@@ -115,46 +138,75 @@ export function DashboardPage() {
           </section>
         )}
 
-        <section className="card">
-          <div className="card-head">
-            <h2>트랙별 진행률</h2>
-            <button type="button" className="btn ghost small" onClick={() => setCreatingTrack(true)}>
-              + 새 트랙
-            </button>
-          </div>
-          {trackStats.length === 0 && <p className="muted">트랙이 없습니다. 새 트랙을 추가하세요.</p>}
-          {trackStats.map((s) => (
-            <div key={s.track} className="track-progress">
-              <div className="track-progress-head">
-                <span className="track-chip" style={{ background: trackColor(s.track, tracks) }}>
-                  {s.track}
-                </span>
-                <span className="muted small-text">
-                  작업 {s.done}/{s.total} · 산출물 {s.dDone}/{s.dTotal}
-                </span>
-                <button
-                  type="button"
-                  className="btn ghost small track-edit-btn"
-                  title="트랙 이름 변경"
-                  onClick={() => setRenamingTrack(s.track)}
-                >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-                  </svg>
-                </button>
+        {groupBy === 'person' ? (
+          <section className="card">
+            <h2>담당자별 진행률</h2>
+            {personStats.length === 0 && <p className="muted">표시할 담당자가 없습니다.</p>}
+            {personStats.map((s) => (
+              <div key={s.id} className="track-progress">
+                <div className="track-progress-head">
+                  <span className="track-chip" style={{ background: s.color }}>
+                    {s.label}
+                  </span>
+                  <span className="muted small-text">
+                    작업 {s.done}/{s.total}
+                    {s.overdue > 0 && <span className="red"> · 지연 {s.overdue}</span>}
+                  </span>
+                </div>
+                <div className="progress-bar">
+                  <div
+                    className="progress-fill"
+                    style={{
+                      width: `${s.total ? Math.round((s.done / s.total) * 100) : 0}%`,
+                      background: s.color,
+                    }}
+                  />
+                </div>
               </div>
-              <div className="progress-bar">
-                <div
-                  className="progress-fill"
-                  style={{
-                    width: `${s.total ? Math.round((s.done / s.total) * 100) : 0}%`,
-                    background: trackColor(s.track, tracks),
-                  }}
-                />
-              </div>
+            ))}
+          </section>
+        ) : (
+          <section className="card">
+            <div className="card-head">
+              <h2>트랙별 진행률</h2>
+              <button type="button" className="btn ghost small" onClick={() => setCreatingTrack(true)}>
+                + 새 트랙
+              </button>
             </div>
-          ))}
-        </section>
+            {trackStats.length === 0 && <p className="muted">트랙이 없습니다. 새 트랙을 추가하세요.</p>}
+            {trackStats.map((s) => (
+              <div key={s.track} className="track-progress">
+                <div className="track-progress-head">
+                  <span className="track-chip" style={{ background: trackColor(s.track, tracks) }}>
+                    {s.track}
+                  </span>
+                  <span className="muted small-text">
+                    작업 {s.done}/{s.total} · 산출물 {s.dDone}/{s.dTotal}
+                  </span>
+                  <button
+                    type="button"
+                    className="btn ghost small track-edit-btn"
+                    title="트랙 이름 변경"
+                    onClick={() => setRenamingTrack(s.track)}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="progress-bar">
+                  <div
+                    className="progress-fill"
+                    style={{
+                      width: `${s.total ? Math.round((s.done / s.total) * 100) : 0}%`,
+                      background: trackColor(s.track, tracks),
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
 
         <section className="card">
           <h2>이번 주 작업 ({thisWeek.length})</h2>

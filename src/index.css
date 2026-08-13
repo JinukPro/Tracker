@@ -123,6 +123,102 @@ h2 {
   color: var(--text);
 }
 
+.bar-group-label {
+  margin-left: auto;
+}
+
+.person-avatars {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.person-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.person-avatar.tiny {
+  width: 16px;
+  height: 16px;
+  font-size: 9px;
+}
+
+.person-avatar.extra {
+  background: #6b778c;
+  font-size: 9px;
+}
+
+.person-avatars .person-avatar + .person-avatar {
+  margin-left: -4px;
+  box-shadow: 0 0 0 1px #fff;
+}
+
+.assignee-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.assignee-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.assignee-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  border-radius: 14px;
+  padding: 3px 10px 3px 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.assignee-chip:hover {
+  background: #f4f5f7;
+}
+
+.assignee-chip.active {
+  color: var(--text);
+  border-color: var(--blue);
+  background: #e6effc;
+}
+
+.cal-chip,
+.calw-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cal-chip .person-avatar,
+.calw-bar .person-avatar {
+  width: 14px;
+  height: 14px;
+  font-size: 8px;
+}
+
+.section-row td {
+  background: #f4f5f7;
+  font-weight: 600;
+  padding: 8px 10px;
+}
+
 .proj-dot {
   width: 8px;
   height: 8px;
@@ -700,6 +796,10 @@ textarea:focus {
   gap: 10px;
 }
 
+.board-card-foot .person-avatars {
+  margin-left: auto;
+}
+
 /* ---------- calendar ---------- */
 .cal-nav {
   display: flex;
@@ -713,9 +813,30 @@ textarea:focus {
   text-align: center;
 }
 
+.cal-jump {
+  font-weight: 700;
+  font-size: 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.cal-jump:hover {
+  background: #f4f5f7;
+}
+
+.cal-tools {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .calendar {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(var(--cal-cols, 7), 1fr);
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -732,12 +853,9 @@ textarea:focus {
   border-bottom: 1px solid var(--border);
 }
 
-.cal-dow.sun {
-  color: var(--red);
-}
-
+.cal-dow.sun,
 .cal-dow.sat {
-  color: var(--blue);
+  color: var(--red);
 }
 
 .cal-cell {
@@ -748,7 +866,7 @@ textarea:focus {
   overflow: hidden;
 }
 
-.cal-cell:nth-child(7n) {
+.cal-cell.col-end {
   border-right: none;
 }
 
@@ -756,22 +874,81 @@ textarea:focus {
   background: #fafbfc;
 }
 
+.cal-cell.sun,
+.cal-cell.sat,
+.cal-cell.holiday {
+  background: #fdecea;
+}
+
+.cal-cell.other-month.sun,
+.cal-cell.other-month.sat,
+.cal-cell.other-month.holiday {
+  background: #f8e8e6;
+}
+
 .cal-cell.other-month .cal-date {
   color: #c1c7d0;
 }
 
-.cal-cell.today {
+.cal-cell.today:not(.sun):not(.sat):not(.holiday) {
   background: #e6effc;
+}
+
+.cal-date-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  margin-bottom: 3px;
 }
 
 .cal-date {
   font-size: 12px;
   font-weight: 600;
-  margin-bottom: 3px;
+  flex-shrink: 0;
+}
+
+.cal-cell.sun .cal-date,
+.cal-cell.sat .cal-date,
+.cal-cell.holiday .cal-date,
+.calw-day.sun .cal-date,
+.calw-day.sat .cal-date,
+.calw-day.holiday .cal-date {
+  color: var(--red);
+}
+
+.cal-cell.other-month.sun .cal-date,
+.cal-cell.other-month.sat .cal-date,
+.cal-cell.other-month.holiday .cal-date,
+.calw-day.other-month.sun .cal-date,
+.calw-day.other-month.sat .cal-date,
+.calw-day.other-month.holiday .cal-date {
+  opacity: 0.45;
+}
+
+.cal-holiday {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--red);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.cal-cell.other-month .cal-holiday,
+.calw-day.other-month .cal-holiday {
+  opacity: 0.5;
 }
 
 .cal-cell.today .cal-date {
   color: var(--blue);
+}
+
+.cal-cell.today.sun .cal-date,
+.cal-cell.today.sat .cal-date,
+.cal-cell.today.holiday .cal-date {
+  color: var(--red);
 }
 
 .cal-chip {
@@ -843,26 +1020,66 @@ textarea:focus {
 
 .calw-dow-row {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(var(--cal-cols, 7), 1fr);
 }
 
 .calw-row {
+  position: relative;
   border-top: 1px solid #f0f1f3;
   padding-bottom: 4px;
 }
 
-.calw-days {
+.calw-bg {
+  position: absolute;
+  inset: 0;
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(var(--cal-cols, 7), 1fr);
+  pointer-events: none;
+  z-index: 0;
 }
 
-.calw-day {
-  padding: 4px 6px 2px;
+.calw-bg-col {
   border-right: 1px solid #f0f1f3;
 }
 
-.calw-day:nth-child(7n) {
+.calw-bg-col.col-end {
   border-right: none;
+}
+
+.calw-bg-col.sun,
+.calw-bg-col.sat,
+.calw-bg-col.holiday {
+  background: #fdecea;
+}
+
+.calw-bg-col.other-month.sun,
+.calw-bg-col.other-month.sat,
+.calw-bg-col.other-month.holiday {
+  background: #f8e8e6;
+}
+
+.calw-days {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(var(--cal-cols, 7), 1fr);
+}
+
+.calw-day {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 4px 6px 2px;
+  min-height: 24px;
+}
+
+.calw-day.col-end {
+  border-right: none;
+}
+
+.calw-day .cal-holiday {
+  width: 100%;
 }
 
 .calw-day.other-month .cal-date {
@@ -880,9 +1097,17 @@ textarea:focus {
   justify-content: center;
 }
 
+.calw-day.today.sun .cal-date,
+.calw-day.today.sat .cal-date,
+.calw-day.today.holiday .cal-date {
+  background: var(--red);
+}
+
 .calw-bars {
+  position: relative;
+  z-index: 1;
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(var(--cal-cols, 7), 1fr);
   grid-auto-rows: 22px;
   gap: 2px 0;
   padding: 0 2px;
@@ -1026,6 +1251,7 @@ textarea:focus {
 .chart-row.project-header .chart-label {
   background: #eef1f5;
   font-weight: 700;
+  cursor: pointer;
 }
 
 .collapse-icon {

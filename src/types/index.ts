@@ -1,5 +1,16 @@
 export type IssueStatus = 'todo' | 'inprogress' | 'hold' | 'done'
 export type IssuePriority = 'high' | 'medium' | 'low'
+export type GroupBy = 'project' | 'person' | 'track'
+
+export const UNASSIGNED_ID = '__unassigned__'
+
+export const GROUP_BY_LABELS: Record<GroupBy, string> = {
+  project: '프로젝트',
+  person: '사람',
+  track: '트랙',
+}
+
+export const GROUP_BY_ORDER: GroupBy[] = ['project', 'person', 'track']
 
 export interface Deliverable {
   name: string
@@ -30,8 +41,19 @@ export interface Issue {
   startDate: string // YYYY-MM-DD
   dueDate: string // YYYY-MM-DD
   deliverables: Deliverable[]
+  /** 0+ member ids; empty means unassigned */
+  assigneeIds: string[]
   createdAt: string
   updatedAt: string
+}
+
+export interface Member {
+  id: string
+  displayName: string
+  email: string
+  createdAt: string
+  /** true when stored in trackerMembers (can rename/delete). Auth users are false. */
+  local: boolean
 }
 
 export type IssueInput = Omit<Issue, 'id' | 'key' | 'createdAt' | 'updatedAt'>

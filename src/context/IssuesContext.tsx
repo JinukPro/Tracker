@@ -9,8 +9,10 @@ import {
 } from 'react'
 import { initData } from '../services/bootstrap'
 import * as svc from '../services/issues'
+import { issueMatchesPeople } from '../lib/people'
 import type { Issue, IssueInput } from '../types'
 import { useAuth } from './AuthContext'
+import { usePeople } from './PeopleContext'
 import { useProjects } from './ProjectsContext'
 
 type IssuesContextValue = {
@@ -31,6 +33,7 @@ const IssuesContext = createContext<IssuesContextValue | null>(null)
 export function IssuesProvider({ children }: { children: ReactNode }) {
   const { user, localMode } = useAuth()
   const { selectedIds, selectedProjects, projectById } = useProjects()
+  const { selectedIds: personIds, selectionReady } = usePeople()
   const [allIssues, setAllIssues] = useState<Issue[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -107,8 +110,13 @@ export function IssuesProvider({ children }: { children: ReactNode }) {
   )
 
   const issues = useMemo(
-    () => allIssues.filter((i) => selectedIds.includes(i.projectId)),
-    [allIssues, selectedIds],
+    () =>
+      allIssues.filter(
+        (i) =>
+          selectedIds.includes(i.projectId) &&
+          (!selectionReady || issueMatchesPeople(i, personIds)),
+      ),
+    [allIssues, selectedIds, selectionReady, personIds],
   )
 
   // Tracks used by issues plus tracks declared on the selected projects

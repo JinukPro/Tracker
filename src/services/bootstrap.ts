@@ -1,13 +1,15 @@
 import seedIssuesJson from '../../data/issues.json'
 import seedProjectsJson from '../../data/projects.json'
 import { PROJECT_COLORS } from '../lib/colors'
-import type { Issue, IssueInput, Project } from '../types'
+import { normalizeAssignees } from '../lib/people'
+import type { Issue, IssueInput, Member, Project } from '../types'
 import * as issuesSvc from './issues'
+import * as membersSvc from './members'
 import * as projectsSvc from './projects'
 
 const DEFAULT_PROJECT = { name: 'T뽑기', keyPrefix: 'T', color: PROJECT_COLORS[0] }
 
-export type ExportData = { projects: Project[]; issues: Issue[] }
+export type ExportData = { projects: Project[]; issues: Issue[]; members?: Member[] }
 
 /**
  * Seed baked into the bundle at build time: whatever data/projects.json and
@@ -106,6 +108,7 @@ export async function clearAllData(): Promise<void> {
   const existing = await projectsSvc.listProjects()
   for (const p of existing) await projectsSvc.deleteProject(p.id)
   await issuesSvc.replaceAllIssues([])
+  await membersSvc.replaceAllMembers([])
 }
 
 /** Wipe everything and restore the seed baked into the build (data/*.json). */
@@ -137,6 +140,7 @@ export async function importData(parsed: unknown): Promise<{ projects: number; i
         const input: IssueInput = {
           ...rest,
           projectId: validIds.has(item.projectId) ? item.projectId : fallback,
+          assigneeIds: normalizeAssignees(item.assigneeIds),
         }
         return { key, input }
       }),
@@ -170,12 +174,22 @@ export async function importData(parsed: unknown): Promise<{ projects: number; i
   }
   const fallback = idMap.values().next().value ?? ''
 
+  const memberIdMap = new Map<string, string>()
+  if (Array.isArray(data.members)) {
+    await membersSvc.replaceAllMembers([])
+    for (const m of data.members) {
+      const newId = await membersSvc.createMember(m.displayName, m.email ?? '')
+      memberIdMap.set(m.id, newId)
+    }
+  }
+
   await issuesSvc.replaceAllIssues(
     data.issues.map((item) => {
       const { id: _id, key, createdAt: _c, updatedAt: _u, ...rest } = item
       const input: IssueInput = {
         ...rest,
         projectId: idMap.get(item.projectId) ?? fallback,
+        assigneeIds: normalizeAssignees(item.assigneeIds).map((id) => memberIdMap.get(id) ?? id),
       }
       return { key, input }
     }),

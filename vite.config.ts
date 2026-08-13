@@ -16,6 +16,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http'
 const DATA_FILES: Record<string, string> = {
   trackerIssues: resolve(import.meta.dirname, 'data/issues.json'),
   trackerProjects: resolve(import.meta.dirname, 'data/projects.json'),
+  trackerMembers: resolve(import.meta.dirname, 'data/members.json'),
 }
 
 const BACKUP_DIR = resolve(import.meta.dirname, 'data/backups')
@@ -53,7 +54,7 @@ function backupDataFiles(): void {
 // Watcher events may report the path with different slashes/case on Windows
 function isDataFile(p: string): boolean {
   const norm = p.replace(/\\/g, '/').toLowerCase()
-  return norm.endsWith('/data/issues.json') || norm.endsWith('/data/projects.json')
+  return norm.endsWith('/data/issues.json') || norm.endsWith('/data/projects.json') || norm.endsWith('/data/members.json')
 }
 
 /**

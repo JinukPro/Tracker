@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { useIssues } from '../context/IssuesContext'
+import { usePeople } from '../context/PeopleContext'
 import { useProjects } from '../context/ProjectsContext'
 import { nextProjectColor } from '../lib/colors'
+import { initials } from '../lib/people'
 import { getStorageMode, type StorageMode } from '../lib/store'
 import { clearAllData, importData, resetAllData } from '../services/bootstrap'
-import type { Project } from '../types'
+import type { Member, Project } from '../types'
 
 const MODE_LABELS: Record<StorageMode, string> = {
   firebase: 'Firebase Firestore',
@@ -73,15 +75,75 @@ function ProjectRow({
   )
 }
 
+function MemberRow({
+  member,
+  color,
+  issueCount,
+  busy,
+  onSave,
+  onDelete,
+}: {
+  member: Member
+  color: string
+  issueCount: number
+  busy: boolean
+  onSave: (name: string) => void
+  onDelete: () => void
+}) {
+  const [name, setName] = useState(member.displayName)
+  const dirty = name !== member.displayName
+
+  return (
+    <div className="project-row">
+      <span className="person-avatar" style={{ background: color }}>
+        {initials(member.displayName)}
+      </span>
+      {member.local ? (
+        <input
+          className="name-input"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="담당자 이름"
+        />
+      ) : (
+        <span className="name-input" style={{ display: 'inline-flex', alignItems: 'center' }}>
+          {member.displayName}
+        </span>
+      )}
+      <span className="muted small-text">
+        {member.local ? '명단' : '계정'}
+        {member.email ? ` · ${member.email}` : ''} · 작업 {issueCount}건
+      </span>
+      {member.local && (
+        <button
+          type="button"
+          className="btn small"
+          disabled={busy || !dirty || !name.trim()}
+          onClick={() => onSave(name.trim())}
+        >
+          저장
+        </button>
+      )}
+      {member.local && (
+        <button type="button" className="btn danger small" disabled={busy} onClick={onDelete}>
+          삭제
+        </button>
+      )}
+    </div>
+  )
+}
+
 export function SettingsPage() {
-  const { allIssues, refresh: refreshIssues } = useIssues()
+  const { allIssues, refresh: refreshIssues, update } = useIssues()
   const { projects, refresh: refreshProjects, addProject, editProject, removeProject } = useProjects()
+  const { people, addMember, editMember, removeMember, personColor, refresh: refreshPeople } = usePeople()
   const fileRef = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
   const [mode, setMode] = useState<StorageMode | null>(null)
   const [newName, setNewName] = useState('')
   const [newPrefix, setNewPrefix] = useState('')
+  const [newMember, setNewMember] = useState('')
 
   useEffect(() => {
     void getStorageMode().then(setMode)
@@ -122,7 +184,7 @@ export function SettingsPage() {
   }
 
   function exportJson() {
-    const data = { projects, issues: allIssues }
+    const data = { projects, issues: allIssues, members: people.filter((p) => p.local) }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -145,6 +207,7 @@ export function SettingsPage() {
       const result = await importData(parsed)
       await refreshProjects()
       await refreshIssues()
+      await refreshPeople()
       setMessage(`프로젝트 ${result.projects}개, 작업 ${result.issues}건을 가져왔습니다.`)
     } catch (err) {
       setMessage(`가져오기 실패: ${errText(err)}`)
@@ -167,6 +230,7 @@ export function SettingsPage() {
       await clearAllData()
       await refreshProjects()
       await refreshIssues()
+      await refreshPeople()
       setMessage('모든 데이터를 삭제했습니다.')
     } finally {
       setBusy(false)
@@ -186,9 +250,54 @@ export function SettingsPage() {
       await resetAllData()
       await refreshProjects()
       await refreshIssues()
+      await refreshPeople()
       setMessage('시드 데이터로 초기화했습니다.')
     } catch (err) {
       setMessage(`초기화 실패: ${errText(err)}`)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function handleAddMember() {
+    const name = newMember.trim()
+    if (!name) return
+    setBusy(true)
+    setMessage('')
+    try {
+      await addMember(name)
+      setNewMember('')
+      setMessage(`담당자 "${name}"을(를) 추가했습니다.`)
+    } catch (err) {
+      setMessage(`담당자 추가 실패: ${errText(err)}`)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function handleDeleteMember(id: string, name: string) {
+    const count = allIssues.filter((i) => i.assigneeIds.includes(id)).length
+    if (
+      !window.confirm(
+        count > 0
+          ? `"${name}" 담당자를 삭제할까요? 소속 작업 ${count}건에서 배정이 해제됩니다.`
+          : `"${name}" 담당자를 삭제할까요?`,
+      )
+    )
+      return
+    setBusy(true)
+    setMessage('')
+    try {
+      for (const i of allIssues) {
+        if (i.assigneeIds.includes(id)) {
+          await update(i.id, { assigneeIds: i.assigneeIds.filter((x) => x !== id) })
+        }
+      }
+      await removeMember(id)
+      await refreshIssues()
+      setMessage(`담당자 "${name}"을(를) 삭제했습니다.`)
+    } catch (err) {
+      setMessage(`담당자 삭제 실패: ${errText(err)}`)
     } finally {
       setBusy(false)
     }
@@ -246,22 +355,67 @@ export function SettingsPage() {
       </section>
 
       <section className="card">
+        <h2>담당자</h2>
+        {people.map((p) => (
+          <MemberRow
+            key={p.id}
+            member={p}
+            color={personColor(p.id)}
+            issueCount={allIssues.filter((i) => i.assigneeIds.includes(p.id)).length}
+            busy={busy}
+            onSave={(name) => {
+              setBusy(true)
+              void editMember(p.id, name).finally(() => setBusy(false))
+            }}
+            onDelete={() => void handleDeleteMember(p.id, p.displayName)}
+          />
+        ))}
+        {people.length === 0 && <p className="muted">등록된 담당자가 없습니다. 아래에서 추가하세요.</p>}
+        <div className="project-row add">
+          <input
+            className="name-input"
+            value={newMember}
+            onChange={(e) => setNewMember(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                void handleAddMember()
+              }
+            }}
+            placeholder="새 담당자 이름"
+          />
+          <button
+            type="button"
+            className="btn primary small"
+            disabled={busy || !newMember.trim()}
+            onClick={() => void handleAddMember()}
+          >
+            + 추가
+          </button>
+        </div>
+        <p className="muted small-text">
+          한 작업에 담당자를 여러 명 둘 수 있습니다. 로그인한 계정은 자동으로 목록에 나타나고, 여기서
+          추가한 이름은 로컬 명단입니다.
+        </p>
+      </section>
+
+      <section className="card">
         <h2>저장소</h2>
         <p>
           현재 모드: <strong>{mode ? MODE_LABELS[mode] : '확인 중…'}</strong>
         </p>
         {mode === 'firebase' && (
           <p className="muted">
-            Cloud Firestore(<code>trackerIssues</code>, <code>trackerProjects</code>)에 저장됩니다.
-            로그인한 팀원이 같은 보드를 공유합니다. Rules는 루트 <code>firestore.rules</code>를
-            Firebase Console에 배포해야 합니다.
+            Cloud Firestore(<code>trackerIssues</code>, <code>trackerProjects</code>,{' '}
+            <code>trackerMembers</code>)에 저장됩니다. 로그인한 팀원이 같은 보드를 공유합니다. Rules는
+            루트 <code>firestore.rules</code>를 Firebase Console에 배포해야 합니다.
           </p>
         )}
         {mode === 'file' && (
           <p className="muted">
-            모든 변경사항이 <code>Tracker/data/issues.json</code>·<code>data/projects.json</code>에
-            바로 저장됩니다. 이 파일을 Cursor에서 직접 수정하면 열려 있는 화면에도 실시간으로
-            반영됩니다.
+            모든 변경사항이 <code>Tracker/data/issues.json</code>·<code>data/projects.json</code>·
+            <code>data/members.json</code>에 바로 저장됩니다. 이 파일을 Cursor에서 직접 수정하면 열려
+            있는 화면에도 실시간으로 반영됩니다.
           </p>
         )}
         {mode === 'local' && (
@@ -271,7 +425,7 @@ export function SettingsPage() {
           </p>
         )}
         <p className="muted">
-          프로젝트 {projects.length}개 · 작업 {allIssues.length}건
+          프로젝트 {projects.length}개 · 작업 {allIssues.length}건 · 담당자 {people.length}명
         </p>
       </section>
 
@@ -296,7 +450,7 @@ export function SettingsPage() {
           />
         </div>
         <p className="muted small-text">
-          내보내기는 프로젝트와 작업을 함께 저장합니다. 예전 형식(작업 배열만)도 가져올 수
+          내보내기는 프로젝트·작업·담당자를 함께 저장합니다. 예전 형식(작업 배열만)도 가져올 수
           있습니다.
         </p>
       </section>

@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore'
 import { getDb } from '../lib/firebase'
 import type { UserProfile } from '../types'
 
@@ -12,6 +12,19 @@ export async function getUserProfile(uid: string): Promise<UserProfile | null> {
     email: data.email ?? '',
     createdAt: data.createdAt ?? '',
   }
+}
+
+export async function listUsers(): Promise<UserProfile[]> {
+  const snap = await getDocs(collection(getDb(), 'users'))
+  return snap.docs.map((d) => {
+    const data = d.data()
+    return {
+      uid: d.id,
+      displayName: data.displayName ?? '',
+      email: data.email ?? '',
+      createdAt: data.createdAt ?? '',
+    }
+  })
 }
 
 export async function createUserProfile(

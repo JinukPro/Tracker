@@ -1,6 +1,7 @@
 import { useMemo, useState, type DragEvent } from 'react'
 import { IssueModal } from '../components/IssueModal'
 import { Loading } from '../components/Loading'
+import { AssigneeChips } from '../components/AssigneeChips'
 import { useIssues } from '../context/IssuesContext'
 import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
@@ -103,6 +104,7 @@ export function BoardPage() {
                     </div>
                     <div className="board-card-foot">
                       <span className="issue-key">{i.key}</span>
+                      <AssigneeChips ids={i.assigneeIds} />
                       <span className={`small-text ${overdue ? 'red' : 'muted'}`}>
                         {formatShort(i.startDate)}~{formatShort(i.dueDate)}
                       </span>
