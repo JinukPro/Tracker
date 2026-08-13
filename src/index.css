@@ -1289,6 +1289,49 @@ textarea:focus {
   color: var(--red);
 }
 
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0 4px;
+  text-align: left;
+}
+
+.login-toggle {
+  background: none;
+  border: none;
+  color: #4c9aff;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 4px;
+}
+
+.login-toggle:hover {
+  text-decoration: underline;
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 12px;
+  margin: 10px 0;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--border);
+}
+
+.login-alt {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .error-banner {
   display: flex;
   align-items: center;

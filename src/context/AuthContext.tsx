@@ -1,8 +1,12 @@
 import {
   GoogleAuthProvider,
+  createUserWithEmailAndPassword,
   onAuthStateChanged,
+  signInAnonymously,
+  signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  updateProfile,
   type User,
 } from 'firebase/auth'
 import {
@@ -32,6 +36,9 @@ type AuthContextValue = {
   /** true when Firebase env is missing and the app runs on localStorage */
   localMode: boolean
   loginWithGoogle: () => Promise<void>
+  loginWithEmail: (email: string, password: string) => Promise<void>
+  signupWithEmail: (email: string, password: string, displayName: string) => Promise<void>
+  loginAsGuest: () => Promise<void>
   logout: () => Promise<void>
 }
 
@@ -41,7 +48,8 @@ async function ensureProfile(user: User): Promise<UserProfile | null> {
   const existing = await getUserProfile(user.uid)
   if (existing) return existing
   const email = user.email ?? ''
-  const displayName = user.displayName || user.email || '사용자'
+  const fallbackName = user.isAnonymous ? '게스트' : '사용자'
+  const displayName = user.displayName || user.email || fallbackName
   await createUserProfile(user.uid, email, displayName)
   // Build the profile locally instead of re-fetching it
   return { uid: user.uid, displayName, email, createdAt: new Date().toISOString() }
@@ -83,6 +91,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile(p)
   }, [])
 
+  const loginWithEmail = useCallback(async (email: string, password: string) => {
+    const auth = getFirebaseAuth()
+    const cred = await signInWithEmailAndPassword(auth, email, password)
+    setProfile(await ensureProfile(cred.user))
+  }, [])
+
+  const signupWithEmail = useCallback(
+    async (email: string, password: string, displayName: string) => {
+      const auth = getFirebaseAuth()
+      const cred = await createUserWithEmailAndPassword(auth, email, password)
+      if (displayName) await updateProfile(cred.user, { displayName })
+      setProfile(await ensureProfile(cred.user))
+    },
+    [],
+  )
+
+  const loginAsGuest = useCallback(async () => {
+    const auth = getFirebaseAuth()
+    const cred = await signInAnonymously(auth)
+    setProfile(await ensureProfile(cred.user))
+  }, [])
+
   const logout = useCallback(async () => {
     await signOut(getFirebaseAuth())
   }, [])
@@ -94,9 +124,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       localMode: !isFirebaseConfigured,
       loginWithGoogle,
+      loginWithEmail,
+      signupWithEmail,
+      loginAsGuest,
       logout,
     }),
-    [user, profile, loading, loginWithGoogle, logout],
+    [user, profile, loading, loginWithGoogle, loginWithEmail, signupWithEmail, loginAsGuest, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
