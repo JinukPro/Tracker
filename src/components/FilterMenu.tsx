@@ -114,10 +114,18 @@ export function FilterMenu() {
               <button
                 type="button"
                 className={`proj-chip ${personIds.includes(UNASSIGNED_ID) ? 'active' : ''}`}
+                style={
+                  personIds.includes(UNASSIGNED_ID)
+                    ? {
+                        borderColor: personColor(UNASSIGNED_ID),
+                        boxShadow: `inset 0 0 0 1px ${personColor(UNASSIGNED_ID)}`,
+                      }
+                    : undefined
+                }
                 onClick={() => togglePerson(UNASSIGNED_ID)}
                 title={personIds.includes(UNASSIGNED_ID) ? '클릭하여 숨기기' : '클릭하여 표시'}
               >
-                <span className="proj-dot" style={{ background: '#6b778c' }} />
+                <span className="proj-dot" style={{ background: personColor(UNASSIGNED_ID) }} />
                 미배정
               </button>
               {roster.map((p) => {
