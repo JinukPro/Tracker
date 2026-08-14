@@ -1309,6 +1309,10 @@ textarea:focus {
   line-height: 34px;
 }
 
+.issue-label.red .issue-key {
+  color: var(--red);
+}
+
 .chart-row.track-header {
   background: #fafbfc;
   height: 32px;
@@ -1373,6 +1377,12 @@ textarea:focus {
   filter: brightness(1.15);
 }
 
+.gantt-bar.overdue {
+  overflow: visible;
+  box-shadow: 0 0 0 2px var(--red);
+  z-index: 2;
+}
+
 .gantt-progress {
   position: absolute;
   left: 0;
@@ -1418,6 +1428,11 @@ textarea:focus {
   width: 12px;
   height: 12px;
   border-radius: 3px;
+}
+
+.legend-swatch.overdue {
+  background: var(--red);
+  box-shadow: 0 0 0 2px var(--red);
 }
 
 /* ---------- deliverables ---------- */

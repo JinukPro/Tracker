@@ -6,7 +6,7 @@ import { useIssues } from '../context/IssuesContext'
 import { usePeople } from '../context/PeopleContext'
 import { useProjects } from '../context/ProjectsContext'
 import { STATUS_COLORS } from '../lib/colors'
-import { addDays, diffDays, formatShort, parseISO } from '../lib/dates'
+import { addDays, diffDays, formatShort, parseISO, todayISO } from '../lib/dates'
 import { buildGroups } from '../lib/grouping'
 import type { Issue } from '../types'
 
@@ -58,7 +58,8 @@ export function GanttPage() {
 
   const chartW = range.days * DAY_W
   const totalW = LABEL_W + chartW
-  const todayOffset = diffDays(range.first, new Date()) * DAY_W
+  const today = todayISO()
+  const todayOffset = diffDays(range.first, parseISO(today)) * DAY_W
   const showToday = todayOffset >= 0 && todayOffset <= chartW
   const showParent = groupBy !== 'project' || multi
 
@@ -68,15 +69,24 @@ export function GanttPage() {
     const dTotal = i.deliverables.length
     const dDone = i.deliverables.filter((d) => d.done).length
     const pct = dTotal > 0 ? Math.round((dDone / dTotal) * 100) : i.status === 'done' ? 100 : 0
+    const overdue = i.status !== 'done' && i.dueDate < today
+    const delayDays = overdue ? diffDays(parseISO(i.dueDate), parseISO(today)) : 0
+    const tip = [
+      `${i.key} ${i.title}`,
+      `${formatShort(i.startDate)}~${formatShort(i.dueDate)} · 산출물 ${dDone}/${dTotal}`,
+      overdue ? `지연 D+${delayDays}` : '',
+    ]
+      .filter(Boolean)
+      .join('\n')
     return (
       <div key={rowKey} className="chart-row gantt-row" style={{ width: totalW }}>
-        <div className="chart-label issue-label" style={{ width: LABEL_W }} title={i.title}>
+        <div className={`chart-label issue-label${overdue ? ' red' : ''}`} style={{ width: LABEL_W }} title={i.title}>
           <span className="issue-key">{i.key}</span> {i.title}
         </div>
         <div
-          className="gantt-bar"
-          style={{ left, width, background: STATUS_COLORS[i.status] }}
-          title={`${i.key} ${i.title}\n${formatShort(i.startDate)}~${formatShort(i.dueDate)} · 산출물 ${dDone}/${dTotal}`}
+          className={`gantt-bar${overdue ? ' overdue' : ''}`}
+          style={{ left, width, background: overdue ? 'var(--red)' : STATUS_COLORS[i.status] }}
+          title={tip}
           onClick={() => setEditing(i)}
         >
           <div className="gantt-progress" style={{ width: `${pct}%` }} />
@@ -111,6 +121,9 @@ export function GanttPage() {
             </span>
             <span className="legend-item">
               <span className="legend-swatch" style={{ background: STATUS_COLORS.done }} /> 완료
+            </span>
+            <span className="legend-item">
+              <span className="legend-swatch overdue" /> 지연
             </span>
           </span>
         </div>

@@ -1,4 +1,4 @@
-import { useMemo, useState, type DragEvent } from 'react'
+import { useEffect, useMemo, useState, type DragEvent } from 'react'
 import { IssueModal } from '../components/IssueModal'
 import { Loading } from '../components/Loading'
 import { AssigneeChips } from '../components/AssigneeChips'
@@ -8,15 +8,45 @@ import { trackColor } from '../lib/colors'
 import { formatShort, todayISO } from '../lib/dates'
 import { STATUS_LABELS, STATUS_ORDER, type Issue, type IssueStatus } from '../types'
 
+const TRACK_FILTER_KEY = 'tracker:boardTrackFilter'
+
+function loadTrackFilter(): string {
+  try {
+    return localStorage.getItem(TRACK_FILTER_KEY) ?? ''
+  } catch {
+    return ''
+  }
+}
+
+function saveTrackFilter(value: string) {
+  try {
+    localStorage.setItem(TRACK_FILTER_KEY, value)
+  } catch {
+    // ignore quota / private-mode failures
+  }
+}
+
 export function BoardPage() {
   const { issues, tracks, update, loading } = useIssues()
   const { selectedIds, projectById } = useProjects()
   const multi = selectedIds.length > 1
-  const [trackFilter, setTrackFilter] = useState('')
+  const [trackFilter, setTrackFilter] = useState(loadTrackFilter)
   const [editing, setEditing] = useState<Issue | null>(null)
   const [creating, setCreating] = useState<IssueStatus | null>(null)
   const [dragOver, setDragOver] = useState<IssueStatus | null>(null)
   const today = todayISO()
+
+  useEffect(() => {
+    if (trackFilter && tracks.length > 0 && !tracks.includes(trackFilter)) {
+      setTrackFilter('')
+      saveTrackFilter('')
+    }
+  }, [trackFilter, tracks])
+
+  function onTrackFilterChange(value: string) {
+    setTrackFilter(value)
+    saveTrackFilter(value)
+  }
 
   const columns = useMemo(
     () =>
@@ -44,7 +74,7 @@ export function BoardPage() {
       <div className="page-head">
         <h1>보드</h1>
         <div className="filters inline">
-          <select value={trackFilter} onChange={(e) => setTrackFilter(e.target.value)}>
+          <select value={trackFilter} onChange={(e) => onTrackFilterChange(e.target.value)}>
             <option value="">전체 트랙</option>
             {tracks.map((t) => (
               <option key={t} value={t}>

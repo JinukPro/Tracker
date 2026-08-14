@@ -67,6 +67,13 @@ function isDataFile(p: string): boolean {
 function dataFileApi(): Plugin {
   return {
     name: 'data-file-api',
+    // bootstrap.ts imports data/*.json as seed. A board drag writes issues.json,
+    // which Vite would otherwise treat as a module change and full-reload the
+    // page — wiping UI state such as the board track filter. Keep the SPA up
+    // and notify via data-file-changed instead.
+    handleHotUpdate({ file }) {
+      if (isDataFile(file)) return []
+    },
     configureServer(server: ViteDevServer) {
       backupDataFiles()
       for (const file of Object.values(DATA_FILES)) server.watcher.add(file)
