@@ -17,6 +17,16 @@ export interface Deliverable {
   done: boolean
 }
 
+/** Day-scale work inside an issue (today / near-term), not a deliverable. */
+export interface WorkItem {
+  id: string
+  title: string
+  date: string // YYYY-MM-DD
+  done: boolean
+  /** When empty, the parent issue's assignees own this item. */
+  assigneeId?: string
+}
+
 export interface Project {
   id: string
   name: string
@@ -46,6 +56,7 @@ export interface Issue {
   startDate: string // YYYY-MM-DD
   dueDate: string // YYYY-MM-DD
   deliverables: Deliverable[]
+  workItems: WorkItem[]
   /** 0+ member ids; empty means unassigned */
   assigneeIds: string[]
   createdAt: string

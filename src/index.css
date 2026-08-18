@@ -1467,6 +1467,68 @@ textarea:focus {
   padding-left: 6px;
 }
 
+.range-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.work-item-row {
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.work-item-row > .check {
+  flex: 1;
+  min-width: 0;
+}
+
+.work-item-row .work-date {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.work-item-row .work-date.today {
+  color: var(--blue);
+  font-weight: 600;
+}
+
+.work-item-row .work-date.overdue {
+  color: var(--red);
+  font-weight: 600;
+}
+
+.work-item-add {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.work-item-add input[type='text'],
+.work-item-add input:not([type='date']) {
+  flex: 1;
+  min-width: 160px;
+}
+
+.work-item-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.work-item-edit-row input:not([type='date']):not([type='checkbox']) {
+  flex: 1;
+  min-width: 140px;
+}
+
+.work-item-edit-row select {
+  max-width: 160px;
+}
+
 /* ---------- modal ---------- */
 .modal-backdrop {
   position: fixed;

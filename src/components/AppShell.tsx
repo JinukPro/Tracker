@@ -11,6 +11,7 @@ const links = [
   { to: '/timeline', label: '타임라인' },
   { to: '/gantt', label: '간트' },
   { to: '/calendar', label: '달력' },
+  { to: '/work', label: '단위업무' },
   { to: '/deliverables', label: '산출물' },
   { to: '/settings', label: '설정' },
 ]

@@ -13,6 +13,7 @@ import { ListPage } from './pages/ListPage'
 import { LoginPage } from './pages/LoginPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { TimelinePage } from './pages/TimelinePage'
+import { WorkItemsPage } from './pages/WorkItemsPage'
 
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || undefined
 
@@ -32,6 +33,7 @@ export default function App() {
                   <Route path="/timeline" element={<TimelinePage />} />
                   <Route path="/gantt" element={<GanttPage />} />
                   <Route path="/calendar" element={<CalendarPage />} />
+                  <Route path="/work" element={<WorkItemsPage />} />
                   <Route path="/deliverables" element={<DeliverablesPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                 </Route>

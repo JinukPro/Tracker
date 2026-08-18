@@ -9,7 +9,7 @@
     "dueDate": "2026-08-22",
     "deliverables": [
       {
-        "name": "ECS 기능 요구사항 분석서",
+        "name": "ECS 기능 요구사항 명세서(SRS)",
         "done": false
       },
       {
@@ -20,8 +20,19 @@
     "projectId": "msqumom0-bsjbrr7",
     "key": "T-1",
     "createdAt": "2026-08-13T01:38:02.928Z",
-    "updatedAt": "2026-08-13T01:38:02.928Z",
-    "id": "msqumomo-5i85ew4"
+    "updatedAt": "2026-08-18T01:05:34.602Z",
+    "id": "msqumomo-5i85ew4",
+    "workItems": [
+      {
+        "id": "msxyo0gl-84k0qpr",
+        "title": "요구사항 명세서 작성",
+        "date": "2026-08-18",
+        "done": false
+      }
+    ],
+    "assigneeIds": [
+      "msr12zq1-fy1z0hd"
+    ]
   },
   {
     "track": "ECS-① 용접A·B",
@@ -517,7 +528,7 @@
     "dueDate": "2026-10-17",
     "deliverables": [
       {
-        "name": "요구사항 분석서",
+        "name": "요구사항 명세서(SRS)",
         "done": false
       }
     ],
@@ -1061,7 +1072,7 @@
     "dueDate": "2026-12-12",
     "deliverables": [
       {
-        "name": "ERP연동 요구사항 분석서",
+        "name": "ERP연동 요구사항 명세서(SRS)",
         "done": false
       },
       {
@@ -1441,15 +1452,26 @@
     "dueDate": "2026-08-22",
     "deliverables": [
       {
-        "name": "FMS/Display 요구사항 분석서",
+        "name": "FMS/Display 요구사항 명세서(SRS)",
         "done": false
       }
     ],
     "projectId": "msqumom0-bsjbrr7",
     "key": "T-69",
     "createdAt": "2026-08-13T01:38:02.928Z",
-    "updatedAt": "2026-08-13T01:38:02.928Z",
-    "id": "msqumomo-l9or5wa"
+    "updatedAt": "2026-08-18T01:05:37.558Z",
+    "id": "msqumomo-l9or5wa",
+    "workItems": [
+      {
+        "id": "msxyo1bj-7kmwoz0",
+        "title": "요구사항 명세서 작성",
+        "date": "2026-08-18",
+        "done": false
+      }
+    ],
+    "assigneeIds": [
+      "msr12zq1-fy1z0hd"
+    ]
   },
   {
     "track": "FMS·통합감시",
@@ -1822,7 +1844,7 @@
     "dueDate": "2026-09-12",
     "deliverables": [
       {
-        "name": "요구사항 분석서",
+        "name": "요구사항 명세서(SRS)",
         "done": false
       }
     ],
@@ -1882,10 +1904,18 @@
     "deliverables": [],
     "key": "R-2",
     "createdAt": "2026-08-13T01:38:02.928Z",
-    "updatedAt": "2026-08-14T02:20:02.702Z",
+    "updatedAt": "2026-08-18T01:04:26.895Z",
     "id": "msqumomo-5ia2469",
     "assigneeIds": [
       "msr12zq1-fy1z0hd"
+    ],
+    "workItems": [
+      {
+        "id": "msxymqdr-fg1g493",
+        "title": "DH 파라미터 테스트 및 조인트 움직임 체크",
+        "date": "2026-08-18",
+        "done": false
+      }
     ]
   },
   {
@@ -1918,7 +1948,7 @@
     "status": "inprogress",
     "priority": "high",
     "startDate": "2026-08-11",
-    "dueDate": "2026-08-14",
+    "dueDate": "2026-08-13",
     "description": "",
     "deliverables": [
       {
@@ -1931,7 +1961,7 @@
     ],
     "key": "S-2",
     "createdAt": "2026-08-13T04:26:13.676Z",
-    "updatedAt": "2026-08-14T02:13:25.314Z",
+    "updatedAt": "2026-08-14T02:30:43.695Z",
     "id": "msr0mypg-e8f9nj3"
   },
   {
@@ -1994,8 +2024,8 @@
     "track": "소업무",
     "status": "inprogress",
     "priority": "medium",
-    "startDate": "2026-08-18",
-    "dueDate": "2026-08-18",
+    "startDate": "2026-08-21",
+    "dueDate": "2026-08-21",
     "description": "",
     "deliverables": [],
     "assigneeIds": [
@@ -2003,7 +2033,52 @@
     ],
     "key": "S-4",
     "createdAt": "2026-08-13T05:48:13.579Z",
-    "updatedAt": "2026-08-14T02:20:18.672Z",
-    "id": "msr3kexf-hqm9r3a"
+    "updatedAt": "2026-08-18T01:04:07.516Z",
+    "id": "msr3kexf-hqm9r3a",
+    "workItems": [
+      {
+        "id": "msxylvqv-wmz1e08",
+        "title": "품질팀과 회의",
+        "date": "2026-08-18",
+        "done": false
+      }
+    ]
+  },
+  {
+    "projectId": "msr0fhqq-v588472",
+    "title": "신입 일정 관리",
+    "track": "소업무",
+    "status": "inprogress",
+    "priority": "medium",
+    "startDate": "2026-08-18",
+    "dueDate": "2026-11-17",
+    "description": "신입 작업 할당 및 관리",
+    "deliverables": [
+      {
+        "name": "일정 계획표",
+        "done": false
+      },
+      {
+        "name": "평가자료",
+        "done": false
+      }
+    ],
+    "assigneeIds": [
+      "msxvmyad-6vb19bc",
+      "msr12zq1-fy1z0hd"
+    ],
+    "key": "S-5",
+    "createdAt": "2026-08-17T23:41:43.939Z",
+    "updatedAt": "2026-08-18T01:02:38.632Z",
+    "id": "msxvocy3-59601xm",
+    "workItems": [
+      {
+        "id": "msxycivo-kg4764d",
+        "title": "CCTV 파이프 검출, 지관/모관 세그멘테이션 일정 계획 짜도록 진행",
+        "date": "2026-08-18",
+        "done": false,
+        "assigneeId": "msr12zq1-fy1z0hd"
+      }
+    ]
   }
 ]

@@ -2,6 +2,7 @@ import seedIssuesJson from '../../data/issues.json'
 import seedProjectsJson from '../../data/projects.json'
 import { PROJECT_COLORS } from '../lib/colors'
 import { normalizeAssignees } from '../lib/people'
+import { normalizeWorkItems, remapWorkItemAssignees } from '../lib/workItems'
 import type { Issue, IssueInput, Member, Project } from '../types'
 import * as issuesSvc from './issues'
 import * as membersSvc from './members'
@@ -146,6 +147,7 @@ export async function importData(parsed: unknown): Promise<{ projects: number; i
           ...rest,
           projectId: validIds.has(item.projectId) ? item.projectId : fallback,
           assigneeIds: normalizeAssignees(item.assigneeIds),
+          workItems: normalizeWorkItems(item.workItems),
         }
         return { key, input }
       }),
@@ -202,6 +204,7 @@ export async function importData(parsed: unknown): Promise<{ projects: number; i
         ...rest,
         projectId: idMap.get(item.projectId) ?? fallback,
         assigneeIds: normalizeAssignees(item.assigneeIds).map(remapMember),
+        workItems: remapWorkItemAssignees(normalizeWorkItems(item.workItems), remapMember),
       }
       return { key, input }
     }),

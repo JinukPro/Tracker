@@ -1,5 +1,6 @@
 import { addOne, listAll, removeOne, setAll, updateOne, type StoredDoc } from '../lib/store'
 import { normalizeAssignees } from '../lib/people'
+import { normalizeWorkItems } from '../lib/workItems'
 import type { Deliverable, Issue, IssueInput } from '../types'
 
 const COL = 'trackerIssues'
@@ -17,6 +18,7 @@ function mapIssue(d: StoredDoc): Issue {
     startDate: (d.startDate as string) ?? '',
     dueDate: (d.dueDate as string) ?? '',
     deliverables: (d.deliverables as Deliverable[]) ?? [],
+    workItems: normalizeWorkItems(d.workItems),
     assigneeIds: normalizeAssignees(d.assigneeIds),
     createdAt: (d.createdAt as string) ?? '',
     updatedAt: (d.updatedAt as string) ?? '',
@@ -43,6 +45,7 @@ export async function createIssue(input: IssueInput, key: string): Promise<strin
   return addOne(COL, {
     ...input,
     assigneeIds: normalizeAssignees(input.assigneeIds),
+    workItems: normalizeWorkItems(input.workItems),
     key,
     createdAt: now,
     updatedAt: now,
@@ -52,6 +55,7 @@ export async function createIssue(input: IssueInput, key: string): Promise<strin
 export async function updateIssue(id: string, patch: Partial<Issue>): Promise<void> {
   const next: Partial<Issue> & { updatedAt: string } = { ...patch, updatedAt: new Date().toISOString() }
   if (patch.assigneeIds) next.assigneeIds = normalizeAssignees(patch.assigneeIds)
+  if (patch.workItems) next.workItems = normalizeWorkItems(patch.workItems)
   await updateOne(COL, id, next)
 }
 
@@ -74,6 +78,7 @@ export async function replaceAllIssues(items: { key: string; input: IssueInput }
     items.map(({ key, input }) => ({
       ...input,
       assigneeIds: normalizeAssignees(input.assigneeIds),
+      workItems: normalizeWorkItems(input.workItems),
       key,
       createdAt: now,
       updatedAt: now,
