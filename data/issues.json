@@ -2080,5 +2080,43 @@
         "assigneeId": "msr12zq1-fy1z0hd"
       }
     ]
+  },
+  {
+    "projectId": "msqumome-6upa59z",
+    "title": "가림막 OBJ — MDL Angular Cutout",
+    "track": "모듈개발",
+    "status": "inprogress",
+    "priority": "medium",
+    "startDate": "2026-08-20",
+    "dueDate": "2026-08-20",
+    "description": "대상: **가림막 OBJ만** 시계방향으로 걷히게 하고, 뒤에 가려져 있던 오브젝트는 그대로 보이게 한다.  \n제어: Unity Cross Section과 같이 **Cutting Plane의 Position / Rotation** 으로 자른다.  \n플랫폼: NVIDIA Omniverse (MDL + Kit 스크립트)\n\n참고:\n- Unity 단면 개념: https://codeburst.io/unity-cross-section-shader-using-shader-graph-31c3fed0fa4f\n- 연출: 6시에서 시작, 호(중심각)가 0°부터 커지며 가림막이 지워짐 (클록 와이프)\n- Cutting Plane Position/Rotation",
+    "deliverables": [],
+    "workItems": [],
+    "assigneeIds": [
+      "msr12zq1-fy1z0hd"
+    ],
+    "key": "R-4",
+    "createdAt": "2026-08-18T02:06:34.904Z",
+    "updatedAt": "2026-08-18T02:06:34.904Z",
+    "id": "msy0umxt-a1dmhbq"
+  },
+  {
+    "projectId": "msqumom0-bsjbrr7",
+    "title": "시스템 개발-공급 일정 세부 일정 제작 및 담당자 설정",
+    "track": "기획",
+    "status": "inprogress",
+    "priority": "medium",
+    "startDate": "2026-08-19",
+    "dueDate": "2026-08-21",
+    "description": "",
+    "deliverables": [],
+    "workItems": [],
+    "assigneeIds": [
+      "msr12zq1-fy1z0hd"
+    ],
+    "key": "T-90",
+    "createdAt": "2026-08-18T06:48:11.873Z",
+    "updatedAt": "2026-08-18T06:48:28.043Z",
+    "id": "msyawsq2-cg2p91y"
   }
 ]
