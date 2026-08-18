@@ -134,15 +134,15 @@ export function BoardPage() {
                     </div>
                     <div className="board-card-foot">
                       <span className="issue-key">{i.key}</span>
-                      <AssigneeChips ids={i.assigneeIds} />
-                      <span className={`small-text ${overdue ? 'red' : 'muted'}`}>
-                        {formatShort(i.startDate)}~{formatShort(i.dueDate)}
-                      </span>
                       {i.deliverables.length > 0 && (
                         <span className={`small-text ${dDone === i.deliverables.length ? 'green' : 'muted'}`}>
                           📄 {dDone}/{i.deliverables.length}
                         </span>
                       )}
+                      <AssigneeChips ids={i.assigneeIds} />
+                      <span className={`small-text ${overdue ? 'red' : 'muted'}`}>
+                        {formatShort(i.startDate)}~{formatShort(i.dueDate)}
+                      </span>
                     </div>
                   </div>
                 )
