@@ -17,6 +17,7 @@ function mapIssue(d: StoredDoc): Issue {
     priority: (d.priority as Issue['priority']) ?? 'medium',
     startDate: (d.startDate as string) ?? '',
     dueDate: (d.dueDate as string) ?? '',
+    completedDate: (d.completedDate as string) || undefined,
     deliverables: (d.deliverables as Deliverable[]) ?? [],
     workItems: normalizeWorkItems(d.workItems),
     assigneeIds: normalizeAssignees(d.assigneeIds),

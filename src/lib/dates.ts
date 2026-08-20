@@ -44,3 +44,9 @@ export function formatWithDay(iso: string): string {
   const days = ['일', '월', '화', '수', '목', '금', '토']
   return `${d.getMonth() + 1}/${d.getDate()}(${days[d.getDay()]})`
 }
+
+/** Calendar days past due. 0 when actual is on or before due. */
+export function delayDays(dueDate: string, actualDate: string): number {
+  if (!dueDate || !actualDate || actualDate <= dueDate) return 0
+  return diffDays(parseISO(dueDate), parseISO(actualDate))
+}

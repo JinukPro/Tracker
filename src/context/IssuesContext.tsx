@@ -9,6 +9,7 @@ import {
 } from 'react'
 import { initData } from '../services/bootstrap'
 import * as svc from '../services/issues'
+import { withCompletedDate } from '../lib/issues'
 import { issueMatchesPeople } from '../lib/people'
 import type { Issue, IssueInput } from '../types'
 import { useAuth } from './AuthContext'
@@ -77,7 +78,10 @@ export function IssuesProvider({ children }: { children: ReactNode }) {
   const create = useCallback(
     async (input: IssueInput) => {
       const prefix = projectById(input.projectId)?.keyPrefix ?? 'T'
-      await svc.createIssue(input, svc.nextKey(allIssues, input.projectId, prefix))
+      await svc.createIssue(
+        withCompletedDate(input) as IssueInput,
+        svc.nextKey(allIssues, input.projectId, prefix),
+      )
       await addMembersToProject(input.projectId, input.assigneeIds)
       await refresh()
     },
@@ -88,10 +92,10 @@ export function IssuesProvider({ children }: { children: ReactNode }) {
     async (id: string, patch: Partial<Issue>) => {
       // Moving an issue to another project re-issues its key under the new prefix
       const current = allIssues.find((i) => i.id === id)
-      let effective = patch
+      let effective = withCompletedDate(patch, current)
       if (patch.projectId && current && patch.projectId !== current.projectId) {
         const prefix = projectById(patch.projectId)?.keyPrefix ?? 'T'
-        effective = { ...patch, key: svc.nextKey(allIssues, patch.projectId, prefix) }
+        effective = { ...effective, key: svc.nextKey(allIssues, patch.projectId, prefix) }
       }
       // Optimistic update keeps drag & drop and checkbox toggles snappy
       setAllIssues((prev) => prev.map((i) => (i.id === id ? { ...i, ...effective } : i)))

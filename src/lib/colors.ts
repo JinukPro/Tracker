@@ -35,6 +35,6 @@ export function nextProjectColor(used: string[]): string {
 export const STATUS_COLORS: Record<IssueStatus, string> = {
   todo: '#6b778c',
   inprogress: '#0052cc',
-  hold: '#ff8b00',
+  hold: '#f5c518',
   done: '#00875a',
 }

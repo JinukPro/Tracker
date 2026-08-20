@@ -6,6 +6,7 @@ import { useIssues } from '../context/IssuesContext'
 import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
 import { formatShort, todayISO } from '../lib/dates'
+import { isLateDone, isOverdue, issueDelayDays } from '../lib/issues'
 import { STATUS_LABELS, STATUS_ORDER, type Issue, type IssueStatus } from '../types'
 
 const TRACK_FILTER_KEY = 'tracker:boardTrackFilter'
@@ -108,7 +109,9 @@ export function BoardPage() {
             <div className="board-col-body">
               {items.map((i) => {
                 const dDone = i.deliverables.filter((d) => d.done).length
-                const overdue = i.status !== 'done' && i.dueDate < today
+                const overdue = isOverdue(i, today)
+                const lateDone = isLateDone(i)
+                const delay = issueDelayDays(i, today)
                 return (
                   <div
                     key={i.id}
@@ -140,8 +143,10 @@ export function BoardPage() {
                         </span>
                       )}
                       <AssigneeChips ids={i.assigneeIds} />
-                      <span className={`small-text ${overdue ? 'red' : 'muted'}`}>
+                      <span className={`small-text ${overdue ? 'red' : lateDone ? 'orange' : 'muted'}`}>
                         {formatShort(i.startDate)}~{formatShort(i.dueDate)}
+                        {lateDone && i.completedDate && ` → ${formatShort(i.completedDate)} D+${delay}`}
+                        {overdue && ` D+${delay}`}
                       </span>
                     </div>
                   </div>

@@ -55,6 +55,8 @@ export interface Issue {
   priority: IssuePriority
   startDate: string // YYYY-MM-DD
   dueDate: string // YYYY-MM-DD
+  /** Actual finish date (YYYY-MM-DD). Set when status becomes done; cleared when reopened. */
+  completedDate?: string
   deliverables: Deliverable[]
   workItems: WorkItem[]
   /** 0+ member ids; empty means unassigned */

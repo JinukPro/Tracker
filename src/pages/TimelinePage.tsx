@@ -5,12 +5,14 @@ import { Loading } from '../components/Loading'
 import { useIssues } from '../context/IssuesContext'
 import { usePeople } from '../context/PeopleContext'
 import { useProjects } from '../context/ProjectsContext'
-import { addDays, diffDays, formatShort, parseISO, startOfWeek } from '../lib/dates'
+import { addDays, diffDays, parseISO, startOfWeek, todayISO } from '../lib/dates'
 import { buildGroups } from '../lib/grouping'
+import { isLateDone, isOverdue, issueDateTip, issueSpanEnd } from '../lib/issues'
 import type { Issue } from '../types'
 
 const LABEL_W = 250
 const WEEK_W = 64
+const DAY_W = WEEK_W / 7
 
 export function TimelinePage() {
   const { issues, tracks, loading } = useIssues()
@@ -23,9 +25,12 @@ export function TimelinePage() {
   const range = useMemo(() => {
     if (issues.length === 0) return null
     const minStart = issues.reduce((a, i) => (i.startDate < a ? i.startDate : a), issues[0].startDate)
-    const maxDue = issues.reduce((a, i) => (i.dueDate > a ? i.dueDate : a), issues[0].dueDate)
+    const maxEnd = issues.reduce((a, i) => {
+      const end = issueSpanEnd(i)
+      return end > a ? end : a
+    }, issues[0].dueDate)
     const first = startOfWeek(parseISO(minStart))
-    const last = startOfWeek(parseISO(maxDue))
+    const last = startOfWeek(parseISO(maxEnd))
     const weeks: Date[] = []
     for (let d = first; d <= last; d = addDays(d, 7)) weeks.push(d)
     return { first, weeks }
@@ -53,7 +58,7 @@ export function TimelinePage() {
 
   const totalW = LABEL_W + range.weeks.length * WEEK_W
   const today = new Date()
-  const todayOffset = diffDays(range.first, today) * (WEEK_W / 7)
+  const todayOffset = diffDays(range.first, today) * DAY_W
   const showToday = todayOffset >= 0 && todayOffset <= range.weeks.length * WEEK_W
   const showParent = groupBy !== 'project' || multi
 
@@ -62,23 +67,40 @@ export function TimelinePage() {
   }
 
   function renderBar(i: Issue, rowKey: string, barColor: string) {
-    const startWi = Math.max(0, Math.floor(diffDays(range!.first, parseISO(i.startDate)) / 7))
-    const endWi = Math.floor(diffDays(range!.first, parseISO(i.dueDate)) / 7)
-    const left = LABEL_W + startWi * WEEK_W
-    const width = Math.max(1, endWi - startWi + 1) * WEEK_W - 6
+    const startOff = diffDays(range!.first, parseISO(i.startDate))
+    const dueOff = diffDays(range!.first, parseISO(i.dueDate))
+    const endOff = diffDays(range!.first, parseISO(issueSpanEnd(i)))
+    const left = LABEL_W + startOff * DAY_W
+    const width = Math.max(DAY_W, (dueOff - startOff + 1) * DAY_W)
+    const delayWidth = endOff > dueOff ? (endOff - dueOff) * DAY_W : 0
+    const overdue = isOverdue(i, todayISO())
+    const lateDone = isLateDone(i)
+    const tip = issueDateTip(i)
     return (
       <div key={rowKey} className="chart-row" style={{ width: totalW }}>
-        <div className="chart-label issue-label" style={{ width: LABEL_W }} title={i.title}>
+        <div
+          className={`chart-label issue-label${overdue ? ' red' : lateDone ? ' orange' : ''}`}
+          style={{ width: LABEL_W }}
+          title={i.title}
+        >
           <span className="issue-key">{i.key}</span> {i.title}
         </div>
         <div
-          className={`timeline-bar ${i.status === 'done' ? 'bar-done' : ''}`}
+          className={`timeline-bar ${i.status === 'done' ? 'bar-done' : ''} ${overdue ? 'overdue' : ''} ${lateDone ? 'late-done' : ''}`}
           style={{ left, width, background: barColor }}
-          title={`${i.key} ${i.title} (${formatShort(i.startDate)}~${formatShort(i.dueDate)})`}
+          title={tip}
           onClick={() => setEditing(i)}
         >
           {i.title}
         </div>
+        {delayWidth > 0 && (
+          <div
+            className="timeline-bar timeline-delay"
+            style={{ left: left + width, width: delayWidth }}
+            title={tip}
+            onClick={() => setEditing(i)}
+          />
+        )}
       </div>
     )
   }

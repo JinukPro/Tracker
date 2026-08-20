@@ -3,33 +3,26 @@
     "track": "ECS-① 용접A·B",
     "title": "요구사항 분석 · Cell 상태기계 설계",
     "description": "ECS가 담당할 기능 범위 확정(셀 내 PLC/로봇 실시간제어, 인터락, 알람 전담). 6개 셀에 공통 적용할 표준 상태기계(IDLE→STARTING→EXECUTE→COMPLETE/HELD/ABORTED)를 설계. EXECUTE 내부의 셀별 세부 실행단계는 각 셀의 아키텍처 설계·로직개발 주차에서 스텝 전이도로 별도 정의.",
-    "status": "todo",
+    "status": "done",
     "priority": "medium",
     "startDate": "2026-08-16",
     "dueDate": "2026-08-22",
     "deliverables": [
       {
         "name": "ECS 기능 요구사항 명세서(SRS)",
-        "done": false
+        "done": true
       },
       {
         "name": "셀 표준 상태전이표(설계문서)",
-        "done": false
+        "done": true
       }
     ],
     "projectId": "msqumom0-bsjbrr7",
     "key": "T-1",
     "createdAt": "2026-08-13T01:38:02.928Z",
-    "updatedAt": "2026-08-18T01:05:34.602Z",
+    "updatedAt": "2026-08-19T07:04:33.016Z",
     "id": "msqumomo-5i85ew4",
-    "workItems": [
-      {
-        "id": "msxyo0gl-84k0qpr",
-        "title": "요구사항 명세서 작성",
-        "date": "2026-08-18",
-        "done": false
-      }
-    ],
+    "workItems": [],
     "assigneeIds": [
       "msr12zq1-fy1z0hd"
     ]
@@ -1446,29 +1439,22 @@
     "track": "FMS·통합감시",
     "title": "요구사항 분석",
     "description": "FMS 기능범위(이벤트연동 녹화, 알람-영상매핑) 및 종합상황시각화 표시항목 정의.",
-    "status": "todo",
+    "status": "done",
     "priority": "medium",
     "startDate": "2026-08-16",
     "dueDate": "2026-08-22",
     "deliverables": [
       {
         "name": "FMS/Display 요구사항 명세서(SRS)",
-        "done": false
+        "done": true
       }
     ],
     "projectId": "msqumom0-bsjbrr7",
     "key": "T-69",
     "createdAt": "2026-08-13T01:38:02.928Z",
-    "updatedAt": "2026-08-18T01:05:37.558Z",
+    "updatedAt": "2026-08-19T07:04:39.459Z",
     "id": "msqumomo-l9or5wa",
-    "workItems": [
-      {
-        "id": "msxyo1bj-7kmwoz0",
-        "title": "요구사항 명세서 작성",
-        "date": "2026-08-18",
-        "done": false
-      }
-    ],
+    "workItems": [],
     "assigneeIds": [
       "msr12zq1-fy1z0hd"
     ]
@@ -1877,46 +1863,27 @@
     "projectId": "msqumome-6upa59z",
     "title": "애니메이션 일정",
     "track": "프로젝트 기획",
-    "status": "inprogress",
+    "status": "done",
     "priority": "medium",
     "startDate": "2026-08-13",
     "dueDate": "2026-08-14",
     "description": "",
-    "deliverables": [],
+    "deliverables": [
+      {
+        "name": "영상 제작 일정표",
+        "done": true
+      }
+    ],
     "key": "R-1",
     "createdAt": "2026-08-13T01:38:02.928Z",
-    "updatedAt": "2026-08-14T02:14:19.480Z",
+    "updatedAt": "2026-08-20T04:45:58.737Z",
     "id": "msqumomo-k9r413d",
     "assigneeIds": [
       "msr12zq1-fy1z0hd",
       "msr0n8a2-xv1u679"
-    ]
-  },
-  {
-    "projectId": "msqumome-6upa59z",
-    "title": "DT-Plugins",
-    "track": "모듈개발",
-    "status": "inprogress",
-    "priority": "medium",
-    "startDate": "2026-08-13",
-    "dueDate": "2026-08-21",
-    "description": "",
-    "deliverables": [],
-    "key": "R-2",
-    "createdAt": "2026-08-13T01:38:02.928Z",
-    "updatedAt": "2026-08-18T01:04:26.895Z",
-    "id": "msqumomo-5ia2469",
-    "assigneeIds": [
-      "msr12zq1-fy1z0hd"
     ],
-    "workItems": [
-      {
-        "id": "msxymqdr-fg1g493",
-        "title": "DH 파라미터 테스트 및 조인트 움직임 체크",
-        "date": "2026-08-18",
-        "done": false
-      }
-    ]
+    "workItems": [],
+    "completedDate": "2026-08-19"
   },
   {
     "projectId": "msr0fhqq-v588472",
@@ -2020,12 +1987,12 @@
   },
   {
     "projectId": "msr0fhqq-v588472",
-    "title": "SW 요구사항 명세서 작성 양식",
+    "title": "SW 요구사항 명세서 작성 양식 회의",
     "track": "소업무",
-    "status": "inprogress",
+    "status": "done",
     "priority": "medium",
-    "startDate": "2026-08-21",
-    "dueDate": "2026-08-21",
+    "startDate": "2026-08-18",
+    "dueDate": "2026-08-18",
     "description": "",
     "deliverables": [],
     "assigneeIds": [
@@ -2033,14 +2000,14 @@
     ],
     "key": "S-4",
     "createdAt": "2026-08-13T05:48:13.579Z",
-    "updatedAt": "2026-08-18T01:04:07.516Z",
+    "updatedAt": "2026-08-19T07:02:18.259Z",
     "id": "msr3kexf-hqm9r3a",
     "workItems": [
       {
         "id": "msxylvqv-wmz1e08",
         "title": "품질팀과 회의",
         "date": "2026-08-18",
-        "done": false
+        "done": true
       }
     ]
   },
@@ -2065,11 +2032,12 @@
     ],
     "assigneeIds": [
       "msxvmyad-6vb19bc",
-      "msr12zq1-fy1z0hd"
+      "msr12zq1-fy1z0hd",
+      "msr0n8a2-xv1u679"
     ],
     "key": "S-5",
     "createdAt": "2026-08-17T23:41:43.939Z",
-    "updatedAt": "2026-08-18T01:02:38.632Z",
+    "updatedAt": "2026-08-19T07:03:34.949Z",
     "id": "msxvocy3-59601xm",
     "workItems": [
       {
@@ -2082,32 +2050,13 @@
     ]
   },
   {
-    "projectId": "msqumome-6upa59z",
-    "title": "가림막 OBJ — MDL Angular Cutout",
-    "track": "모듈개발",
-    "status": "inprogress",
-    "priority": "medium",
-    "startDate": "2026-08-20",
-    "dueDate": "2026-08-20",
-    "description": "대상: **가림막 OBJ만** 시계방향으로 걷히게 하고, 뒤에 가려져 있던 오브젝트는 그대로 보이게 한다.  \n제어: Unity Cross Section과 같이 **Cutting Plane의 Position / Rotation** 으로 자른다.  \n플랫폼: NVIDIA Omniverse (MDL + Kit 스크립트)\n\n참고:\n- Unity 단면 개념: https://codeburst.io/unity-cross-section-shader-using-shader-graph-31c3fed0fa4f\n- 연출: 6시에서 시작, 호(중심각)가 0°부터 커지며 가림막이 지워짐 (클록 와이프)\n- Cutting Plane Position/Rotation",
-    "deliverables": [],
-    "workItems": [],
-    "assigneeIds": [
-      "msr12zq1-fy1z0hd"
-    ],
-    "key": "R-4",
-    "createdAt": "2026-08-18T02:06:34.904Z",
-    "updatedAt": "2026-08-18T02:06:34.904Z",
-    "id": "msy0umxt-a1dmhbq"
-  },
-  {
     "projectId": "msqumom0-bsjbrr7",
     "title": "시스템 개발-공급 일정 세부 일정 제작 및 담당자 설정",
     "track": "기획",
     "status": "inprogress",
     "priority": "medium",
-    "startDate": "2026-08-19",
-    "dueDate": "2026-08-21",
+    "startDate": "2026-08-24",
+    "dueDate": "2026-08-25",
     "description": "",
     "deliverables": [],
     "workItems": [],
@@ -2116,7 +2065,52 @@
     ],
     "key": "T-90",
     "createdAt": "2026-08-18T06:48:11.873Z",
-    "updatedAt": "2026-08-18T06:48:28.043Z",
+    "updatedAt": "2026-08-19T07:11:23.750Z",
     "id": "msyawsq2-cg2p91y"
+  },
+  {
+    "projectId": "msqumome-6upa59z",
+    "title": "DT 리비전",
+    "track": "모듈개발",
+    "status": "inprogress",
+    "priority": "medium",
+    "startDate": "2026-08-20",
+    "dueDate": "2026-08-28",
+    "description": "대상: **가림막 OBJ만** 시계방향으로 걷히게 하고, 뒤에 가려져 있던 오브젝트는 그대로 보이게 한다.  \n제어: Unity Cross Section과 같이 **Cutting Plane의 Position / Rotation** 으로 자른다.  \n플랫폼: NVIDIA Omniverse (MDL + Kit 스크립트)\n\n참고:\n- Unity 단면 개념: https://codeburst.io/unity-cross-section-shader-using-shader-graph-31c3fed0fa4f\n- 연출: 6시에서 시작, 호(중심각)가 0°부터 커지며 가림막이 지워짐 (클록 와이프)\n- Cutting Plane Position/Rotation",
+    "deliverables": [
+      {
+        "name": "신연료 장전",
+        "done": false
+      },
+      {
+        "name": "DH 기능 및 환경세팅",
+        "done": false
+      },
+      {
+        "name": "Omni 스크립트 내부실행",
+        "done": false
+      },
+      {
+        "name": "사용후 연료 인출",
+        "done": false
+      },
+      {
+        "name": "절단면,투명도 조절",
+        "done": false
+      },
+      {
+        "name": "가림막 OBJ",
+        "done": false
+      }
+    ],
+    "workItems": [],
+    "assigneeIds": [
+      "msr12zq1-fy1z0hd"
+    ],
+    "key": "R-5",
+    "createdAt": "2026-08-19T07:06:55.428Z",
+    "updatedAt": "2026-08-20T04:58:16.631Z",
+    "id": "mszr0qc5-5w4o6vy",
+    "completedDate": ""
   }
 ]

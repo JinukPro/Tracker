@@ -5,7 +5,8 @@ import { useIssues } from '../context/IssuesContext'
 import { usePeople } from '../context/PeopleContext'
 import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
-import { addDays, formatShort, parseISO, startOfWeek, toISO, todayISO } from '../lib/dates'
+import { addDays, formatShort, startOfWeek, toISO, todayISO } from '../lib/dates'
+import { isLateDone, isOverdue, issueDelayDays } from '../lib/issues'
 import { peopleForProjects } from '../lib/people'
 import * as issuesSvc from '../services/issues'
 import { UNASSIGNED_ID, STATUS_LABELS, type Issue } from '../types'
@@ -25,8 +26,9 @@ export function DashboardPage() {
       selectedProjects.map((p) => {
         const list = issues.filter((i) => i.projectId === p.id)
         const done = list.filter((i) => i.status === 'done').length
-        const overdue = list.filter((i) => i.status !== 'done' && i.dueDate < today).length
-        return { project: p, total: list.length, done, overdue }
+        const overdue = list.filter((i) => isOverdue(i, today)).length
+        const lateDone = list.filter((i) => isLateDone(i)).length
+        return { project: p, total: list.length, done, overdue, lateDone }
       }),
     [selectedProjects, issues, today],
   )
@@ -35,8 +37,9 @@ export function DashboardPage() {
     const total = issues.length
     const done = issues.filter((i) => i.status === 'done').length
     const inprogress = issues.filter((i) => i.status === 'inprogress').length
-    const overdue = issues.filter((i) => i.status !== 'done' && i.dueDate < today).length
-    return { total, done, inprogress, overdue }
+    const overdue = issues.filter((i) => isOverdue(i, today)).length
+    const lateDone = issues.filter((i) => isLateDone(i)).length
+    return { total, done, inprogress, overdue, lateDone }
   }, [issues, today])
 
   const thisWeek = useMemo(() => {
@@ -46,8 +49,13 @@ export function DashboardPage() {
   }, [issues])
 
   const overdueList = useMemo(
-    () => issues.filter((i) => i.status !== 'done' && i.dueDate < today),
+    () => issues.filter((i) => isOverdue(i, today)),
     [issues, today],
+  )
+
+  const lateDoneList = useMemo(
+    () => issues.filter((i) => isLateDone(i)).sort((a, b) => (b.completedDate ?? '').localeCompare(a.completedDate ?? '')),
+    [issues],
   )
 
   const trackStats = useMemo(
@@ -67,7 +75,7 @@ export function DashboardPage() {
     const rows = roster.map((p) => {
       const list = issues.filter((i) => i.assigneeIds.includes(p.id))
       const done = list.filter((i) => i.status === 'done').length
-      const overdue = list.filter((i) => i.status !== 'done' && i.dueDate < today).length
+      const overdue = list.filter((i) => isOverdue(i, today)).length
       return { id: p.id, label: p.displayName, color: personColor(p.id), total: list.length, done, overdue }
     })
     const unassigned = issues.filter((i) => i.assigneeIds.length === 0)
@@ -78,7 +86,7 @@ export function DashboardPage() {
         color: '#6b778c',
         total: unassigned.length,
         done: unassigned.filter((i) => i.status === 'done').length,
-        overdue: unassigned.filter((i) => i.status !== 'done' && i.dueDate < today).length,
+        overdue: unassigned.filter((i) => isOverdue(i, today)).length,
       })
     }
     return rows.filter((s) => s.total > 0)
@@ -109,6 +117,10 @@ export function DashboardPage() {
           <div className="stat-num red">{stats.overdue}</div>
           <div className="stat-label">지연</div>
         </div>
+        <div className="stat-card">
+          <div className="stat-num orange">{stats.lateDone}</div>
+          <div className="stat-label">지연 완료</div>
+        </div>
       </div>
 
       <div className="dash-grid">
@@ -124,6 +136,7 @@ export function DashboardPage() {
                   <span className="muted small-text">
                     작업 {s.done}/{s.total}
                     {s.overdue > 0 && <span className="red"> · 지연 {s.overdue}</span>}
+                    {s.lateDone > 0 && <span className="orange"> · 지연 완료 {s.lateDone}</span>}
                   </span>
                 </div>
                 <div className="progress-bar">
@@ -219,8 +232,10 @@ export function DashboardPage() {
                 <span className="issue-key">{i.key}</span>
                 <span className="issue-title">{i.title}</span>
                 <span className={`status-badge ${i.status}`}>{STATUS_LABELS[i.status]}</span>
-                <span className="muted small-text">
+                <span className={`small-text ${isOverdue(i, today) ? 'red' : isLateDone(i) ? 'orange' : 'muted'}`}>
                   {formatShort(i.startDate)}~{formatShort(i.dueDate)}
+                  {isLateDone(i) && i.completedDate && ` → ${formatShort(i.completedDate)} D+${issueDelayDays(i, today)}`}
+                  {isOverdue(i, today) && ` D+${issueDelayDays(i, today)}`}
                 </span>
               </li>
             ))}
@@ -236,8 +251,24 @@ export function DashboardPage() {
                 <span className="issue-key">{i.key}</span>
                 <span className="issue-title">{i.title}</span>
                 <span className="red small-text">
-                  마감 {formatShort(i.dueDate)} (D+
-                  {Math.round((parseISO(today).getTime() - parseISO(i.dueDate).getTime()) / 86400000)})
+                  마감 {formatShort(i.dueDate)} (D+{issueDelayDays(i, today)})
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="card">
+          <h2>지연 완료 ({lateDoneList.length})</h2>
+          {lateDoneList.length === 0 && <p className="muted">지연 완료된 작업이 없습니다.</p>}
+          <ul className="issue-list">
+            {lateDoneList.map((i) => (
+              <li key={i.id} className="issue-list-item" onClick={() => setEditing(i)}>
+                <span className="issue-key">{i.key}</span>
+                <span className="issue-title">{i.title}</span>
+                <span className="orange small-text">
+                  {formatShort(i.dueDate)} → {i.completedDate ? formatShort(i.completedDate) : '?'} (D+
+                  {issueDelayDays(i)})
                 </span>
               </li>
             ))}

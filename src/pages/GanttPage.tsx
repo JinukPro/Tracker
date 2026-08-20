@@ -8,6 +8,7 @@ import { useProjects } from '../context/ProjectsContext'
 import { STATUS_COLORS } from '../lib/colors'
 import { addDays, diffDays, formatShort, parseISO, todayISO } from '../lib/dates'
 import { buildGroups } from '../lib/grouping'
+import { isLateDone, isOverdue, issueDelayDays } from '../lib/issues'
 import type { Issue } from '../types'
 
 const LABEL_W = 280
@@ -34,9 +35,12 @@ export function GanttPage() {
   const range = useMemo(() => {
     if (filtered.length === 0) return null
     const minStart = filtered.reduce((a, i) => (i.startDate < a ? i.startDate : a), filtered[0].startDate)
-    const maxDue = filtered.reduce((a, i) => (i.dueDate > a ? i.dueDate : a), filtered[0].dueDate)
+    const maxEnd = filtered.reduce((a, i) => {
+      const end = i.completedDate && i.completedDate > i.dueDate ? i.completedDate : i.dueDate
+      return end > a ? end : a
+    }, filtered[0].dueDate)
     const first = addDays(parseISO(minStart), -3)
-    const last = addDays(parseISO(maxDue), 4)
+    const last = addDays(parseISO(maxEnd), 4)
     return { first, days: diffDays(first, last) + 1 }
   }, [filtered])
 
@@ -69,22 +73,32 @@ export function GanttPage() {
     const dTotal = i.deliverables.length
     const dDone = i.deliverables.filter((d) => d.done).length
     const pct = dTotal > 0 ? Math.round((dDone / dTotal) * 100) : i.status === 'done' ? 100 : 0
-    const overdue = i.status !== 'done' && i.dueDate < today
-    const delayDays = overdue ? diffDays(parseISO(i.dueDate), parseISO(today)) : 0
+    const overdue = isOverdue(i, today)
+    const lateDone = isLateDone(i)
+    const delay = issueDelayDays(i, today)
+    const delayWidth =
+      lateDone && i.completedDate
+        ? Math.max(DAY_W, (diffDays(parseISO(i.dueDate), parseISO(i.completedDate))) * DAY_W)
+        : 0
     const tip = [
       `${i.key} ${i.title}`,
       `${formatShort(i.startDate)}~${formatShort(i.dueDate)} · 산출물 ${dDone}/${dTotal}`,
-      overdue ? `지연 D+${delayDays}` : '',
+      lateDone && i.completedDate ? `완료 ${formatShort(i.completedDate)} · 지연 D+${delay}` : '',
+      overdue ? `지연 D+${delay}` : '',
     ]
       .filter(Boolean)
       .join('\n')
     return (
       <div key={rowKey} className="chart-row gantt-row" style={{ width: totalW }}>
-        <div className={`chart-label issue-label${overdue ? ' red' : ''}`} style={{ width: LABEL_W }} title={i.title}>
+        <div
+          className={`chart-label issue-label${overdue ? ' red' : lateDone ? ' orange' : ''}`}
+          style={{ width: LABEL_W }}
+          title={i.title}
+        >
           <span className="issue-key">{i.key}</span> {i.title}
         </div>
         <div
-          className={`gantt-bar${overdue ? ' overdue' : ''}`}
+          className={`gantt-bar${overdue ? ' overdue' : ''}${lateDone ? ' late-done' : ''}`}
           style={{ left, width, background: overdue ? 'var(--red)' : STATUS_COLORS[i.status] }}
           title={tip}
           onClick={() => setEditing(i)}
@@ -92,6 +106,14 @@ export function GanttPage() {
           <div className="gantt-progress" style={{ width: `${pct}%` }} />
           {width > 60 && <span className="gantt-pct">{pct}%</span>}
         </div>
+        {delayWidth > 0 && (
+          <div
+            className="gantt-bar gantt-delay"
+            style={{ left: left + width, width: delayWidth }}
+            title={tip}
+            onClick={() => setEditing(i)}
+          />
+        )}
       </div>
     )
   }
@@ -124,6 +146,9 @@ export function GanttPage() {
             </span>
             <span className="legend-item">
               <span className="legend-swatch overdue" /> 지연
+            </span>
+            <span className="legend-item">
+              <span className="legend-swatch late-done" /> 지연 완료
             </span>
           </span>
         </div>

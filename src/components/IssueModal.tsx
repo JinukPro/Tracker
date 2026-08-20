@@ -59,6 +59,7 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
   const [priority, setPriority] = useState<IssuePriority>(issue?.priority ?? 'medium')
   const [startDate, setStartDate] = useState(issue?.startDate ?? defaults?.startDate ?? todayISO())
   const [dueDate, setDueDate] = useState(issue?.dueDate ?? defaults?.dueDate ?? todayISO())
+  const [completedDate, setCompletedDate] = useState(issue?.completedDate ?? '')
   const [description, setDescription] = useState(issue?.description ?? '')
   const [deliverables, setDeliverables] = useState<Deliverable[]>(issue?.deliverables ?? [])
   const [workItems, setWorkItems] = useState<WorkItem[]>(issue?.workItems ?? [])
@@ -112,6 +113,15 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
     setDueDate(startDate && next < startDate ? startDate : next)
   }
 
+  function onStatusChange(next: IssueStatus) {
+    setStatus(next)
+    if (next === 'done') {
+      setCompletedDate((prev) => prev || issue?.completedDate || todayISO())
+    } else {
+      setCompletedDate('')
+    }
+  }
+
   function clearFieldError(key: 'title' | 'track' | 'projectId') {
     setFieldErrors((prev) => {
       if (!prev[key]) return prev
@@ -145,6 +155,7 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
       priority,
       startDate,
       dueDate: dueDate < startDate ? startDate : dueDate,
+      completedDate: status === 'done' ? completedDate : '',
       description,
       deliverables,
       workItems,
@@ -260,8 +271,18 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
           </label>
 
           <label className="field">
+            <span>시작일</span>
+            <input type="date" value={startDate} onChange={(e) => onStartDateChange(e.target.value)} />
+          </label>
+
+          <label className="field">
+            <span>마감일</span>
+            <input type="date" value={dueDate} min={startDate} onChange={(e) => onDueDateChange(e.target.value)} />
+          </label>
+
+          <label className="field">
             <span>상태</span>
-            <select value={status} onChange={(e) => setStatus(e.target.value as IssueStatus)}>
+            <select value={status} onChange={(e) => onStatusChange(e.target.value as IssueStatus)}>
               {STATUS_ORDER.map((s) => (
                 <option key={s} value={s}>
                   {STATUS_LABELS[s]}
@@ -271,13 +292,14 @@ export function IssueModal({ issue, defaults, onClose }: Props) {
           </label>
 
           <label className="field">
-            <span>시작일</span>
-            <input type="date" value={startDate} onChange={(e) => onStartDateChange(e.target.value)} />
-          </label>
-
-          <label className="field">
-            <span>마감일</span>
-            <input type="date" value={dueDate} min={startDate} onChange={(e) => onDueDateChange(e.target.value)} />
+            <span>실제 완료일</span>
+            <input
+              type="date"
+              value={completedDate}
+              min={startDate}
+              disabled={status !== 'done'}
+              onChange={(e) => setCompletedDate(e.target.value)}
+            />
           </label>
 
           <label className="field">

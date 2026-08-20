@@ -6,8 +6,9 @@ import { useIssues } from '../context/IssuesContext'
 import { usePeople } from '../context/PeopleContext'
 import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
-import { addDays, formatShort, startOfWeek, toISO, todayISO } from '../lib/dates'
+import { addDays, startOfWeek, toISO, todayISO } from '../lib/dates'
 import { calDayKind, isNonWorkingDay } from '../lib/holidays'
+import { isLateDone, isOverdue, issueDateTip, issueSpanEnd } from '../lib/issues'
 import type { Issue } from '../types'
 
 const MAX_PER_CELL = 3
@@ -46,18 +47,19 @@ function buildWeekBars(week: Date[], issues: Issue[], showWeekends: boolean): { 
   const weekStart = toISO(week[0])
   const weekEnd = toISO(week[6])
   const overlapping = issues
-    .filter((i) => i.startDate <= weekEnd && i.dueDate >= weekStart)
+    .filter((i) => i.startDate <= weekEnd && issueSpanEnd(i) >= weekStart)
     .sort(
-      (a, b) => a.startDate.localeCompare(b.startDate) || b.dueDate.localeCompare(a.dueDate),
+      (a, b) => a.startDate.localeCompare(b.startDate) || issueSpanEnd(b).localeCompare(issueSpanEnd(a)),
     )
 
   const segs: Omit<WeekBar, 'lane'>[] = []
   for (const issue of overlapping) {
+    const end = issueSpanEnd(issue)
     let runStart: number | null = null
     for (let col = 0; col <= vis.length; col++) {
       const day = vis[col]
       const iso = day ? toISO(day) : ''
-      const working = Boolean(day) && !isNonWorkingDay(iso, day) && issue.startDate <= iso && issue.dueDate >= iso
+      const working = Boolean(day) && !isNonWorkingDay(iso, day) && issue.startDate <= iso && end >= iso
       if (working) {
         if (runStart === null) runStart = col
         continue
@@ -69,7 +71,7 @@ function buildWeekBars(week: Date[], issues: Issue[], showWeekends: boolean): { 
         startCol: runStart,
         endCol: col - 1,
         clipStart: issue.startDate < toISO(vis[runStart]),
-        clipEnd: issue.dueDate > lastIso,
+        clipEnd: end > lastIso,
       })
       runStart = null
     }
@@ -150,7 +152,7 @@ export function CalendarPage() {
     let max = nowY + 3
     for (const i of issues) {
       const ys = Number(i.startDate.slice(0, 4))
-      const ye = Number(i.dueDate.slice(0, 4))
+      const ye = Number(issueSpanEnd(i).slice(0, 4))
       if (Number.isFinite(ys) && ys >= 1990) min = Math.min(min, ys)
       if (Number.isFinite(ye) && ye >= 1990) max = Math.max(max, ye)
     }
@@ -195,7 +197,7 @@ export function CalendarPage() {
       const iso = toISO(day)
       map.set(
         iso,
-        isNonWorkingDay(iso, day) ? [] : issues.filter((i) => i.startDate <= iso && i.dueDate >= iso),
+        isNonWorkingDay(iso, day) ? [] : issues.filter((i) => i.startDate <= iso && issueSpanEnd(i) >= iso),
       )
     }
     return map
@@ -323,9 +325,9 @@ export function CalendarPage() {
                 {visible.map((i) => (
                   <div
                     key={i.id}
-                    className={`cal-chip ${i.status === 'done' ? 'chip-done' : ''}`}
+                    className={`cal-chip ${i.status === 'done' ? 'chip-done' : ''} ${isOverdue(i, today) ? 'overdue' : ''} ${isLateDone(i) ? 'late-done' : ''}`}
                     style={{ borderLeftColor: colorOf(i) }}
-                    title={`${i.key} ${i.title}`}
+                    title={issueDateTip(i, today)}
                     onClick={() => setEditing(i)}
                   >
                     <AssigneeChips ids={i.assigneeIds} max={2} />
@@ -418,14 +420,14 @@ export function CalendarPage() {
                     return (
                       <div
                         key={`${b.issue.id}:${b.startCol}:${b.endCol}`}
-                        className={`calw-bar ${b.issue.status === 'done' ? 'bar-done' : ''} ${b.clipStart ? 'clip-start' : ''} ${b.clipEnd ? 'clip-end' : ''}`}
+                        className={`calw-bar ${b.issue.status === 'done' ? 'bar-done' : ''} ${isOverdue(b.issue, today) ? 'overdue' : ''} ${isLateDone(b.issue) ? 'late-done' : ''} ${b.clipStart ? 'clip-start' : ''} ${b.clipEnd ? 'clip-end' : ''}`}
                         style={{
                           gridColumn: `${b.startCol + 1} / ${b.endCol + 2}`,
                           gridRow: b.lane + 1,
                           background: `${color}14`,
                           borderLeftColor: color,
                         }}
-                        title={`${b.issue.key} ${b.issue.title} (${formatShort(b.issue.startDate)}~${formatShort(b.issue.dueDate)})`}
+                        title={issueDateTip(b.issue, today)}
                         onClick={() => setEditing(b.issue)}
                       >
                         <AssigneeChips ids={b.issue.assigneeIds} max={2} />

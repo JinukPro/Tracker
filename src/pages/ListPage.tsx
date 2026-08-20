@@ -8,6 +8,7 @@ import { useProjects } from '../context/ProjectsContext'
 import { trackColor } from '../lib/colors'
 import { buildGroups } from '../lib/grouping'
 import { formatWithDay, todayISO } from '../lib/dates'
+import { isLateDone, isOverdue, issueDelayDays } from '../lib/issues'
 import {
   PRIORITY_LABELS,
   STATUS_LABELS,
@@ -101,6 +102,7 @@ export function ListPage() {
               <th>우선순위</th>
               <th>시작</th>
               <th>마감</th>
+              <th>완료</th>
               <th>산출물</th>
             </tr>
           </thead>
@@ -108,7 +110,9 @@ export function ListPage() {
             {sections.map((section) => {
               const rows = section.items.map((i) => {
                 const dDone = i.deliverables.filter((d) => d.done).length
-                const overdue = i.status !== 'done' && i.dueDate < today
+                const overdue = isOverdue(i, today)
+                const lateDone = isLateDone(i)
+                const delay = issueDelayDays(i, today)
                 return (
                   <tr key={`${section.key}:${i.id}`} onClick={() => setEditing(i)}>
                     <td className="issue-key">{i.key}</td>
@@ -148,7 +152,20 @@ export function ListPage() {
                       <span className={`priority ${i.priority}`}>{PRIORITY_LABELS[i.priority]}</span>
                     </td>
                     <td className="nowrap">{formatWithDay(i.startDate)}</td>
-                    <td className={`nowrap ${overdue ? 'red' : ''}`}>{formatWithDay(i.dueDate)}</td>
+                    <td className={`nowrap ${overdue ? 'red' : ''}`}>
+                      {formatWithDay(i.dueDate)}
+                      {overdue && <span className="red"> D+{delay}</span>}
+                    </td>
+                    <td className={`nowrap ${lateDone ? 'orange' : ''}`}>
+                      {i.completedDate ? (
+                        <>
+                          {formatWithDay(i.completedDate)}
+                          {lateDone && ` D+${delay}`}
+                        </>
+                      ) : (
+                        <span className="muted">-</span>
+                      )}
+                    </td>
                     <td className="nowrap">
                       {i.deliverables.length > 0 ? (
                         <span className={dDone === i.deliverables.length ? 'green' : ''}>
@@ -164,7 +181,7 @@ export function ListPage() {
               if (!section.label) {
                 return <Fragment key={section.key}>{rows}</Fragment>
               }
-              const colSpan = multi ? 10 : 9
+              const colSpan = multi ? 11 : 10
               return (
                 <Fragment key={section.key}>
                   <tr className="section-row">
